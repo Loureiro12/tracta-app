@@ -17,7 +17,7 @@ e2e/
 ## Rules enforced by `pnpm check:flows` and `pnpm check:tests`
 
 - A flow file has `appId`, `name`, `tags` and at least one `assertVisible`.
-- Selectors use `id:` (a testID). Text-only selectors are warnings; prefer `id` + `text`.
+- Selectors use `id:` (a testID). Text-only selectors are warnings; prefer `id` + `text`. OS alerts have no testID: mark those taps with `# system-dialog`.
 - Every `id:` must match a testID declared in source. Dead selectors fail the check.
 - Every testID declared in source must be used by at least one flow.
 - Changing a feature, route or component requires a flow in the matching folder, and behaviour changes require a flow change in the same commit (or an `E2E-Skip:` trailer with a reason).

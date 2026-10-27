@@ -1,12 +1,15 @@
-# Deep-links straight into a design-system gallery. Usage:
+# Deep-links straight into a design-system gallery (locale pinned to English). Usage:
 #   - runFlow:
 #       file: ../../subflows/open-gallery.yaml
 #       env:
 #         SLUG: button
 appId: com.tracta.mobile
 ---
-- launchApp:
-    clearState: true
-- openLink: "tracta://design-system/${SLUG}"
-- assertVisible:
-    id: "ds.gallery.screen.${SLUG}"
+# Wait for the app to be interactive before deep-linking: a link sent during cold start is flaky.
+- runFlow: ./launch.yaml
+- openLink: "tracta://design-system/${SLUG}?locale=en"
+- runFlow: ./accept-deep-link-prompt.yaml
+- extendedWaitUntil:
+    visible:
+      id: "ds.gallery.screen.${SLUG}"
+    timeout: 15000

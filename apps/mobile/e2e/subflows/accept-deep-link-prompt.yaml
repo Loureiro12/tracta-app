@@ -1,0 +1,11 @@
+# iOS shows "Open in "Tracta"?" the first time a custom-scheme link is opened on a simulator.
+# Accepting it persists per simulator (even after clearState), so this is a no-op afterwards.
+# The button label follows the simulator language; "Open|Abrir" covers en and pt-BR.
+# Note: alerts stack if flows are aborted repeatedly; reboot the simulator to clear them.
+appId: com.tracta.mobile
+---
+- runFlow:
+    when:
+      visible: "Open|Abrir"
+    commands:
+      - tapOn: "Open|Abrir" # system-dialog

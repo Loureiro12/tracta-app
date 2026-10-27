@@ -3,12 +3,13 @@ name: app-deep-link
 tags:
   - app
 ---
-- launchApp:
-    clearState: true
-- openLink: "tracta://settings"
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "settings.screen"
 - openLink: "tracta://design-system"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "ds.index.screen"
 - assertVisible:
@@ -20,5 +21,6 @@ tags:
     id: "ds.gallery.screen.button"
 # Unknown gallery slug renders the not-found state instead of crashing.
 - openLink: "tracta://design-system/does-not-exist"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "ds.gallery.not-found"

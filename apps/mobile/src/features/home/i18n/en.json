@@ -1,0 +1,13 @@
+{
+  "subtitle": "Every screen ships with an end-to-end flow.",
+  "counter": {
+    "taps_one": "{{count}} tap",
+    "taps_other": "{{count}} taps",
+    "tap": "Tap",
+    "reset": "Reset"
+  },
+  "nav": {
+    "settings": "Settings",
+    "designSystem": "Design system gallery"
+  }
+}

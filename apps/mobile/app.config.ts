@@ -25,7 +25,20 @@ const config: ExpoConfig = {
     predictiveBackGestureEnabled: false,
   },
   web: { favicon: './assets/favicon.png' },
-  plugins: ['expo-router'],
+  plugins: [
+    'expo-router',
+    ['expo-localization', { supportedLocales: ['en', 'pt-BR'] }],
+    [
+      'expo-build-properties',
+      {
+        // SDK 58 ships prebuilt Expo module xcframeworks. The published ExpoModulesCore binary
+        // is missing a symbol that ExpoFileSystem (built from source) references, which crashes
+        // Release builds at launch with "Symbol not found: ...EventEmitter...eventRuntime".
+        // Building the Expo modules from source avoids the mismatch. Re-evaluate on SDK upgrades.
+        ios: { usePrecompiledModules: false },
+      },
+    ],
+  ],
   experiments: { typedRoutes: true },
 };
 

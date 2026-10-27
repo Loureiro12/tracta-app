@@ -1,8 +1,14 @@
-# Cold start with a clean state. Every top-level flow begins with this.
+# Cold start with a clean state and the locale pinned to English, so text assertions are stable
+# regardless of the simulator language. Every top-level flow begins with this.
 appId: com.tracta.mobile
 ---
 - launchApp:
     clearState: true
     clearKeychain: true
-- assertVisible:
-    id: "home.screen"
+- openLink: "tracta://?locale=en"
+- runFlow: ./accept-deep-link-prompt.yaml
+# Cold start + deep link can take a few seconds on a fresh simulator; wait explicitly.
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 15000

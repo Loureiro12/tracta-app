@@ -5,15 +5,19 @@ tags:
   - design-system
 ---
 - runFlow: ../../subflows/launch.yaml
-- openLink: "tracta://settings"
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - tapOn:
     id: "settings.theme.dark"
 - openLink: "tracta://design-system/text"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "ds.text.gallery"
-- openLink: "tracta://settings"
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - tapOn:
     id: "settings.theme.light"
 - openLink: "tracta://design-system/text"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "ds.text.gallery"

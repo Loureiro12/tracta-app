@@ -1,0 +1,16 @@
+{
+  "title": "Configurações",
+  "theme": {
+    "current": "Tema: {{value}}",
+    "system": "Sistema",
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "language": {
+    "current": "Idioma: {{value}}",
+    "system": "Sistema",
+    "en": "English",
+    "pt-BR": "Português (Brasil)"
+  },
+  "back": "Voltar"
+}

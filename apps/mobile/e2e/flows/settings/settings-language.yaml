@@ -1,0 +1,57 @@
+appId: com.tracta.mobile
+name: settings-language
+tags:
+  - smoke
+  - settings
+  - i18n
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.settings"
+- assertVisible:
+    id: "settings.language.current"
+    text: "Language: English"
+# Switch to Portuguese: the whole screen re-renders in pt-BR
+- tapOn:
+    id: "settings.language.pt-br"
+- assertVisible:
+    id: "settings.title"
+    text: "Configurações"
+- assertVisible:
+    id: "settings.language.current"
+    text: "Idioma: Português (Brasil)"
+- assertVisible:
+    id: "settings.theme.current"
+    text: "Tema: Sistema"
+- tapOn:
+    id: "settings.nav.back"
+- assertVisible:
+    id: "home.counter.value"
+    text: "0 toque"
+- tapOn:
+    id: "home.counter.increment"
+- tapOn:
+    id: "home.counter.increment"
+- assertVisible:
+    id: "home.counter.value"
+    text: "2 toques"
+# Deep-link override pins the locale back to English
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "settings.title"
+    text: "Settings"
+- assertVisible:
+    id: "settings.language.current"
+    text: "Language: English"
+# "System" follows the device locale, so only the selection itself is asserted
+- tapOn:
+    id: "settings.language.system"
+- assertVisible:
+    id: "settings.language.current"
+# Explicit English selection
+- tapOn:
+    id: "settings.language.en"
+- assertVisible:
+    id: "settings.language.current"
+    text: "Language: English"

@@ -1,0 +1,12 @@
+{
+  "appName": "Tracta",
+  "actions": {
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "retry": "Tentar novamente"
+  },
+  "errors": {
+    "generic": "Algo deu errado. Tente novamente."
+  }
+}

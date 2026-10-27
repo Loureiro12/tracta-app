@@ -9,6 +9,7 @@ export default function DesignSystemIndex() {
   return (
     <Screen testID="ds.index.screen">
       <Heading testID="ds.index.title">Design system</Heading>
+      <Button testID="ds.index.back" label="Back" variant="ghost" onPress={() => router.back()} />
       <VStack gap="sm">
         {galleryRegistry.map((entry) => (
           <Button

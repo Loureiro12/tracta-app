@@ -1,0 +1,13 @@
+{
+  "subtitle": "Toda tela nasce com um fluxo de ponta a ponta.",
+  "counter": {
+    "taps_one": "{{count}} toque",
+    "taps_other": "{{count}} toques",
+    "tap": "Tocar",
+    "reset": "Zerar"
+  },
+  "nav": {
+    "settings": "Configurações",
+    "designSystem": "Galeria do design system"
+  }
+}

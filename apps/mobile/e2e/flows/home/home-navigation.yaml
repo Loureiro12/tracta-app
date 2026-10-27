@@ -4,11 +4,17 @@ tags:
   - home
 ---
 - runFlow: ../../subflows/launch.yaml
+# Copy comes from the "home" namespace (locale pinned to English by launch.yaml)
+- assertVisible:
+    id: "home.nav.settings.label"
+    text: "Settings"
 - tapOn:
     id: "home.nav.design-system"
 - assertVisible:
     id: "ds.index.screen"
-- back
+# Maestro's `back` is Android-only; screens expose their own back control.
+- tapOn:
+    id: "ds.index.back"
 - assertVisible:
     id: "home.screen"
 - tapOn:
