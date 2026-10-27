@@ -1,0 +1,40 @@
+{
+  "name": "@tracta/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild": "expo prebuild",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "e2e": "maestro test e2e/flows",
+    "e2e:smoke": "maestro test --include-tags smoke e2e/flows",
+    "e2e:ios": "expo run:ios --no-bundler --configuration Release && maestro test e2e/flows",
+    "e2e:android": "expo run:android --no-bundler --variant release && maestro test e2e/flows",
+    "e2e:studio": "maestro studio",
+    "clean": "rm -rf .turbo .expo node_modules ios android"
+  },
+  "dependencies": {
+    "@tracta/design-system": "workspace:*",
+    "expo": "~58.0.19",
+    "expo-constants": "~58.0.4",
+    "expo-linking": "~58.0.4",
+    "expo-router": "~58.0.26",
+    "expo-status-bar": "~58.0.4",
+    "react": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tracta/eslint-config": "workspace:*",
+    "@tracta/tsconfig": "workspace:*",
+    "@types/react": "~19.3.0",
+    "eslint": "^9.39.0",
+    "typescript": "~6.0.3"
+  }
+}

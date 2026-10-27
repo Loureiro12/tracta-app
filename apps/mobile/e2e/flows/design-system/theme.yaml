@@ -1,0 +1,19 @@
+# Covers tokens + theme: switching the scheme must re-render the gallery without crashing.
+appId: com.tracta.mobile
+name: ds-theme
+tags:
+  - design-system
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://settings"
+- tapOn:
+    id: "settings.theme.dark"
+- openLink: "tracta://design-system/text"
+- assertVisible:
+    id: "ds.text.gallery"
+- openLink: "tracta://settings"
+- tapOn:
+    id: "settings.theme.light"
+- openLink: "tracta://design-system/text"
+- assertVisible:
+    id: "ds.text.gallery"

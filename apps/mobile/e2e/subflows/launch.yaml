@@ -1,0 +1,8 @@
+# Cold start with a clean state. Every top-level flow begins with this.
+appId: com.tracta.mobile
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- assertVisible:
+    id: "home.screen"

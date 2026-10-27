@@ -1,0 +1,23 @@
+appId: com.tracta.mobile
+name: ds-stack
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: stack
+- assertVisible:
+    id: "ds.stack.gallery"
+- assertVisible:
+    id: "ds.stack.vertical"
+- assertVisible:
+    id: "ds.stack.vertical.1"
+- assertVisible:
+    id: "ds.stack.vertical.2"
+- assertVisible:
+    id: "ds.stack.horizontal"
+- assertVisible:
+    id: "ds.stack.horizontal.1"
+- assertVisible:
+    id: "ds.stack.horizontal.2"

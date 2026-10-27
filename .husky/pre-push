@@ -1,0 +1,11 @@
+# Full quality gate over everything that will be pushed (merge-base with upstream or origin/main)
+pnpm exec turbo run lint typecheck --output-logs=errors-only
+node tooling/scripts/check-structure.mjs
+node tooling/scripts/check-flows.mjs
+node tooling/scripts/check-tests.mjs
+
+# Optional: run the smoke E2E suite against a booted simulator/emulator before pushing.
+#   E2E_ON_PUSH=1 git push
+if [ "$E2E_ON_PUSH" = "1" ]; then
+  pnpm --filter @tracta/mobile e2e:smoke
+fi

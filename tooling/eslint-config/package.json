@@ -1,0 +1,17 @@
+{
+  "name": "@tracta/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "dependencies": {
+    "eslint-config-expo": "^58.0.4",
+    "eslint-plugin-react-native": "^5.0.0",
+    "typescript-eslint": "^8.72.1"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

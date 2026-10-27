@@ -1,0 +1,17 @@
+appId: com.tracta.mobile
+name: app-smoke
+tags:
+  - smoke
+  - app
+---
+- runFlow: ../../subflows/launch.yaml
+- assertVisible:
+    id: "home.title"
+- tapOn:
+    id: "home.nav.settings"
+- assertVisible:
+    id: "settings.screen"
+- tapOn:
+    id: "settings.nav.back"
+- assertVisible:
+    id: "home.screen"

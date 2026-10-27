@@ -1,0 +1,34 @@
+appId: com.tracta.mobile
+name: ds-text-field
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: text-field
+- assertVisible:
+    id: "ds.text-field.gallery"
+- assertVisible:
+    id: "ds.text-field.default"
+- assertVisible:
+    id: "ds.text-field.default.label"
+    text: "Name"
+- assertVisible:
+    id: "ds.text-field.default.helper"
+- tapOn:
+    id: "ds.text-field.default.input"
+- inputText: "Ada"
+- hideKeyboard
+- assertVisible:
+    id: "ds.text-field.echo"
+    text: "Value: Ada"
+- assertVisible:
+    id: "ds.text-field.error"
+- assertVisible:
+    id: "ds.text-field.error.error"
+    text: "Invalid email"
+- assertVisible:
+    id: "ds.text-field.disabled"
+- assertVisible:
+    id: "ds.text-field.disabled.input"

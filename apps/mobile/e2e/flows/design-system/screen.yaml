@@ -1,0 +1,20 @@
+appId: com.tracta.mobile
+name: ds-screen
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: screen
+- assertVisible:
+    id: "ds.screen.gallery"
+- assertVisible:
+    id: "ds.screen.marker"
+- scrollUntilVisible:
+    element:
+      id: "ds.screen.bottom"
+    direction: DOWN
+- assertVisible:
+    id: "ds.screen.bottom"
+    text: "Bottom reached"

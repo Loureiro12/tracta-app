@@ -1,0 +1,31 @@
+appId: com.tracta.mobile
+name: settings-theme
+tags:
+  - smoke
+  - settings
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.settings"
+- assertVisible:
+    id: "settings.theme.current"
+    text: "Theme: system"
+- tapOn:
+    id: "settings.theme.dark"
+- assertVisible:
+    id: "settings.theme.current"
+    text: "Theme: dark"
+- tapOn:
+    id: "settings.theme.light"
+- assertVisible:
+    id: "settings.theme.current"
+    text: "Theme: light"
+- tapOn:
+    id: "settings.theme.system"
+- assertVisible:
+    id: "settings.theme.current"
+    text: "Theme: system"
+- tapOn:
+    id: "settings.nav.back"
+- assertVisible:
+    id: "home.screen"

@@ -1,0 +1,25 @@
+appId: com.tracta.mobile
+name: ds-box
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: box
+- assertVisible:
+    id: "ds.box.gallery"
+- assertVisible:
+    id: "ds.box.surface"
+- assertVisible:
+    id: "ds.box.surface.label"
+- assertVisible:
+    id: "ds.box.brand"
+- assertVisible:
+    id: "ds.box.brand.label"
+- assertVisible:
+    id: "ds.box.row"
+- assertVisible:
+    id: "ds.box.row.a"
+- assertVisible:
+    id: "ds.box.row.b"

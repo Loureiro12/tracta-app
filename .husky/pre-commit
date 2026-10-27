@@ -1,0 +1,8 @@
+# 1. Lint + format only what is staged (fast feedback)
+pnpm exec lint-staged
+
+# 2. Types across the workspace (turbo caches untouched packages)
+pnpm exec turbo run typecheck --output-logs=errors-only
+
+# 3. Project layout rules (features, routes, design-system folders)
+node tooling/scripts/check-structure.mjs

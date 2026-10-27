@@ -1,0 +1,9 @@
+# 1. Conventional Commits with workspace scopes
+pnpm exec commitlint --edit "$1"
+
+# 2. Maestro flows must point at real testIDs
+node tooling/scripts/check-flows.mjs
+
+# 3. The code in this commit must be covered by E2E flows
+#    (reads the message for an optional "E2E-Skip: <reason>" trailer)
+node tooling/scripts/check-tests.mjs --staged --message-file "$1"

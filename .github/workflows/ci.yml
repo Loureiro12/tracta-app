@@ -1,0 +1,160 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: 0
+  TURBO_TELEMETRY_DISABLED: 1
+  EXPO_NO_TELEMETRY: 1
+
+jobs:
+  quality:
+    name: Lint · types · structure · E2E coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: check-tests compares against the base ref
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm turbo run lint --output-logs=errors-only && pnpm eslint .
+      - name: Typecheck
+        run: pnpm turbo run typecheck --output-logs=errors-only
+      - name: Format
+        run: pnpm format:check
+      - name: Structure
+        run: node tooling/scripts/check-structure.mjs
+      - name: Flows
+        run: node tooling/scripts/check-flows.mjs --strict
+      - name: Commit messages (PR only)
+        if: github.event_name == 'pull_request'
+        run: pnpm exec commitlint --from origin/${{ github.base_ref }} --to HEAD --verbose
+      - name: E2E coverage of changed files (PR)
+        if: github.event_name == 'pull_request'
+        run: node tooling/scripts/check-tests.mjs --base origin/${{ github.base_ref }}
+      - name: E2E coverage audit (whole repo)
+        if: github.event_name != 'pull_request'
+        run: node tooling/scripts/check-tests.mjs --all
+
+  e2e-android:
+    name: E2E · Android (Maestro)
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Build release APK
+        working-directory: apps/mobile
+        run: |
+          pnpm expo prebuild --platform android --no-install
+          cd android && ./gradlew assembleRelease --no-daemon
+
+      - name: Run flows on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+            maestro test --format junit --output apps/mobile/e2e/reports/android.xml apps/mobile/e2e/flows
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-android
+          path: |
+            apps/mobile/e2e/reports/
+            ~/.maestro/tests/
+
+  e2e-ios:
+    name: E2E · iOS (Maestro)
+    needs: quality
+    # macOS minutes are expensive: run on main and on demand, not on every PR.
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Build simulator app
+        working-directory: apps/mobile
+        run: |
+          pnpm expo prebuild --platform ios --no-install
+          cd ios && pod install
+          xcodebuild -workspace Tracta.xcworkspace -scheme Tracta -configuration Release \
+            -sdk iphonesimulator -derivedDataPath build \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || true
+          test -d build/Build/Products/Release-iphonesimulator/Tracta.app
+
+      - name: Boot simulator and run flows
+        run: |
+          UDID=$(xcrun simctl list devices available -j | node -e 'const d=JSON.parse(require("fs").readFileSync(0,"utf8")).devices;const all=Object.values(d).flat();const pick=all.find(x=>/iPhone 1[5-9]/.test(x.name))||all[0];console.log(pick.udid)')
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Tracta.app
+          maestro test --format junit --output apps/mobile/e2e/reports/ios.xml apps/mobile/e2e/flows
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-ios
+          path: |
+            apps/mobile/e2e/reports/
+            ~/.maestro/tests/

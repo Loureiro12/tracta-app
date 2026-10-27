@@ -1,0 +1,24 @@
+appId: com.tracta.mobile
+name: ds-pressable
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: pressable
+- assertVisible:
+    id: "ds.pressable.gallery"
+- assertVisible:
+    id: "ds.pressable.count"
+    text: "Pressed 0 times"
+- assertVisible:
+    id: "ds.pressable.target.label"
+    text: "Tap me"
+- tapOn:
+    id: "ds.pressable.target"
+- tapOn:
+    id: "ds.pressable.target"
+- assertVisible:
+    id: "ds.pressable.count"
+    text: "Pressed 2 times"

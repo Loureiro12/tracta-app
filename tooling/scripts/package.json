@@ -1,0 +1,7 @@
+{
+  "name": "@tracta/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Repository guards: test coverage of changed files, flow validation, structure checks and generators."
+}

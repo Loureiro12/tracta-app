@@ -1,0 +1,45 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# turbo
+.turbo/
+
+# builds
+dist/
+build/
+*.tsbuildinfo
+
+# expo / native
+apps/mobile/.expo/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# maestro
+apps/mobile/e2e/.maestro/
+apps/mobile/e2e/reports/
+~/.maestro/tests/
+
+# env
+.env
+.env.*
+!.env.example
+
+# os / ide
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

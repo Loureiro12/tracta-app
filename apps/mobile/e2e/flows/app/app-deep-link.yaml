@@ -1,0 +1,24 @@
+appId: com.tracta.mobile
+name: app-deep-link
+tags:
+  - app
+---
+- launchApp:
+    clearState: true
+- openLink: "tracta://settings"
+- assertVisible:
+    id: "settings.screen"
+- openLink: "tracta://design-system"
+- assertVisible:
+    id: "ds.index.screen"
+- assertVisible:
+    id: "ds.index.title"
+    text: "Design system"
+- tapOn:
+    id: "ds.index.link.button"
+- assertVisible:
+    id: "ds.gallery.screen.button"
+# Unknown gallery slug renders the not-found state instead of crashing.
+- openLink: "tracta://design-system/does-not-exist"
+- assertVisible:
+    id: "ds.gallery.not-found"

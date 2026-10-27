@@ -1,0 +1,17 @@
+appId: com.tracta.mobile
+name: home-navigation
+tags:
+  - home
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.design-system"
+- assertVisible:
+    id: "ds.index.screen"
+- back
+- assertVisible:
+    id: "home.screen"
+- tapOn:
+    id: "home.nav.settings"
+- assertVisible:
+    id: "settings.title"

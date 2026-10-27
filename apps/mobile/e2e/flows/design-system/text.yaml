@@ -1,0 +1,23 @@
+appId: com.tracta.mobile
+name: ds-text
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: text
+- assertVisible:
+    id: "ds.text.gallery"
+- assertVisible:
+    id: "ds.text.heading"
+    text: "Heading level 2"
+- assertVisible:
+    id: "ds.text.variant.displayLg"
+- assertVisible:
+    id: "ds.text.variant.bodyMd"
+- scrollUntilVisible:
+    element:
+      id: "ds.text.color.muted"
+- assertVisible:
+    id: "ds.text.color.danger"
