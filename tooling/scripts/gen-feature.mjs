@@ -68,5 +68,5 @@ for (const [path, content] of Object.entries(files)) {
   console.log(`created ${path}`);
 }
 console.log(
-  `\nNext: add "${name}" to apps/mobile/e2e/flows/config.yaml and commit with scope (${name}).`,
+  `\nNext: implement the screen, extend ${PATHS.flows}/${name}/, commit with scope (${name}).`,
 );
