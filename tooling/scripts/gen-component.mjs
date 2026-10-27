@@ -78,16 +78,21 @@ const barrelPath = `${PATHS.dsComponents}/index.ts`;
 writeFileSync(abs(barrelPath), read(barrelPath).trimEnd() + `\nexport * from './${name}';\n`);
 console.log(`updated ${barrelPath}`);
 
-// registry
+// registry: keep gallery imports sorted the way eslint import/order expects (case-insensitive, by path)
 const registry = read(PATHS.dsRegistry);
-const withImport = registry.replace(
-  /(import \{ [A-Za-z]+Gallery \} from '\.\.\/components\/[^\n]+\n)(?![\s\S]*import \{ [A-Za-z]+Gallery \})/,
-  `$1import { ${name}Gallery } from '../components/${name}/${name}.gallery';\n`,
-);
+const importRe = /^import \{ [A-Za-z]+Gallery \} from '\.\.\/components\/[^\n]+;\n/gm;
+const imports = registry.match(importRe) ?? [];
+imports.push(`import { ${name}Gallery } from '../components/${name}/${name}.gallery';\n`);
+const pathOf = (line) => line.match(/from '([^']+)'/)[1].toLowerCase();
+imports.sort((a, b) => (pathOf(a) < pathOf(b) ? -1 : pathOf(a) > pathOf(b) ? 1 : 0));
+const firstImportAt = registry.search(importRe);
+const withoutImports = registry.replace(importRe, '');
+const withImport =
+  withoutImports.slice(0, firstImportAt) + imports.join('') + withoutImports.slice(firstImportAt);
 const withEntry = withImport.replace(
   /(\n\];)/,
   `\n  { slug: '${slug}', name: '${name}', Gallery: ${name}Gallery },$1`,
 );
 writeFileSync(abs(PATHS.dsRegistry), withEntry);
 console.log(`updated ${PATHS.dsRegistry}`);
-console.log('\nRun: pnpm lint:fix && pnpm check:structure');
+console.log('\nRun: pnpm check:structure && pnpm lint');

@@ -1,10 +1,7 @@
-# Maestro workspace config. `maestro test e2e/flows` picks up every flow below.
-# Sub-flows live in ../subflows so they are never executed on their own.
+# Maestro workspace config. `maestro test e2e/flows` runs every flow in a domain folder
+# (app/, <feature>/, design-system/). Sub-flows live in ../subflows so they never run on their own.
 flows:
-  - "app/*.yaml"
-  - "home/*.yaml"
-  - "settings/*.yaml"
-  - "design-system/*.yaml"
+  - "*/*.yaml"
 executionOrder:
   continueOnFailure: true
   flowsOrder:
