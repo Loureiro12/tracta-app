@@ -13,7 +13,7 @@ Conventional Commits com **escopo obrigatório**:
 ```
 
 - Tipos: `feat fix refactor perf test docs chore ci build revert style`.
-- Escopos: `mobile design-system ds e2e tooling ci docs repo deps` ou o nome de qualquer feature em `apps/mobile/src/features/` (lido dinamicamente pelo `commitlint.config.mjs`).
+- Escopos: `mobile design-system ds e2e i18n tooling ci docs repo deps` ou o nome de qualquer feature em `apps/mobile/src/features/` (lido dinamicamente pelo `commitlint.config.mjs`).
 - Trailers reconhecidos: `E2E-Skip: <motivo>` (ver TESTING.md).
 
 Exemplos:

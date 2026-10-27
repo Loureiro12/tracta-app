@@ -10,9 +10,9 @@ tracta/
 │   └── mobile/                 # app Expo (expo-router)
 │       ├── app/                # rotas (finas: só exportam telas das features)
 │       ├── src/
-│       │   ├── features/<f>/   # screens, components, hooks, model, <f>.testids.ts, index.ts
-│       │   ├── shared/         # lib, config (código sem domínio)
-│       │   └── app-providers/  # composição de providers globais
+│       │   ├── features/<f>/   # screens, components, hooks, model, i18n/, <f>.testids.ts, index.ts
+│       │   ├── shared/         # config, i18n (mecânica), código sem domínio
+│       │   └── app-providers/  # composição de providers globais (tema, i18n/resources)
 │       └── e2e/
 │           ├── flows/<dominio>/*.yaml   # fluxos Maestro (app, <feature>, design-system)
 │           └── subflows/                # passos reutilizáveis
@@ -35,7 +35,7 @@ pnpm ios                     # build de desenvolvimento no simulador (necessári
 pnpm android
 ```
 
-Requisitos para E2E: [Maestro CLI](https://maestro.mobile.dev) instalado e um simulador/emulador ligado.
+Requisitos para E2E: [Maestro CLI](https://maestro.mobile.dev) instalado e um simulador/emulador ligado. Os scripts `e2e:ios`/`e2e:android` fazem um build Release com `EXPO_PUBLIC_E2E=1` (expõe a galeria do design system fora de `__DEV__`). Se o `pod install` falhar com `Unicode Normalization not appropriate for ASCII-8BIT`, exporte `LANG=en_US.UTF-8`. Os módulos Expo são compilados do fonte (`usePrecompiledModules: false` no `app.config.ts`) porque o xcframework pré-compilado do SDK 58 crasha no launch em Release; a primeira build iOS leva alguns minutos a mais.
 
 ```bash
 pnpm e2e                              # roda todos os fluxos
@@ -48,7 +48,8 @@ pnpm --filter @tracta/mobile e2e:studio # inspecionar testIDs na tela
 1. `pnpm gen:feature minha-feature` ou `pnpm gen:component MeuComponente` para criar a estrutura padrão (tela/rota/testIDs/fluxo já ligados).
 2. Implemente usando **apenas** componentes de `@tracta/design-system`. O ESLint bloqueia `View`, `Text`, `Pressable` etc. do `react-native` dentro do app e cores/estilos literais.
 3. Declare testIDs em `<feature>.testids.ts` e escreva o fluxo em `apps/mobile/e2e/flows/<feature>/`.
-4. Commit com Conventional Commits e escopo: `feat(minha-feature): adiciona listagem`.
+4. Todo texto visível vem de `t()` com as chaves em `features/<f>/i18n/{en,pt-BR}.json` (o lint bloqueia literais; o `check-structure` exige paridade entre idiomas).
+5. Commit com Conventional Commits e escopo: `feat(minha-feature): adiciona listagem`.
 
 ## O que cada commit passa
 
@@ -61,7 +62,7 @@ pnpm --filter @tracta/mobile e2e:studio # inspecionar testIDs na tela
 
 `check-tests` falha quando: o domínio alterado não tem fluxo; um testID declarado não é usado por nenhum fluxo; houve mudança de comportamento sem alterar um fluxo do domínio. Para a última regra, justifique com o trailer `E2E-Skip: <motivo>` no corpo do commit.
 
-Detalhes em [docs/COMMITS.md](docs/COMMITS.md) e [docs/TESTING.md](docs/TESTING.md).
+Detalhes em [docs/COMMITS.md](docs/COMMITS.md), [docs/TESTING.md](docs/TESTING.md) e [docs/I18N.md](docs/I18N.md).
 
 ## Comandos úteis
 

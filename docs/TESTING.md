@@ -73,9 +73,21 @@ maestro studio                             # inspecionar a árvore e testIDs
 
 Deep links custom (`tracta://`) não funcionam no Expo Go; use um development build.
 
+## Idioma nos fluxos
+
+Os textos assertados são em inglês. O subflow `launch.yaml` abre `tracta://?locale=en` após o cold start, e `open-gallery.yaml` passa `?locale=en` no deep link; qualquer `openLink` direto deve fazer o mesmo. Assim a suíte não depende do idioma do simulador. Para testar outro idioma, troque pela tela de Settings dentro do fluxo (ver `settings/settings-language.yaml`).
+
+Builds para E2E usam `EXPO_PUBLIC_E2E=1` (scripts `e2e:ios`/`e2e:android` e a CI), que mantém a galeria do design system acessível em Release.
+
+## iOS: alerta "Abrir com Tracta?"
+
+Na primeira vez que um deep link de scheme custom abre em um simulador, o iOS pede confirmação. O subflow `subflows/accept-deep-link-prompt.yaml` toca em "Open|Abrir" se o alerta estiver visível e é chamado após todo `openLink`. A aceitação fica gravada no simulador. Se fluxos forem abortados repetidas vezes, os alertas se empilham e nenhum tap resolve: reinicie o simulador (`xcrun simctl shutdown <udid> && xcrun simctl boot <udid>`).
+
+O comando `back` do Maestro só funciona no Android. Toda tela que precisa de "voltar" expõe o próprio botão com testID (`settings.nav.back`, `ds.index.back`).
+
 ## Boas práticas
 
-- Comece com `runFlow: ../../subflows/launch.yaml` (estado limpo) ou `open-gallery.yaml`.
+- Comece com `runFlow: ../../subflows/launch.yaml` (estado limpo, locale en) ou `open-gallery.yaml`.
 - Assert na chegada de cada tela via `<feature>.screen`.
 - Um fluxo por comportamento, nome no formato `<feature>-<comportamento>`.
 - Nunca use `sleep`; prefira `assertVisible` com `timeout` ou `extendedWaitUntil`.

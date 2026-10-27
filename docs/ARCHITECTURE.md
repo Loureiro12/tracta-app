@@ -20,7 +20,7 @@ apps/mobile/
 │   ├── <feature>.tsx            # → features/<feature>
 │   └── design-system/           # galeria do DS (dev); deep link tracta://design-system/<slug>
 ├── src/
-│   ├── app-providers/           # composição de providers (tema, estado global, etc.)
+│   ├── app-providers/           # composição de providers (tema, i18n) e i18n/resources.ts + common/
 │   ├── features/<feature>/      # domínio vertical
 │   │   ├── index.ts             # barrel: ÚNICO ponto de importação externo
 │   │   ├── <feature>.testids.ts # testIDs com testId('<feature>', ...)
@@ -29,8 +29,9 @@ apps/mobile/
 │   │   ├── hooks/               # use*.ts
 │   │   ├── model/               # store, tipos, schemas
 │   │   ├── api/                 # chamadas remotas
-│   │   └── lib/                 # utilitários da feature
-│   └── shared/                  # sem domínio: lib/, config/, hooks/
+│   │   ├── lib/                 # utilitários da feature
+│   │   └── i18n/                # en.json, pt-BR.json, index.ts (namespace = nome da feature)
+│   └── shared/                  # sem domínio: config/, i18n/ (mecânica), hooks/
 └── e2e/                         # fluxos Maestro (ver TESTING.md)
 ```
 
@@ -44,7 +45,11 @@ apps/mobile/
 
 ### Estado
 
-Estado global por feature com `zustand` em `model/<feature>.store.ts`, exportado pelo barrel. Providers globais só em `app-providers/`.
+Estado global por feature com `zustand` em `model/<feature>.store.ts`, exportado pelo barrel. Preferências do usuário (tema, idioma) ficam no store de `settings`, persistido em AsyncStorage. Providers globais só em `app-providers/`.
+
+### Internacionalização
+
+Mecânica em `shared/i18n` (não conhece features); copy em `features/<f>/i18n`; composição em `app-providers/i18n/resources.ts`. Ver [I18N.md](I18N.md).
 
 ## Alias
 
