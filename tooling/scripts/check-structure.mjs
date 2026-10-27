@@ -21,7 +21,70 @@ import { Report } from './lib/report.mjs';
 
 const report = new Report('check-structure · project layout');
 
-const FEATURE_DIRS = new Set(['screens', 'components', 'hooks', 'model', 'api', 'lib']);
+const FEATURE_DIRS = new Set(['screens', 'components', 'hooks', 'model', 'api', 'lib', 'i18n']);
+const LOCALES = ['en', 'pt-BR'];
+const SOURCE_LOCALE = 'en';
+
+/** Flattens a JSON object into dotted keys. */
+function flattenKeys(obj, prefix = '') {
+  const keys = [];
+  for (const [k, v] of Object.entries(obj)) {
+    const key = prefix ? `${prefix}.${k}` : k;
+    if (v && typeof v === 'object' && !Array.isArray(v)) keys.push(...flattenKeys(v, key));
+    else keys.push(key);
+  }
+  return keys;
+}
+
+/** Every locale file in a namespace folder must have exactly the same keys as the source locale. */
+function checkNamespaceParity(dir, label) {
+  const source = `${dir}/${SOURCE_LOCALE}.json`;
+  if (!exists(source)) {
+    report.error(`${dir}: missing ${SOURCE_LOCALE}.json (source locale for ${label})`);
+    return;
+  }
+  let sourceKeys;
+  try {
+    sourceKeys = new Set(flattenKeys(JSON.parse(read(source))));
+  } catch (err) {
+    report.error(`${source}: invalid JSON (${err.message})`);
+    return;
+  }
+  for (const key of sourceKeys) {
+    if (!/^[a-zA-Z0-9_.-]+$/.test(key))
+      report.error(`${source}: key "${key}" must be alphanumeric/camelCase`);
+  }
+  for (const locale of LOCALES) {
+    if (locale === SOURCE_LOCALE) continue;
+    const file = `${dir}/${locale}.json`;
+    if (!exists(file)) {
+      report.error(
+        `${dir}: missing ${locale}.json`,
+        `Every namespace ships all locales: ${LOCALES.join(', ')}`,
+      );
+      continue;
+    }
+    let keys;
+    try {
+      keys = new Set(flattenKeys(JSON.parse(read(file))));
+    } catch (err) {
+      report.error(`${file}: invalid JSON (${err.message})`);
+      continue;
+    }
+    const missing = [...sourceKeys].filter((k) => !keys.has(k));
+    const extra = [...keys].filter((k) => !sourceKeys.has(k));
+    if (missing.length)
+      report.error(
+        `${file}: ${missing.length} key(s) missing`,
+        missing.map((k) => `• ${k}`).join('\n    '),
+      );
+    if (extra.length)
+      report.error(
+        `${file}: ${extra.length} key(s) not in ${SOURCE_LOCALE}.json`,
+        extra.map((k) => `• ${k}`).join('\n    '),
+      );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Features
@@ -59,6 +122,28 @@ for (const f of features) {
         report.error(`${s}: screen files must be PascalCase and end with Screen.tsx`);
     }
   }
+  if (!exists(`${dir}/i18n`)) {
+    report.error(
+      `${dir}: missing i18n/ folder`,
+      'Every feature owns its copy: i18n/en.json + pt-BR.json + index.ts',
+    );
+  } else {
+    checkNamespaceParity(`${dir}/i18n`, `feature "${f}"`);
+    if (!exists(`${dir}/i18n/index.ts`))
+      report.error(`${dir}/i18n: missing index.ts exporting <feature>Translations`);
+    const resources = exists('apps/mobile/src/app-providers/i18n/resources.ts')
+      ? read('apps/mobile/src/app-providers/i18n/resources.ts')
+      : '';
+    if (
+      !new RegExp(`\\b${f.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}Translations\\b`).test(
+        resources,
+      )
+    ) {
+      report.error(
+        `apps/mobile/src/app-providers/i18n/resources.ts: namespace for feature "${f}" is not registered`,
+      );
+    }
+  }
   for (const entry of readdirSync(abs(dir), { withFileTypes: true })) {
     if (entry.isDirectory() && !FEATURE_DIRS.has(entry.name)) {
       report.error(
@@ -87,6 +172,9 @@ for (const f of features) {
     }
   }
 }
+
+// Shared "common" namespace
+checkNamespaceParity('apps/mobile/src/app-providers/i18n/common', 'common namespace');
 
 // ---------------------------------------------------------------------------
 // Routes (expo-router) must be thin

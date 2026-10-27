@@ -77,6 +77,7 @@ for (const path of [...flowFiles, ...subflowFiles]) {
     }
   }
   for (const t of flow.textOnly) {
+    if (t.systemDialog) continue;
     report.warn(
       `${path}:${t.line}: ${t.action} uses a text-only selector "${t.value}"`,
       'Prefer { id: "<testID>", text: "..." } — text changes should not break navigation.',

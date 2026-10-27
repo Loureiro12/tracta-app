@@ -179,9 +179,13 @@ export function parseFlow(path) {
     const idMatch = line.match(/^\s*(?:-\s+)?id:\s*["']?([^"'#]+?)["']?\s*(?:#.*)?$/);
     if (idMatch) selectors.push({ value: idMatch[1].trim(), line: i + 1 });
     const textAction = line.match(
-      /^\s*-\s*(tapOn|assertVisible|assertNotVisible):\s*["']([^"']+)["']\s*$/,
+      /^\s*-\s*(tapOn|assertVisible|assertNotVisible):\s*["']([^"']+)["']\s*(?:#\s*(.*))?$/,
     );
-    if (textAction) textOnly.push({ action: textAction[1], value: textAction[2], line: i + 1 });
+    if (textAction) {
+      // `# system-dialog` marks OS alerts (permission prompts, "Open in app?") that have no testID.
+      const systemDialog = /\bsystem-dialog\b/.test(textAction[3] ?? '');
+      textOnly.push({ action: textAction[1], value: textAction[2], line: i + 1, systemDialog });
+    }
   }
   const asserts = (body.match(/assertVisible/g) ?? []).length;
   const runFlows = [

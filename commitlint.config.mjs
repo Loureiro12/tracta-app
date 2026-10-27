@@ -40,6 +40,7 @@ export default {
         'design-system',
         'ds',
         'e2e',
+        'i18n',
         'tooling',
         'ci',
         'docs',
