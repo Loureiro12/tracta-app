@@ -1,0 +1,28 @@
+appId: com.tracta.mobile
+name: ds-sheet
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: sheet
+- assertVisible:
+    id: "ds.sheet.gallery"
+- assertVisible:
+    id: "ds.sheet.demo"
+- assertVisible:
+    id: "ds.sheet.demo.title"
+- assertVisible:
+    id: "ds.sheet.demo.body"
+- assertVisible:
+    id: "ds.sheet.demo.backdrop"
+- tapOn:
+    id: "ds.sheet.demo.left"
+- tapOn:
+    id: "ds.sheet.demo.right"
+- tapOn:
+    id: "ds.sheet.demo.cta"
+- assertVisible:
+    id: "ds.sheet.closed"
+    text: "Closed 3 times"

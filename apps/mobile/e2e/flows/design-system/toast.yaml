@@ -1,0 +1,16 @@
+appId: com.tracta.mobile
+name: ds-toast
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: toast
+- assertVisible:
+    id: "ds.toast.gallery"
+- assertVisible:
+    id: "ds.toast.saved"
+- assertVisible:
+    id: "ds.toast.saved.message"
+    text: "Treino salvo"

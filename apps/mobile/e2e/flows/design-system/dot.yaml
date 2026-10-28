@@ -1,0 +1,23 @@
+appId: com.tracta.mobile
+name: ds-dot
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: dot
+- assertVisible:
+    id: "ds.dot.gallery"
+- assertVisible:
+    id: "ds.dot.brand"
+- assertVisible:
+    id: "ds.dot.sleep"
+- assertVisible:
+    id: "ds.dot.run"
+- assertVisible:
+    id: "ds.dot.success"
+- assertVisible:
+    id: "ds.dot.pulse"
+- assertVisible:
+    id: "ds.dot.caption"

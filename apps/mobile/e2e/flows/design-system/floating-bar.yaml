@@ -1,0 +1,22 @@
+appId: com.tracta.mobile
+name: ds-floating-bar
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: floating-bar
+- assertVisible:
+    id: "ds.floating-bar.gallery"
+- assertVisible:
+    id: "ds.floating-bar.session"
+- assertVisible:
+    id: "ds.floating-bar.session.title"
+- assertVisible:
+    id: "ds.floating-bar.session.subtitle"
+- tapOn:
+    id: "ds.floating-bar.session"
+- assertVisible:
+    id: "ds.floating-bar.opens"
+    text: "Opened 1 times"

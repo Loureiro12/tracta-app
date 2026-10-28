@@ -1,0 +1,18 @@
+appId: com.tracta.mobile
+name: ds-ring
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: ring
+- assertVisible:
+    id: "ds.ring.gallery"
+- assertVisible:
+    id: "ds.ring.workouts"
+- assertVisible:
+    id: "ds.ring.rest"
+- assertVisible:
+    id: "ds.ring.workouts.label"
+    text: "3/4"

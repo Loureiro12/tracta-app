@@ -17,6 +17,7 @@ tags:
     id: "ds.box.brand"
 - assertVisible:
     id: "ds.box.brand.label"
+    text: "brandTint + shadow floating"
 - assertVisible:
     id: "ds.box.row"
 - assertVisible:

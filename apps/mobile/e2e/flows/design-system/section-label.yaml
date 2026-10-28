@@ -1,0 +1,15 @@
+appId: com.tracta.mobile
+name: ds-section-label
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: section-label
+- assertVisible:
+    id: "ds.section-label.gallery"
+- assertVisible:
+    id: "ds.section-label.goals"
+- assertVisible:
+    id: "ds.section-label.content"

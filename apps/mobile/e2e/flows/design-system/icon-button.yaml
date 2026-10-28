@@ -1,0 +1,28 @@
+appId: com.tracta.mobile
+name: ds-icon-button
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: icon-button
+- assertVisible:
+    id: "ds.icon-button.gallery"
+- assertVisible:
+    id: "ds.icon-button.fill"
+- assertVisible:
+    id: "ds.icon-button.surface"
+- assertVisible:
+    id: "ds.icon-button.ink"
+- assertVisible:
+    id: "ds.icon-button.disabled"
+- assertVisible:
+    id: "ds.icon-button.badge.badge"
+- tapOn:
+    id: "ds.icon-button.fill"
+- tapOn:
+    id: "ds.icon-button.badge"
+- assertVisible:
+    id: "ds.icon-button.count"
+    text: "Pressed 2 times"

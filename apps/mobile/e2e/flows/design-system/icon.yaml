@@ -1,0 +1,19 @@
+appId: com.tracta.mobile
+name: ds-icon
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: icon
+- assertVisible:
+    id: "ds.icon.gallery"
+- assertVisible:
+    id: "ds.icon.home"
+- assertVisible:
+    id: "ds.icon.brand"
+- assertVisible:
+    id: "ds.icon.danger"
+- assertVisible:
+    id: "ds.icon.caption"

@@ -1,0 +1,23 @@
+appId: com.tracta.mobile
+name: ds-segmented
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: segmented
+- assertVisible:
+    id: "ds.segmented.gallery"
+- assertVisible:
+    id: "ds.segmented.control"
+- tapOn:
+    id: "ds.segmented.control.activity"
+- assertVisible:
+    id: "ds.segmented.value"
+    text: "Value: activity"
+- tapOn:
+    id: "ds.segmented.control.body"
+- assertVisible:
+    id: "ds.segmented.value"
+    text: "Value: body"

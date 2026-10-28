@@ -1,0 +1,24 @@
+appId: com.tracta.mobile
+name: ds-banner
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: banner
+- assertVisible:
+    id: "ds.banner.gallery"
+- assertVisible:
+    id: "ds.banner.offline"
+- assertVisible:
+    id: "ds.banner.offline.title"
+- assertVisible:
+    id: "ds.banner.sync"
+- assertVisible:
+    id: "ds.banner.sync.description"
+- tapOn:
+    id: "ds.banner.sync.cta"
+- assertVisible:
+    id: "ds.banner.retries"
+    text: "Retries: 1"

@@ -1,0 +1,17 @@
+appId: com.tracta.mobile
+name: ds-logo
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: logo
+- assertVisible:
+    id: "ds.logo.gallery"
+- assertVisible:
+    id: "ds.logo.symbol"
+- assertVisible:
+    id: "ds.logo.wordmark"
+- assertVisible:
+    id: "ds.logo.wordmark.wordmark"

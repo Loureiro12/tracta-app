@@ -1,27 +1,35 @@
 import type { ViewStyle } from 'react-native';
 
+/** Shadows from the handoff: floating bars/toasts, highlighted CTA, share card. */
 export const shadows = {
   none: {},
-  sm: {
+  floating: {
     shadowColor: '#000000',
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
-  },
-  md: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-  },
-  lg: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.14,
-    shadowRadius: 20,
+    shadowOpacity: 0.18,
+    shadowRadius: 30,
     shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  toast: {
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
     elevation: 8,
+  },
+  cta: {
+    shadowColor: '#1A1A17',
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
+  },
+  share: {
+    shadowColor: '#1A1A17',
+    shadowOpacity: 0.22,
+    shadowRadius: 40,
+    shadowOffset: { width: 0, height: 18 },
+    elevation: 14,
   },
 } as const satisfies Record<string, ViewStyle>;
 

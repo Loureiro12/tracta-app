@@ -1,0 +1,30 @@
+appId: com.tracta.mobile
+name: ds-card
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: card
+- assertVisible:
+    id: "ds.card.gallery"
+- assertVisible:
+    id: "ds.card.surface"
+- assertVisible:
+    id: "ds.card.ink"
+- assertVisible:
+    id: "ds.card.outline"
+- assertVisible:
+    id: "ds.card.tint"
+- assertVisible:
+    id: "ds.card.warn"
+- assertVisible:
+    id: "ds.card.social"
+- assertVisible:
+    id: "ds.card.fill"
+- tapOn:
+    id: "ds.card.pressable"
+- assertVisible:
+    id: "ds.card.pressable.count"
+    text: "Pressed 1 times"

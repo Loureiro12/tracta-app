@@ -1,0 +1,28 @@
+appId: com.tracta.mobile
+name: ds-stepper
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: stepper
+- assertVisible:
+    id: "ds.stepper.gallery"
+- assertVisible:
+    id: "ds.stepper.load"
+- assertVisible:
+    id: "ds.stepper.load.value"
+    text: "60 kg"
+- tapOn:
+    id: "ds.stepper.load.plus"
+- assertVisible:
+    id: "ds.stepper.load.value"
+    text: "62.5 kg"
+- tapOn:
+    id: "ds.stepper.load.minus"
+- tapOn:
+    id: "ds.stepper.load.minus"
+- assertVisible:
+    id: "ds.stepper.load.value"
+    text: "57.5 kg"

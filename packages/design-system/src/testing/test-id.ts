@@ -33,4 +33,4 @@ export type Testable = {
 };
 
 /** Same as Testable but optional, for purely structural elements (Box, Stack). */
-export type MaybeTestable = Partial<Testable>;
+export type MaybeTestable = { testID?: string | undefined };

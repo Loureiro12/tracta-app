@@ -9,7 +9,7 @@ export function ScreenGallery() {
     <Box testID={`${ID}.gallery`} gap="md">
       <Text testID={`${ID}.marker`}>Rendered inside a Screen with safe area and scroll.</Text>
       {Array.from({ length: 30 }, (_, i) => (
-        <Text key={i} testID={`${ID}.row.${i}`} color="textSecondary">{`Row ${i}`}</Text>
+        <Text key={i} testID={`${ID}.row.${i}`} color="text2">{`Row ${i}`}</Text>
       ))}
       <Text testID={`${ID}.bottom`}>Bottom reached</Text>
     </Box>

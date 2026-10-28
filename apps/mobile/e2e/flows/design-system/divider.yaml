@@ -1,0 +1,21 @@
+appId: com.tracta.mobile
+name: ds-divider
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: divider
+- assertVisible:
+    id: "ds.divider.gallery"
+- assertVisible:
+    id: "ds.divider.above"
+- assertVisible:
+    id: "ds.divider.default"
+- assertVisible:
+    id: "ds.divider.between"
+- assertVisible:
+    id: "ds.divider.strong"
+- assertVisible:
+    id: "ds.divider.below"

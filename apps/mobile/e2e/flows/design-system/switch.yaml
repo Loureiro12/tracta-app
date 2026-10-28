@@ -1,0 +1,21 @@
+appId: com.tracta.mobile
+name: ds-switch
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: switch
+- assertVisible:
+    id: "ds.switch.gallery"
+- assertVisible:
+    id: "ds.switch.disabled"
+- assertVisible:
+    id: "ds.switch.value"
+    text: "off"
+- tapOn:
+    id: "ds.switch.toggle"
+- assertVisible:
+    id: "ds.switch.value"
+    text: "on"

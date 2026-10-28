@@ -1,0 +1,25 @@
+appId: com.tracta.mobile
+name: ds-chip
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: chip
+- assertVisible:
+    id: "ds.chip.gallery"
+- assertVisible:
+    id: "ds.chip.small"
+- assertVisible:
+    id: "ds.chip.static"
+- tapOn:
+    id: "ds.chip.brand"
+- assertVisible:
+    id: "ds.chip.selected"
+    text: "Selected: brand"
+- tapOn:
+    id: "ds.chip.danger"
+- assertVisible:
+    id: "ds.chip.selected"
+    text: "Selected: danger"

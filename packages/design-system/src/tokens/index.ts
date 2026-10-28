@@ -4,7 +4,7 @@ export { spacing } from './spacing';
 export type { SpacingToken } from './spacing';
 export { radii } from './radii';
 export type { RadiusToken } from './radii';
-export { typography, fontWeights } from './typography';
+export { typography, fontFamilies, fontAssets } from './typography';
 export type { TypographyVariant } from './typography';
 export { shadows } from './shadows';
 export type { ShadowToken } from './shadows';

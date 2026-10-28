@@ -21,7 +21,7 @@ export function TextGallery() {
       <Text testID={`${ID}.color.danger`} color="danger">
         danger color
       </Text>
-      <Text testID={`${ID}.color.muted`} color="textMuted">
+      <Text testID={`${ID}.color.muted`} color="text2">
         muted color
       </Text>
     </VStack>

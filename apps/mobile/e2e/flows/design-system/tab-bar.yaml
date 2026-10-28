@@ -1,0 +1,26 @@
+appId: com.tracta.mobile
+name: ds-tab-bar
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: tab-bar
+- assertVisible:
+    id: "ds.tab-bar.gallery"
+- assertVisible:
+    id: "ds.tab-bar.bar"
+- assertVisible:
+    id: "ds.tab-bar.tab.home"
+- assertVisible:
+    id: "ds.tab-bar.tab.health"
+- assertVisible:
+    id: "ds.tab-bar.tab.workouts"
+- assertVisible:
+    id: "ds.tab-bar.tab.history"
+- tapOn:
+    id: "ds.tab-bar.tab.profile"
+- assertVisible:
+    id: "ds.tab-bar.active"
+    text: "Active: profile"

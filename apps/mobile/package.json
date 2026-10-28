@@ -18,11 +18,15 @@
     "clean": "rm -rf .turbo .expo node_modules ios android"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@tracta/design-system": "workspace:*",
     "expo": "~58.0.19",
+    "expo-blur": "~58.0.5",
     "expo-build-properties": "~58.0.11",
     "expo-constants": "~58.0.4",
+    "expo-font": "~58.0.10",
+    "expo-linear-gradient": "~58.0.3",
     "expo-linking": "~58.0.4",
     "expo-localization": "~58.0.5",
     "expo-router": "~58.0.26",
@@ -34,6 +38,7 @@
     "react-native": "0.88.0",
     "react-native-safe-area-context": "~5.10.1",
     "react-native-screens": "~4.30.0",
+    "react-native-svg": "15.16.0",
     "zustand": "^5.0.16"
   },
   "devDependencies": {

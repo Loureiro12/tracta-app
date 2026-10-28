@@ -1,13 +1,23 @@
 import { useState } from 'react';
 
 import { Button } from './Button';
-import { VStack } from '../Stack/Stack';
+import { HStack, VStack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
 
-import type { ButtonVariant } from './Button';
+import type { ButtonSize, ButtonVariant } from './Button';
 
 const ID = 'ds.button';
-const variants: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger'];
+const variants: ButtonVariant[] = [
+  'primary',
+  'brand',
+  'secondary',
+  'surface',
+  'onInk',
+  'ghost',
+  'danger',
+  'dangerText',
+];
+const sizes: ButtonSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 export function ButtonGallery() {
   const [last, setLast] = useState<string>('none');
@@ -23,6 +33,25 @@ export function ButtonGallery() {
           onPress={() => setLast(variant)}
         />
       ))}
+      <HStack gap="sm" wrap="wrap">
+        {sizes.map((size) => (
+          <Button
+            key={size}
+            testID={`${ID}.size.${size}`}
+            label={size}
+            size={size}
+            variant="secondary"
+            onPress={() => setLast(size)}
+          />
+        ))}
+      </HStack>
+      <Button
+        testID={`${ID}.icon`}
+        label="with icon"
+        icon="plus"
+        variant="secondary"
+        onPress={() => setLast('icon')}
+      />
       <Button
         testID={`${ID}.disabled`}
         label="disabled"
@@ -34,7 +63,8 @@ export function ButtonGallery() {
         testID={`${ID}.full-width`}
         label="full width"
         fullWidth
-        size="lg"
+        size="xl"
+        elevated
         onPress={() => setLast('full-width')}
       />
     </VStack>

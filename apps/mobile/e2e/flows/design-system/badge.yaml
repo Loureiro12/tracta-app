@@ -1,0 +1,15 @@
+appId: com.tracta.mobile
+name: ds-badge
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: badge
+- assertVisible:
+    id: "ds.badge.gallery"
+- assertVisible:
+    id: "ds.badge.one"
+- assertVisible:
+    id: "ds.badge.many"

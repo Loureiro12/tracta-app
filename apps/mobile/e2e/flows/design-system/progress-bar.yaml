@@ -1,0 +1,21 @@
+appId: com.tracta.mobile
+name: ds-progress-bar
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: progress-bar
+- assertVisible:
+    id: "ds.progress-bar.gallery"
+- assertVisible:
+    id: "ds.progress-bar.label"
+- assertVisible:
+    id: "ds.progress-bar.brand"
+- assertVisible:
+    id: "ds.progress-bar.brand.fill"
+- assertVisible:
+    id: "ds.progress-bar.sleep"
+- assertVisible:
+    id: "ds.progress-bar.run"

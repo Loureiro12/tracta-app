@@ -1,0 +1,19 @@
+appId: com.tracta.mobile
+name: ds-bars
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: bars
+- assertVisible:
+    id: "ds.bars.gallery"
+- assertVisible:
+    id: "ds.bars.label"
+- assertVisible:
+    id: "ds.bars.nights"
+- assertVisible:
+    id: "ds.bars.nights.bar.0"
+- assertVisible:
+    id: "ds.bars.hours"

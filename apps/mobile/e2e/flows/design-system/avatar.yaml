@@ -1,0 +1,19 @@
+appId: com.tracta.mobile
+name: ds-avatar
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: avatar
+- assertVisible:
+    id: "ds.avatar.gallery"
+- assertVisible:
+    id: "ds.avatar.28"
+- assertVisible:
+    id: "ds.avatar.40"
+- assertVisible:
+    id: "ds.avatar.56"
+- assertVisible:
+    id: "ds.avatar.social"

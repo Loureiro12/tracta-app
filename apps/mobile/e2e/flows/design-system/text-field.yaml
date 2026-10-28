@@ -16,10 +16,13 @@ tags:
     text: "Name"
 - assertVisible:
     id: "ds.text-field.default.helper"
+    text: "Helper text"
 - tapOn:
     id: "ds.text-field.default.input"
 - inputText: "Ada"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
 - hideKeyboard
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
 - assertVisible:
     id: "ds.text-field.echo"
     text: "Value: Ada"

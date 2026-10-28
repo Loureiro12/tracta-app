@@ -12,7 +12,7 @@ export function PressableGallery() {
   return (
     <VStack testID={`${ID}.gallery`}>
       <Pressable testID={`${ID}.target`} onPress={() => setCount((c) => c + 1)}>
-        <Box bg="brandSubtle" p="lg" radius="md">
+        <Box bg="brandTint" p="lg" radius="md">
           <Text testID={`${ID}.target.label`}>Tap me</Text>
         </Box>
       </Pressable>

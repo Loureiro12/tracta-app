@@ -1,0 +1,23 @@
+appId: com.tracta.mobile
+name: ds-check-circle
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: check-circle
+- assertVisible:
+    id: "ds.check-circle.gallery"
+- assertVisible:
+    id: "ds.check-circle.success"
+- assertVisible:
+    id: "ds.check-circle.static"
+- assertVisible:
+    id: "ds.check-circle.value"
+    text: "unchecked"
+- tapOn:
+    id: "ds.check-circle.toggle"
+- assertVisible:
+    id: "ds.check-circle.value"
+    text: "checked"

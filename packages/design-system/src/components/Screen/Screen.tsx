@@ -8,30 +8,52 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Box } from '../Box/Box';
 
 import type { Testable } from '../../testing/test-id';
+import type { SemanticColors } from '../../tokens/colors';
 import type { ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 
 export type ScreenProps = Testable & {
   children: ReactNode;
+  /** Fixed element above the scrolling content (ScreenHeader / BackHeader). */
+  header?: ReactNode;
+  /** Fixed element below the content (CTA bars). */
+  footer?: ReactNode;
   /** Wrap content in a ScrollView. Default true. */
   scroll?: boolean;
-  /** Horizontal padding token applied to the content. */
+  /** 20px side gutter. Default true. */
   padded?: boolean;
+  /** Extra bottom space so content clears the tab bar and mini-player. */
+  bottomInset?: 'tab' | 'none';
+  bg?: Extract<keyof SemanticColors, 'bg' | 'surface' | 'ink'>;
 };
 
 /**
- * Root of every screen. Provides safe area, background and the screen-level testID
- * that E2E flows assert on arrival (`<feature>.screen`).
+ * Root of every screen: safe area, sand background, optional fixed header/footer and the
+ * screen-level testID that E2E flows assert on arrival (`<feature>.screen`).
  */
-export function Screen({ children, scroll = true, padded = true, testID }: ScreenProps) {
+export function Screen({
+  children,
+  header,
+  footer,
+  scroll = true,
+  padded = true,
+  bottomInset = 'none',
+  bg = 'bg',
+  testID,
+}: ScreenProps) {
   const theme = useTheme();
   const containerStyle = useMemo<ViewStyle>(
-    () => ({ backgroundColor: theme.colors.background }),
-    [theme],
+    () => ({ backgroundColor: theme.colors[bg] }),
+    [theme, bg],
   );
   const contentStyle = useMemo<ViewStyle>(
-    () => ({ padding: padded ? theme.spacing.lg : 0, gap: theme.spacing.lg }),
-    [theme, padded],
+    () => ({
+      paddingHorizontal: padded ? theme.spacing.screen : 0,
+      paddingTop: theme.spacing.md,
+      paddingBottom: bottomInset === 'tab' ? 170 : theme.spacing['2xl'],
+      gap: theme.spacing.md,
+    }),
+    [theme, padded, bottomInset],
   );
 
   return (
@@ -40,12 +62,15 @@ export function Screen({ children, scroll = true, padded = true, testID }: Scree
       style={[styles.flex, containerStyle]}
       edges={['top', 'left', 'right']}
     >
+      {header}
       {scroll ? (
         <ScrollView
           testID={`${testID}.scroll`}
           style={styles.flex}
           contentContainerStyle={contentStyle}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          showsVerticalScrollIndicator={false}
         >
           {children}
         </ScrollView>
@@ -54,6 +79,7 @@ export function Screen({ children, scroll = true, padded = true, testID }: Scree
           {children}
         </Box>
       )}
+      {footer}
     </SafeAreaView>
   );
 }

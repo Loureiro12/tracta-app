@@ -1,0 +1,35 @@
+appId: com.tracta.mobile
+name: ds-list-row
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: list-row
+- assertVisible:
+    id: "ds.list-row.gallery"
+- assertVisible:
+    id: "ds.list-row.group"
+- assertVisible:
+    id: "ds.list-row.value"
+- assertVisible:
+    id: "ds.list-row.value.value"
+- assertVisible:
+    id: "ds.list-row.switch"
+- assertVisible:
+    id: "ds.list-row.switch.control"
+- assertVisible:
+    id: "ds.list-row.leading"
+- assertVisible:
+    id: "ds.list-row.danger"
+- tapOn:
+    id: "ds.list-row.chevron"
+- tapOn:
+    id: "ds.list-row.description"
+- assertVisible:
+    id: "ds.list-row.taps"
+    text: "Row taps: 2"
+- assertVisible:
+    id: "ds.list-row.description.description"
+    text: "Cargas e recordes ficam ocultos"

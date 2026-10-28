@@ -11,6 +11,7 @@ tags:
     id: "ds.screen.gallery"
 - assertVisible:
     id: "ds.screen.marker"
+    text: "Rendered inside a Screen with safe area and scroll."
 - scrollUntilVisible:
     element:
       id: "ds.screen.bottom"

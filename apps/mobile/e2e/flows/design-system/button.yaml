@@ -18,33 +18,47 @@ tags:
     id: "ds.button.last-pressed"
     text: "Last pressed: primary"
 - tapOn:
+    id: "ds.button.brand"
+- tapOn:
     id: "ds.button.secondary"
-- assertVisible:
-    id: "ds.button.last-pressed"
-    text: "Last pressed: secondary"
+- tapOn:
+    id: "ds.button.surface"
+- tapOn:
+    id: "ds.button.onInk"
 - tapOn:
     id: "ds.button.ghost"
-- assertVisible:
-    id: "ds.button.last-pressed"
-    text: "Last pressed: ghost"
 - tapOn:
     id: "ds.button.danger"
+- tapOn:
+    id: "ds.button.dangerText"
 - assertVisible:
     id: "ds.button.last-pressed"
-    text: "Last pressed: danger"
+    text: "Last pressed: dangerText"
+- scrollUntilVisible:
+    element:
+      id: "ds.button.size.xl"
+- tapOn:
+    id: "ds.button.size.xs"
+- tapOn:
+    id: "ds.button.size.sm"
+- tapOn:
+    id: "ds.button.size.md"
+- tapOn:
+    id: "ds.button.size.lg"
+- tapOn:
+    id: "ds.button.size.xl"
+- tapOn:
+    id: "ds.button.icon"
+- assertVisible:
+    id: "ds.button.last-pressed"
+    text: "Last pressed: icon"
 # Disabled and loading buttons must not fire onPress.
 - tapOn:
     id: "ds.button.disabled"
 - assertVisible:
-    id: "ds.button.last-pressed"
-    text: "Last pressed: danger"
-- assertVisible:
     id: "ds.button.loading.loading"
 - tapOn:
     id: "ds.button.loading"
-- assertVisible:
-    id: "ds.button.last-pressed"
-    text: "Last pressed: danger"
 - scrollUntilVisible:
     element:
       id: "ds.button.full-width"

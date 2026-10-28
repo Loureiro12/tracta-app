@@ -1,0 +1,30 @@
+appId: com.tracta.mobile
+name: ds-screen-header
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: screen-header
+- assertVisible:
+    id: "ds.screen-header.gallery"
+- assertVisible:
+    id: "ds.screen-header.home"
+- assertVisible:
+    id: "ds.screen-header.home.eyebrow"
+- assertVisible:
+    id: "ds.screen-header.home.title"
+- assertVisible:
+    id: "ds.screen-header.home.inbox"
+- assertVisible:
+    id: "ds.screen-header.profile"
+- assertVisible:
+    id: "ds.screen-header.profile.title"
+- tapOn:
+    id: "ds.screen-header.home.edit"
+- tapOn:
+    id: "ds.screen-header.back"
+- assertVisible:
+    id: "ds.screen-header.backs"
+    text: "Back pressed 2 times"
