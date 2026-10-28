@@ -1,0 +1,70 @@
+appId: com.tracta.mobile
+name: social-hub
+tags:
+  - smoke
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- assertVisible:
+    id: "social.hub.title"
+    text: "Friends"
+- assertVisible:
+    id: "social.hub.challenges"
+- assertVisible:
+    id: "social.hub.challenges.c1"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.today-meta"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.today-meta"
+    text: "2 of 3 worked out"
+- assertVisible:
+    id: "social.hub.friends"
+- assertVisible:
+    id: "social.hub.friends.bruno.status"
+    text: "Hasn't worked out yet today"
+- assertVisible:
+    id: "social.hub.friends.ana.cheer.label"
+    text: "Cheer"
+- tapOn:
+    id: "social.hub.friends.ana.cheer"
+- assertVisible:
+    id: "social.hub.friends.ana.cheer.label"
+    text: "Cheered"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.privacy"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.privacy.description"
+    text: "3 items shared · never health"
+- tapOn:
+    id: "social.hub.privacy"
+- assertVisible:
+    id: "social.privacy.screen"
+- assertVisible:
+    id: "social.privacy.rows"
+# The switch sits inside the tappable row (one accessibility element on iOS), so toggle via the row.
+- assertVisible:
+    id: "social.privacy.rows.loads"
+- tapOn:
+    id: "social.privacy.rows.loads"
+- tapOn:
+    id: "social.privacy.rows.done"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Required to take part in challenges"
+- tapOn:
+    id: "social.privacy.screen.right"
+- assertVisible:
+    id: "social.hub.privacy.description"
+    text: "4 items shared · never health"
+- tapOn:
+    id: "social.hub.back"
+- assertVisible:
+    id: "home.screen"

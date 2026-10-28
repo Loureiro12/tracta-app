@@ -1,0 +1,456 @@
+{
+  "title": "Saúde",
+  "back": "Saúde",
+  "segment": {
+    "sleep": "Sono",
+    "activity": "Atividade",
+    "body": "Corpo"
+  },
+  "weekday": {
+    "mon": "Seg",
+    "tue": "Ter",
+    "wed": "Qua",
+    "thu": "Qui",
+    "fri": "Sex",
+    "sat": "Sáb",
+    "sun": "Dom"
+  },
+  "month": {
+    "sep": "set",
+    "oct": "out"
+  },
+  "sleep": {
+    "heroSource": "Noite de 25 → 26 out · Mi Band 8 via Apple Health",
+    "heroSlept": " dormido",
+    "heroSub": "40 min abaixo da meta de {{goal}} · {{inBed}} no leito",
+    "stages": {
+      "title": "Estágios",
+      "hint": "estimados pelo dispositivo",
+      "awake": "Acordado",
+      "rem": "REM",
+      "light": "Leve",
+      "deep": "Profundo",
+      "note": "Estimativas da pulseira, não medições clínicas. Use como referência de tendência."
+    },
+    "score": {
+      "title": "Pontuação de sono",
+      "subtitle": "o que compôs o resultado",
+      "outOf": "/100",
+      "points": "{{pts}}/{{max}}",
+      "factor": {
+        "duration": "Duração",
+        "regularity": "Regularidade",
+        "interruptions": "Interrupções",
+        "consistency": "Consistência"
+      },
+      "detail": {
+        "duration": "{{slept}} de {{goal}}",
+        "regularity": "±18 min",
+        "interruptions": "3 · 22 min",
+        "consistency": "7 noites"
+      },
+      "note": "Sem dados desta pulseira: VFC noturna e temperatura. Esses fatores não entram no cálculo. Não é avaliação médica.",
+      "how": "Como calculamos"
+    },
+    "range": {
+      "7": "7 noites",
+      "30": "30 dias",
+      "cmp": "Comparar"
+    },
+    "week": {
+      "title": "Últimas 7 noites",
+      "avg": "média {{value}}",
+      "goal": "meta",
+      "insightBefore": "Sua duração média de sono foi ",
+      "insightBold": "35 minutos maior",
+      "insightAfter": " nesta semana (7h 20 vs. 6h 45)."
+    },
+    "month": {
+      "title": "Últimos 30 dias",
+      "avg": "média {{value}}",
+      "onGoal": "Noites na meta",
+      "onGoalValue": "{{hit}} de 30",
+      "longest": "Mais longa",
+      "shortest": "Mais curta",
+      "insight": "Sua duração média nos últimos 30 dias foi {{avg}}. As noites de sexta e sábado tendem a ser mais longas."
+    },
+    "compare": {
+      "thisWeek": "Esta semana",
+      "previous": "Anterior",
+      "ofNights": "{{hit}} de {{total}}",
+      "row": {
+        "duration": "Duração média",
+        "bedtime": "Hora de dormir",
+        "regularity": "Regularidade",
+        "onGoal": "Noites na meta",
+        "wakeups": "Despertares"
+      },
+      "delta": {
+        "duration": "+35 min",
+        "bedtime": "27 min mais cedo",
+        "regularity": "mais regular",
+        "onGoal": "+2 noites",
+        "wakeups": "semelhante"
+      },
+      "note": "20–26 out vs. 13–19 out. Descrevemos as diferenças, sem afirmar a causa."
+    },
+    "bedtime": {
+      "avg": "Média para dormir",
+      "avgValue": "23:41",
+      "variation": "Variação",
+      "variationValue": "±18 min"
+    },
+    "trainRest": {
+      "title": "Dias de treino × descanso",
+      "month": "outubro",
+      "train": "Treino",
+      "rest": "Descanso",
+      "row": {
+        "sleepAfter": "Sono na noite seguinte",
+        "steps": "Passos no dia",
+        "restingHr": "FC de repouso no dia seguinte"
+      },
+      "delta": {
+        "sleepAfter": "+22 min após treino",
+        "steps": "+57% em dias de treino",
+        "restingHr": "semelhante"
+      },
+      "note": "18 dias com treino e 8 de descanso. Mostra diferenças observadas, não causas."
+    },
+    "suggestion": {
+      "label": "Sugestão · não é orientação médica",
+      "text": "Nas 4 noites em que você deitou antes das 23:45, dormiu em média 28 min a mais. Manter esse horário pode ajudar na regularidade."
+    }
+  },
+  "activity": {
+    "steps": {
+      "title": "Passos hoje ›",
+      "ofGoal": "{{pct}}% da meta",
+      "goal": " / {{goal}}",
+      "insight": "A maior parte dos seus passos foi registrada à tarde."
+    },
+    "week": {
+      "title": "Últimos 7 dias",
+      "avg": "média {{value}}",
+      "insight": "Você atingiu a meta em 3 dos últimos 7 dias. Hoje ainda está em andamento."
+    },
+    "calories": {
+      "title": "Calorias ›",
+      "hint": "estimativas · até 16:12",
+      "active": "Ativas",
+      "activeSub": "energia gasta em movimento",
+      "rest": "Repouso",
+      "restSub": "energia do organismo em repouso",
+      "total": "Total",
+      "totalSub": "valor fornecido pelo Apple Health",
+      "kcal": "{{value}} kcal"
+    },
+    "distance": {
+      "title": "Distância e intensidade ›",
+      "total": "Distância total",
+      "gps": "Por GPS",
+      "none": "—",
+      "moving": "Em movimento",
+      "intense": "Moderada/intensa",
+      "km": "{{value}} km",
+      "min": "{{value}} min",
+      "note": "iPhone e Mi Band 8 registraram a mesma caminhada; contamos apenas uma vez. Nenhuma atividade com GPS hoje."
+    }
+  },
+  "body": {
+    "sourceScale": "Balança via Apple Health · 25 out",
+    "sourceManual": "Registro manual · hoje",
+    "unit": " kg",
+    "delta": "{{sign}}{{value}} kg em 30 dias",
+    "month": "Últimos 30 dias",
+    "count_one": "{{count}} pesagem",
+    "count_other": "{{count}} pesagens",
+    "chartNote": "A faixa clara mostra a tendência. O peso varia ao longo do dia — compare semanas, não pesagens isoladas.",
+    "measure": {
+      "waist": "Cintura",
+      "hip": "Quadril",
+      "arm": "Braço",
+      "cm": "{{value}} cm",
+      "manualToday": "manual · hoje",
+      "manualOld": "manual · 1 out"
+    },
+    "register": "Registrar peso e medidas",
+    "footnote": "Pesagens da balança vêm do Apple Health; registros manuais ficam marcados como \"manual\"."
+  },
+  "metric": {
+    "period": {
+      "D": "Dia",
+      "W": "Semana",
+      "M": "Mês"
+    },
+    "title": {
+      "steps": "Passos",
+      "hr": "Frequência cardíaca",
+      "cal": "Calorias ativas",
+      "dist": "Distância",
+      "sleep": "Sono",
+      "weight": "Peso"
+    },
+    "unit": {
+      "steps": "passos",
+      "hr": "bpm",
+      "cal": "kcal",
+      "dist": "km",
+      "sleep": "",
+      "weight": "kg"
+    },
+    "source": {
+      "steps": "iPhone e Mi Band 8",
+      "hr": "Mi Band 8 via Apple Health",
+      "cal": "Estimativas da Mi Band 8 e iPhone",
+      "dist": "iPhone, Mi Band 8 e GPS",
+      "sleep": "Mi Band 8 via Apple Health",
+      "weight": "Balança via Apple Health"
+    },
+    "bigSub": {
+      "steps": {
+        "D": "hoje até 16:12",
+        "W": "média diária · 7 dias",
+        "M": "média diária · 30 dias"
+      },
+      "hr": {
+        "D": "em repouso hoje",
+        "W": "repouso médio · 7 dias",
+        "M": "repouso médio · 30 dias"
+      },
+      "cal": {
+        "D": "ativas hoje · total 1.432 kcal",
+        "W": "média diária de ativas",
+        "M": "média diária de ativas"
+      },
+      "dist": {
+        "D": "total estimado hoje",
+        "W": "total · 7 dias",
+        "M": "total · 30 dias"
+      },
+      "sleep": {
+        "D": "noite de 25 → 26 out",
+        "W": "média por noite · 7 noites",
+        "M": "média por noite · 30 noites"
+      },
+      "weight": {
+        "D": "última pesagem",
+        "W": "última pesagem · 7 dias",
+        "M": "última pesagem · 30 dias"
+      }
+    },
+    "stat": {
+      "goal": "Meta",
+      "peakHour": "Hora mais ativa",
+      "peakHourValue": "{{hour}}h",
+      "remaining": "Faltam",
+      "bestDay": "Melhor dia",
+      "daysOnGoal": "Dias na meta",
+      "nightsOnGoal": "Noites na meta",
+      "ofDays": "{{hit}} de {{total}}",
+      "total": "Total",
+      "min": "Mínima",
+      "max": "Máxima",
+      "resting": "Repouso",
+      "avg": "Média",
+      "lowest": "Menor",
+      "highest": "Maior",
+      "active": "Ativas",
+      "rest": "Repouso",
+      "totalActive": "Total ativas",
+      "inActivities": "Em atividades",
+      "gps": "Por GPS",
+      "walking": "Caminhando",
+      "perDay": "Média/dia",
+      "inRuns": "Em corridas",
+      "inBed": "No leito",
+      "wakeups": "Despertares",
+      "longest": "Mais longa",
+      "shortest": "Mais curta",
+      "change": "Variação"
+    },
+    "insight": {
+      "steps": {
+        "D": "A maior parte dos seus passos foi registrada à tarde.",
+        "W": "Sua média diária de passos aumentou nos últimos sete dias em relação aos sete anteriores.",
+        "M": "Você atingiu a meta em {{count}} dos últimos 30 dias."
+      },
+      "hr": {
+        "D": "Valores mais baixos durante o sono e picos ao caminhar à tarde. Não há registro de exercício hoje.",
+        "W": "Sua FC de repouso ficou estável, com variação de {{count}} bpm no período.",
+        "M": "Sua FC de repouso ficou estável, com variação de {{count}} bpm no período."
+      },
+      "cal": {
+        "D": "O pico de gasto ativo foi às 16h, junto com a maior concentração de passos.",
+        "W": "Os dias com treino registraram mais calorias ativas que os de descanso, em média.",
+        "M": "Os dias com treino registraram mais calorias ativas que os de descanso, em média."
+      },
+      "dist": {
+        "D": "Nenhuma atividade com GPS hoje; a distância vem dos passos.",
+        "W": "Você caminhou e correu mais nesta semana do que na anterior.",
+        "M": "Você caminhou e correu mais nesta semana do que na anterior."
+      },
+      "sleep": {
+        "D": "Você dormiu 40 min abaixo da meta. Três despertares curtos, o maior às 05h.",
+        "W": "Sua duração média de sono foi 35 minutos maior nesta semana (7h 20 vs. 6h 45).",
+        "M": "Você atingiu a meta em {{count}} das últimas 30 noites."
+      },
+      "weight": {
+        "D": "O peso varia ao longo do dia — compare semanas, não pesagens isoladas.",
+        "W": "Variação dentro do esperado para uma semana.",
+        "M": "Tendência estável nos últimos 30 dias, com variação menor que 1 kg."
+      }
+    },
+    "about": {
+      "title": "Sobre esta métrica",
+      "steps": "Passos contados pelo iPhone e pela pulseira. Quando os dois registram o mesmo período, contamos apenas uma vez.",
+      "hr": "A frequência de repouso é estimada pela pulseira em momentos parados. As zonas de treino dependem da sua configuração individual. Não é avaliação de saúde.",
+      "cal": "Ativas: energia estimada em movimento. Repouso: energia do organismo parado. O total vem do Apple Health — não somamos fontes diferentes. Pulseiras estimam; não são valores exatos.",
+      "dist": "Separamos distância estimada por passos, distância de atividades e distância por GPS. Quando fontes registram o mesmo deslocamento, contamos uma vez.",
+      "sleep": "Estágios e duração são estimativas da pulseira a partir de movimento e frequência cardíaca. Não é avaliação médica.",
+      "weight": "Pesagens da balança chegam pelo Apple Health; registros manuais ficam marcados como \"manual\"."
+    },
+    "sources": {
+      "steps": {
+        "a": "Mi Band 8",
+        "aValue": "prioritária",
+        "b": "iPhone",
+        "bValue": "quando a pulseira não registra"
+      },
+      "hr": {
+        "a": "Mi Band 8",
+        "aValue": "medição óptica, a cada 10 min",
+        "b": "Durante treinos",
+        "bValue": "indisponível sem sensor ativo"
+      },
+      "cal": {
+        "a": "Ativas",
+        "aValue": "Mi Band 8",
+        "b": "Repouso e total",
+        "bValue": "Apple Health"
+      },
+      "dist": {
+        "a": "Passos",
+        "aValue": "iPhone e Mi Band 8",
+        "b": "Corridas",
+        "bValue": "GPS do iPhone no Tracta"
+      },
+      "sleep": {
+        "a": "Mi Band 8",
+        "aValue": "estágios estimados",
+        "b": "Apple Health",
+        "bValue": "sincroniza a noite"
+      },
+      "weight": {
+        "a": "Balança",
+        "aValue": "Apple Health",
+        "b": "Manual",
+        "bValue": "registrado no Tracta"
+      }
+    },
+    "updated": "Atualizado às 16:12 via Apple Health"
+  },
+  "calc": {
+    "title": "Como calculamos",
+    "close": "Fechar",
+    "intro": "A pontuação vai de 0 a 100 e soma quatro fatores, usando só dados que a sua pulseira realmente fornece.",
+    "upTo": "até {{value}} pts",
+    "tonight": "Esta noite: {{value}}",
+    "row": {
+      "duration": {
+        "description": "Quanto você dormiu em relação à sua meta pessoal. Atingir a meta soma os 40 pontos.",
+        "now": "{{slept}} de {{goal}} · 34 pts"
+      },
+      "regularity": {
+        "description": "Diferença entre o horário em que você dormiu e a sua média dos últimos 14 dias.",
+        "now": "±18 min · 27 pts"
+      },
+      "interruptions": {
+        "description": "Tempo acordado e número de despertares registrados pela pulseira.",
+        "now": "3 despertares, 22 min · 16 pts"
+      },
+      "consistency": {
+        "description": "Quão parecidas foram suas últimas 7 noites em duração.",
+        "now": "7 noites · 8 pts"
+      }
+    },
+    "outside": {
+      "title": "Fora do cálculo",
+      "text": "VFC noturna, temperatura da pele e oxigenação não são fornecidas pela Mi Band 8. Não estimamos esses valores — eles simplesmente não entram."
+    },
+    "note": "A pontuação é uma referência pessoal de tendência. Não é diagnóstico nem avaliação médica; estágios do sono são estimativas do dispositivo."
+  },
+  "report": {
+    "back": "Histórico",
+    "title": "Relatório",
+    "range30": "27 set – 26 out",
+    "range": "{{from}} – {{to}}",
+    "period": {
+      "7": "7 dias",
+      "30": "30 dias",
+      "custom": "Período"
+    },
+    "from": "De",
+    "to": "Até",
+    "sessions": " sessões",
+    "compare": {
+      "none": "sem dados do período anterior",
+      "more": "{{count}} a mais que o período anterior",
+      "less": "{{count}} a menos que o período anterior",
+      "same": "igual ao período anterior"
+    },
+    "byModality": "Por modalidade",
+    "modality": {
+      "strength": "Musculação",
+      "run": "Corrida",
+      "walk": "Caminhada",
+      "other": "Outras modalidades"
+    },
+    "sessionCount_one": "{{count}} sessão",
+    "sessionCount_other": "{{count}} sessões",
+    "stat": {
+      "volume": "Volume musculação",
+      "volumeValue": "{{value}} t",
+      "volumeSub": "carga × repetições",
+      "distance": "Distância",
+      "distanceValue": "{{value}} km",
+      "distanceSub": "corridas e caminhadas com GPS",
+      "steps": "Passos médios",
+      "stepsSub": "por dia",
+      "sleep": "Sono médio",
+      "sleepSub": "por noite",
+      "frequency": "Frequência",
+      "frequencyValue": "{{value}}×",
+      "frequencySub": "treinos por semana",
+      "records": "Recordes",
+      "recordsSub": "em musculação"
+    },
+    "goals": {
+      "title": "Metas no período",
+      "steps": "Passos ({{goal}}/dia)",
+      "stepsValue": "{{hit}} de {{total}} dias",
+      "sleep": "Sono ({{goal}})",
+      "sleepValue": "{{hit}} de {{total}} noites",
+      "workouts": "Treinos ({{goal}}×/semana)",
+      "workoutsValue": "{{value}} de {{goal}}"
+    },
+    "note": "Comparações usam o período anterior de mesma duração. Métricas sem dados no período aparecem como \"—\".",
+    "export": "Exportar relatório",
+    "exported": "Relatório exportado em PDF",
+    "decrement": "Diminuir",
+    "increment": "Aumentar"
+  },
+  "bodyLog": {
+    "title": "Registrar · hoje",
+    "cancel": "Cancelar",
+    "weight": "Peso",
+    "weightUnit": "kg",
+    "measures": "Medidas (opcional)",
+    "cm": "cm",
+    "decrement": "Diminuir",
+    "increment": "Aumentar",
+    "save": "Salvar registro",
+    "note": "Fica marcado como registro manual. Também gravamos o peso no Apple Health, se autorizado.",
+    "saved": "Registro salvo"
+  }
+}

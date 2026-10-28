@@ -1,0 +1,32 @@
+appId: com.tracta.mobile
+name: home-dev-tools
+tags:
+  - home
+---
+- runFlow: ../../subflows/launch.yaml
+# Dev/E2E shortcuts live at the very end of the Home scroll
+- scrollUntilVisible:
+    element:
+      id: "home.nav.design-system"
+    centerElement: true
+- tapOn:
+    id: "home.nav.design-system"
+- assertVisible:
+    id: "ds.index.screen"
+# Maestro's `back` is Android-only; screens expose their own back control.
+- tapOn:
+    id: "ds.index.back"
+- assertVisible:
+    id: "home.screen"
+- scrollUntilVisible:
+    element:
+      id: "home.nav.settings"
+    centerElement: true
+- tapOn:
+    id: "home.nav.settings"
+- assertVisible:
+    id: "settings.screen"
+- tapOn:
+    id: "settings.nav.back"
+- assertVisible:
+    id: "home.screen"

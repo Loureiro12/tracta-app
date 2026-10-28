@@ -1,0 +1,47 @@
+appId: com.tracta.mobile
+name: inbox-open-item
+tags:
+  - inbox
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.inbox"
+- assertVisible:
+    id: "inbox.screen"
+# Opening a notification marks it as read and navigates to its target
+- assertVisible:
+    id: "inbox.items.n4.unread"
+- scrollUntilVisible:
+    element:
+      id: "inbox.items.n4.open"
+    centerElement: true
+- tapOn:
+    id: "inbox.items.n4.open"
+- assertVisible:
+    id: "home.weekly.screen"
+- tapOn:
+    id: "home.weekly.back"
+- assertVisible:
+    id: "inbox.screen"
+- assertNotVisible:
+    id: "inbox.items.n4.unread"
+- assertVisible:
+    id: "inbox.items.n5.unread"
+# The system-notifications warning leads to the notification preferences
+- scrollUntilVisible:
+    element:
+      id: "inbox.system-off.cta"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "inbox.system-off.cta"
+- assertVisible:
+    id: "profile.notifications.screen"
+- tapOn:
+    id: "profile.notifications.back"
+- assertVisible:
+    id: "inbox.screen"
+- tapOn:
+    id: "inbox.back"
+- assertVisible:
+    id: "home.screen"

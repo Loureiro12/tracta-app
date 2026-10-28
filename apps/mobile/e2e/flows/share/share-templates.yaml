@@ -1,0 +1,102 @@
+appId: com.tracta.mobile
+name: share-templates
+tags:
+  - share
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://share?template=today&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Workout A"
+# Arrows cycle through the 6 templates and wrap around
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Bench press · last 6 months"
+- assertVisible:
+    id: "share.card.bars"
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "New personal record"
+- assertVisible:
+    id: "share.card.big"
+    text: "82.5 kg"
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Week · Oct 19–25"
+- assertVisible:
+    id: "share.card.dots"
+- assertVisible:
+    id: "share.card.big"
+    text: "4/4"
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Run · Oct 25"
+- assertVisible:
+    id: "share.card.big"
+    text: "12.4 km"
+- assertVisible:
+    id: "share.card.row.pace"
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "October 2026"
+- assertVisible:
+    id: "share.card.big"
+    text: "16"
+- tapOn:
+    id: "share.nav.next"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Workout A"
+- tapOn:
+    id: "share.nav.prev"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "October 2026"
+# Template pills (the strip scrolls horizontally; the first ones are visible)
+- tapOn:
+    id: "share.template.evo"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Bench press · last 6 months"
+- tapOn:
+    id: "share.template.pr"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "New personal record"
+- tapOn:
+    id: "share.template.today"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Workout A"
+- tapOn:
+    id: "share.template.week"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Week · Oct 19–25"
+# The strip scrolls horizontally: swipe it left to reach the last pills
+- swipe:
+    from:
+      id: "share.template.week"
+    direction: LEFT
+    duration: 400
+- tapOn:
+    id: "share.template.month"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "October 2026"
+- tapOn:
+    id: "share.template.run"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Run · Oct 25"

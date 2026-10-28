@@ -1,0 +1,92 @@
+appId: com.tracta.mobile
+name: history-achievements
+tags:
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "history.achievements.open"
+- assertVisible:
+    id: "history.achievements.screen"
+- assertVisible:
+    id: "history.achievements.title"
+    text: "Records & achievements"
+- assertVisible:
+    id: "history.achievements.tab"
+- assertVisible:
+    id: "history.achievements.records"
+- assertVisible:
+    id: "history.achievements.records.bench.name"
+    text: "Barbell bench press"
+- assertVisible:
+    id: "history.achievements.records.bench.value"
+    text: "82,5 kg"
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.records.5k.value"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.achievements.records.5k.value"
+    text: "27:41"
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.note"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.achievements.note"
+    text: "Run times use the best continuous stretch of each distance, including within longer runs."
+# Badges tab
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.tab"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "history.achievements.tab.badges"
+- assertVisible:
+    id: "history.achievements.count"
+    text: "4 of 8 earned"
+- assertVisible:
+    id: "history.achievements.badges"
+- assertVisible:
+    id: "history.achievements.badges.streak12.name"
+    text: "12-day streak"
+- assertVisible:
+    id: "history.achievements.badges.streak12.earned"
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.badges.perfectMonth.progress"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.achievements.badges.perfectMonth.progress"
+    text: "3 of 4 weeks"
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.back"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "history.achievements.back"
+- assertVisible:
+    id: "history.screen"
+# Deep link lands on the badges tab; share from the records tab.
+- openLink: "tracta://history/achievements?tab=badges&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "history.achievements.screen"
+- assertVisible:
+    id: "history.achievements.count"
+    text: "4 of 8 earned"
+- tapOn:
+    id: "history.achievements.tab.records"
+- tapOn:
+    id: "history.achievements.share"
+- assertVisible:
+    id: "share.screen"

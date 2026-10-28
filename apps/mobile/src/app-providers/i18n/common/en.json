@@ -4,9 +4,30 @@
     "back": "Back",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "retry": "Retry"
+    "retry": "Retry",
+    "resume": "Resume",
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "confirmAgain": "Tap again to confirm",
+    "next": "Next",
+    "previous": "Previous",
+    "skip": "Skip",
+    "done": "Done",
+    "edit": "Edit",
+    "share": "Share"
   },
   "errors": {
     "generic": "Something went wrong. Please try again."
+  },
+  "tabs": {
+    "home": "Home",
+    "health": "Health",
+    "workouts": "Workouts",
+    "history": "History",
+    "profile": "Profile"
+  },
+  "pro": {
+    "badge": "PRO"
   }
 }

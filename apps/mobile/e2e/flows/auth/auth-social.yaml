@@ -1,0 +1,58 @@
+appId: com.tracta.mobile
+name: auth-social
+tags:
+  - auth
+---
+- runFlow: ../../subflows/launch.yaml
+# Sign up with Google
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.signup"
+- tapOn:
+    id: "auth.signup.google"
+- assertVisible:
+    id: "auth.connect.screen"
+- tapOn:
+    id: "auth.connect.skip"
+- assertVisible:
+    id: "home.screen"
+# Sign up with Apple
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.signup"
+- tapOn:
+    id: "auth.signup.apple"
+- assertVisible:
+    id: "auth.connect.screen"
+- tapOn:
+    id: "auth.connect.skip"
+- assertVisible:
+    id: "home.screen"
+# Sign in with Apple
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.login"
+- tapOn:
+    id: "auth.login.apple"
+- assertVisible:
+    id: "auth.connect.screen"
+- tapOn:
+    id: "auth.connect.skip"
+- assertVisible:
+    id: "home.screen"
+# Sign in with Google
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.login"
+- tapOn:
+    id: "auth.login.google"
+- assertVisible:
+    id: "auth.connect.screen"
+- tapOn:
+    id: "auth.connect.skip"
+- assertVisible:
+    id: "home.screen"

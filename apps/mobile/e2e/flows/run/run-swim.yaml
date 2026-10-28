@@ -1,0 +1,57 @@
+appId: com.tracta.mobile
+name: run-swim
+tags:
+  - run
+---
+- runFlow: ../../subflows/launch.yaml
+# Non-GPS modality: no permission prompt, time-based log
+- openLink: "tracta://run?type=swim&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "run.screen"
+- assertVisible:
+    id: "run.live.gps"
+    text: "No GPS · not needed"
+- assertVisible:
+    id: "run.live.no-gps"
+    text: "Swimming"
+- assertVisible:
+    id: "run.live.split-hint"
+    text: "Pause to finish and add notes."
+- tapOn:
+    id: "run.live.pause"
+- tapOn:
+    id: "run.live.end"
+# Pool log on the summary
+- assertVisible:
+    id: "run.summary.screen"
+- assertVisible:
+    id: "run.summary.stats.pace-100"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.swim-label"
+    centerElement: true
+- assertVisible:
+    id: "run.summary.swim-label"
+    text: "Manual log · 25 m pool"
+- assertVisible:
+    id: "run.summary.swim"
+- assertVisible:
+    id: "run.summary.swim.value"
+    text: "1,000 m"
+- assertVisible:
+    id: "run.summary.swim-laps"
+    text: "40"
+- tapOn:
+    id: "run.summary.swim.plus"
+- assertVisible:
+    id: "run.summary.swim.value"
+    text: "1,025 m"
+- assertVisible:
+    id: "run.summary.swim-laps"
+    text: "41"
+- tapOn:
+    id: "run.summary.swim.minus"
+- assertVisible:
+    id: "run.summary.swim.value"
+    text: "1,000 m"

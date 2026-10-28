@@ -1,0 +1,52 @@
+appId: com.tracta.mobile
+name: tour-skip
+tags:
+  - tour
+---
+- runFlow: ../../subflows/launch.yaml
+# "Skip for now" on the welcome modal
+- openLink: "tracta://tour?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "tour.modal.secondary.label"
+    text: "Skip for now"
+- tapOn:
+    id: "tour.modal.secondary"
+- assertVisible:
+    id: "home.screen"
+# "Skip tour" from a spotlight
+- openLink: "tracta://tour?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "tour.modal.primary"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Home"
+- tapOn:
+    id: "tour.spot.skip"
+- assertVisible:
+    id: "home.screen"
+# "Invite friends" on the last modal opens the social hub
+- openLink: "tracta://tour?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "tour.modal.primary"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.modal.secondary.label"
+    text: "Invite friends"
+- tapOn:
+    id: "tour.modal.secondary"
+- assertVisible:
+    id: "social.screen"

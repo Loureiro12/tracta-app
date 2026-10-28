@@ -1,0 +1,43 @@
+appId: com.tracta.mobile
+name: share-destinations
+tags:
+  - share
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://share?template=week&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Week · Oct 19–25"
+- tapOn:
+    id: "share.target.stories"
+- assertVisible:
+    id: "app.toast"
+    text: "Card exported"
+- extendedWaitUntil:
+    notVisible:
+      id: "app.toast"
+    timeout: 12000
+- tapOn:
+    id: "share.target.whatsapp"
+- assertVisible:
+    id: "app.toast"
+    text: "Card exported"
+- extendedWaitUntil:
+    notVisible:
+      id: "app.toast"
+    timeout: 12000
+- tapOn:
+    id: "share.target.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Card exported"
+- extendedWaitUntil:
+    notVisible:
+      id: "app.toast"
+    timeout: 12000
+- tapOn:
+    id: "share.target.more"
+- assertVisible:
+    id: "app.toast"
+    text: "Card exported"

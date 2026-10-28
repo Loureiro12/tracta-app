@@ -1,0 +1,55 @@
+appId: com.tracta.mobile
+name: inbox-smoke
+tags:
+  - smoke
+  - inbox
+---
+- runFlow: ../../subflows/launch.yaml
+- assertVisible:
+    id: "home.nav.inbox.badge"
+- tapOn:
+    id: "home.nav.inbox"
+- assertVisible:
+    id: "inbox.screen"
+- assertVisible:
+    id: "inbox.title"
+    text: "Notifications"
+- assertVisible:
+    id: "inbox.system-off"
+- assertVisible:
+    id: "inbox.read-all.label"
+    text: "Mark as read"
+- assertVisible:
+    id: "inbox.items"
+- assertVisible:
+    id: "inbox.items.today.label"
+    text: "Today"
+- assertVisible:
+    id: "inbox.items.today"
+- assertVisible:
+    id: "inbox.items.n1"
+- assertVisible:
+    id: "inbox.items.n1.title"
+    text: "Today is Workout A day"
+- assertVisible:
+    id: "inbox.items.n1.unread"
+# Remove one notification
+- tapOn:
+    id: "inbox.items.n1.remove"
+- assertNotVisible:
+    id: "inbox.items.n1"
+- assertVisible:
+    id: "inbox.items.n2.unread"
+# Mark everything as read: dots and the header action disappear, the badge on Home too
+- tapOn:
+    id: "inbox.read-all"
+- assertNotVisible:
+    id: "inbox.items.n2.unread"
+- assertNotVisible:
+    id: "inbox.read-all"
+- tapOn:
+    id: "inbox.back"
+- assertVisible:
+    id: "home.screen"
+- assertNotVisible:
+    id: "home.nav.inbox.badge"

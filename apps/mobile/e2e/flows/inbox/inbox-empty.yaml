@@ -1,0 +1,38 @@
+appId: com.tracta.mobile
+name: inbox-empty
+tags:
+  - inbox
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.inbox"
+- assertVisible:
+    id: "inbox.screen"
+- assertNotVisible:
+    id: "inbox.empty"
+- tapOn:
+    id: "inbox.items.n1.remove"
+- tapOn:
+    id: "inbox.items.n2.remove"
+- tapOn:
+    id: "inbox.items.n3.remove"
+- assertNotVisible:
+    id: "inbox.items.today.label"
+- assertVisible:
+    id: "inbox.items.week.label"
+    text: "This week"
+- tapOn:
+    id: "inbox.items.n4.remove"
+- tapOn:
+    id: "inbox.items.n5.remove"
+- tapOn:
+    id: "inbox.items.n6.remove"
+- assertVisible:
+    id: "inbox.empty"
+- assertVisible:
+    id: "inbox.empty.title"
+    text: "All caught up"
+- assertNotVisible:
+    id: "inbox.items.week.label"
+- assertNotVisible:
+    id: "inbox.read-all"

@@ -1,0 +1,142 @@
+appId: com.tracta.mobile
+name: workouts-builder
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- tapOn:
+    id: "workouts.new"
+- assertVisible:
+    id: "workouts.builder.screen"
+- assertVisible:
+    id: "workouts.builder.title"
+    text: "New workout"
+- assertVisible:
+    id: "workouts.builder.empty"
+- assertVisible:
+    id: "workouts.builder.name"
+- assertVisible:
+    id: "workouts.builder.description"
+- assertVisible:
+    id: "workouts.builder.meta"
+    text: "none yet"
+# Validation: no name yet
+- tapOn:
+    id: "workouts.builder.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Give the workout a name"
+- tapOn:
+    id: "workouts.builder.days"
+- tapOn:
+    id: "workouts.builder.days.1"
+# Add exercises through the picker (multi-select)
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.add"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.add"
+- assertVisible:
+    id: "workouts.picker.screen"
+- assertVisible:
+    id: "workouts.picker.title"
+    text: "Add exercises"
+- tapOn:
+    id: "workouts.picker.add"
+- assertVisible:
+    id: "app.toast"
+    text: "Select at least one exercise"
+- tapOn:
+    id: "workouts.picker.items.supino-reto-com-barra"
+- tapOn:
+    id: "workouts.picker.items.supino-inclinado"
+- assertVisible:
+    id: "workouts.picker.add.label"
+    text: "Add 2 exercises"
+- tapOn:
+    id: "workouts.picker.add"
+- assertVisible:
+    id: "workouts.builder.screen"
+- assertVisible:
+    id: "workouts.builder.exercises"
+- assertVisible:
+    id: "workouts.builder.exercises.0.sets.value"
+    text: "4"
+- tapOn:
+    id: "workouts.builder.exercises.0.sets.plus"
+- assertVisible:
+    id: "workouts.builder.exercises.0.sets.value"
+    text: "5"
+# Superset with the next exercise removes the rest
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.exercises.0.superset"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.exercises.0.superset"
+- assertVisible:
+    id: "workouts.builder.exercises.0.summary"
+    text: "Superset · 5 × 8 · 60 kg · 0:00"
+# Reorder: move down, the open row follows the exercise
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.exercises.0.down"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.exercises.0.down"
+- assertVisible:
+    id: "workouts.builder.exercises.1.summary"
+    text: "Superset · 5 × 8 · 60 kg · 0:00"
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.exercises.1.remove"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.exercises.1.remove"
+- assertVisible:
+    id: "workouts.builder.meta"
+    text: "1 exercise · 3 sets · ~7 min"
+- tapOn:
+    id: "workouts.builder.exercises.0.toggle"
+- assertVisible:
+    id: "workouts.builder.exercises.0.summary"
+    text: "Superset · 3 × 10 · 22 kg · 1:30"
+# Name it and save
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.name.input"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.name.input"
+- inputText: "Push day"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- pressKey: Enter
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "workouts.builder.description.input"
+- inputText: "Chest"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- pressKey: Enter
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "workouts.builder.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Workout created"
+- assertVisible:
+    id: "workouts.detail.screen"
+- assertVisible:
+    id: "workouts.detail.title"
+    text: "Chest"
+- tapOn:
+    id: "workouts.detail.back"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.D"
+    centerElement: true
+- assertVisible:
+    id: "workouts.routines.D"

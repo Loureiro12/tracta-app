@@ -1,0 +1,96 @@
+appId: com.tracta.mobile
+name: auth-login
+tags:
+  - auth
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.login"
+- assertVisible:
+    id: "auth.login.screen"
+- assertVisible:
+    id: "auth.login.title"
+    text: "Sign in"
+- assertVisible:
+    id: "auth.login.email"
+- assertVisible:
+    id: "auth.login.password"
+# Empty submit → inline errors
+- tapOn:
+    id: "auth.login.submit"
+- assertVisible:
+    id: "auth.login.email.error"
+    text: "Enter a valid email"
+- assertVisible:
+    id: "auth.login.password.error"
+    text: "Enter your password"
+# Wrong password (mock: shorter than 6) → general error after the loading state
+- tapOn:
+    id: "auth.login.email.input"
+- inputText: "lucas@tracta.app"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.login.password.input"
+- inputText: "abc"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.login.title"
+- tapOn:
+    id: "auth.login.toggle-password"
+- assertVisible:
+    id: "auth.login.toggle-password.label"
+    text: "Hide"
+- tapOn:
+    id: "auth.login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "auth.login.error"
+    timeout: 10000
+# Valid password → connections (onboarding) → "Set up later" → home
+- tapOn:
+    id: "auth.login.password.input"
+- eraseText: 3
+- inputText: "secret99"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.login.title"
+- tapOn:
+    id: "auth.login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "auth.connect.screen"
+    timeout: 10000
+- assertVisible:
+    id: "auth.connect.continue.label"
+    text: "Continue"
+- tapOn:
+    id: "auth.connect.skip"
+- assertVisible:
+    id: "home.screen"
+# Cross links between sign in and sign up, and the back buttons
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.login"
+- tapOn:
+    id: "auth.login.signup"
+- assertVisible:
+    id: "auth.signup.screen"
+- tapOn:
+    id: "auth.signup.login"
+- assertVisible:
+    id: "auth.login.screen"
+- tapOn:
+    id: "auth.login.back"
+- assertVisible:
+    id: "auth.screen"
+- tapOn:
+    id: "auth.welcome.signup"
+- assertVisible:
+    id: "auth.signup.screen"
+- tapOn:
+    id: "auth.signup.back"
+- assertVisible:
+    id: "auth.screen"

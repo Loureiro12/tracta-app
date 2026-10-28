@@ -1,0 +1,247 @@
+{
+  "title": "History",
+  "header": {
+    "share": "Share"
+  },
+  "recapCard": {
+    "eyebrow": "Recap",
+    "title": "Your October in 5 screens",
+    "line": "16 workouts · 58 km · 3 records",
+    "cta": "View"
+  },
+  "achievementsCard": {
+    "title": "Records & achievements",
+    "sub": "3 records and 1 achievement in October"
+  },
+  "calendar": {
+    "month": "October 2026",
+    "legendStrength": "Strength",
+    "legendRun": "Run",
+    "weekdays": "M,T,W,T,F,S,S",
+    "dayLabel": "Select day {{day}}"
+  },
+  "day": {
+    "meta": "{{steps}} steps · sleep {{sleep}}",
+    "metaUnavailable": "— steps · sleep —",
+    "tag": {
+      "strength": "Strength",
+      "run": "Run",
+      "planned": "Planned"
+    },
+    "strengthTitle": "{{routine}} · {{focus}}",
+    "strengthLine": "{{minutes}} min · {{sets}} sets",
+    "runTitle": "Outdoor run",
+    "plannedLine": "Tap to start",
+    "restTitle": "Rest day",
+    "restLine": "No activity recorded.",
+    "futureTitle": "No records",
+    "futureLine": "Data shows up after the day."
+  },
+  "stats": {
+    "workouts": "Workouts",
+    "run": "Run",
+    "volume": "Volume"
+  },
+  "reports": {
+    "title": "Reports",
+    "sub": "frequency, volume, goals",
+    "7d": "7 days",
+    "30d": "30 days",
+    "custom": "Period"
+  },
+  "evo": {
+    "strengthHeading": "Evolution by exercise",
+    "cardioHeading": "Cardio evolution",
+    "sessions_one": "{{count}} session",
+    "sessions_other": "{{count}} sessions",
+    "runs_one": "{{count}} run",
+    "runs_other": "{{count}} runs",
+    "kind": {
+      "strength": "Strength",
+      "cardio": "Cardio"
+    },
+    "metric": {
+      "kg": "Max load",
+      "vol": "Volume",
+      "reps": "Reps",
+      "repsMax": "Max reps",
+      "pace": "Pace",
+      "dist": "Distance",
+      "hr": "Avg HR"
+    },
+    "group": {
+      "all": "All runs",
+      "5k": "Around 5 km",
+      "long": "7 km or more"
+    },
+    "last": "last · {{date}}",
+    "fewRecords": "too few records to compare",
+    "best": "Best result",
+    "bestReps": "{{reps}} reps · {{date}}",
+    "bestKg": "{{kg}} kg × {{reps}} · {{date}}",
+    "bestValue": "{{value}} · {{date}}",
+    "bestLowest": "Lowest: {{value}} · {{date}}",
+    "since": "Since {{date}}",
+    "variation": "Variation",
+    "deltaStrength": "{{delta}} ({{pct}}%)",
+    "fasterBy": "{{time}} faster",
+    "slowerBy": "{{time}} slower",
+    "recent": "Recent sessions",
+    "pr": "PR",
+    "noteStrength": "Only compares sessions of the same exercise and logging type.",
+    "notePace": "For pace, lower is faster — the chart goes up when you improve. Compare runs of a similar distance.",
+    "noteHr": "Average HR comes from the Mi Band 8; runs without a sensor are left out.",
+    "noteDist": "Only runs recorded with GPS.",
+    "noteFew": "Log more comparable activities to see the trend."
+  },
+  "dayView": {
+    "back": "History"
+  },
+  "detail": {
+    "back": "History",
+    "share": "Share",
+    "runTitle": "Run",
+    "runSubGps": "GPS · splits per km",
+    "strengthSub": "{{routine}} · {{start}} – {{end}}",
+    "stat": {
+      "duration": "Duration",
+      "sets": "Sets",
+      "reps": "Reps",
+      "volume": "Volume",
+      "distance": "Distance",
+      "pace": "Avg pace",
+      "hr": "Avg HR"
+    },
+    "minutes": "{{minutes}} min",
+    "mapLabel": "GPS route · illustrative map",
+    "splits": "Splits",
+    "splitKm": "Km {{km}}",
+    "splitPartial": "{{km}} km",
+    "setLoad": "{{kg}} × {{reps}}",
+    "setReps": "{{reps}} reps",
+    "notDone": "Not performed",
+    "notes": "Notes",
+    "notesPlaceholder": "How was it? Feelings, adjustments, pain…",
+    "source": {
+      "origin": "Source",
+      "originTracta": "Logged in Tracta",
+      "originGps": "Logged in Tracta · GPS",
+      "health": "Apple Health",
+      "healthSummary": "Summary saved",
+      "healthRun": "Workout and distance saved",
+      "hrCalories": "HR and calories",
+      "unavailable": "Unavailable",
+      "heart": "Heart rate",
+      "heartBand": "Mi Band 8 via Apple Health"
+    },
+    "delete": "Delete session",
+    "deleteConfirm": "Tap again to delete",
+    "deletedToast": "Session deleted",
+    "missing": "Session not found"
+  },
+  "recap": {
+    "brand": "Tracta · October 2026",
+    "close": "Close",
+    "prev": "Previous",
+    "share": "Share",
+    "slides": {
+      "0": {
+        "kicker": "In October you trained",
+        "title": "times — 4 more than in September.",
+        "rows": {
+          "0": { "label": "Strength", "value": "11 sessions" },
+          "1": { "label": "Running", "value": "5 runs" },
+          "2": { "label": "Favorite day", "value": "Monday" }
+        }
+      },
+      "1": {
+        "kicker": "You ran",
+        "title": "across 5 runs, faster every time.",
+        "rows": {
+          "0": { "label": "Average pace", "value": "5:36 /km" },
+          "1": { "label": "Longest", "value": "12,4 km" },
+          "2": { "label": "Best 5 km", "value": "27:41" }
+        }
+      },
+      "2": {
+        "kicker": "You lifted",
+        "title": "of total volume, with bench press on top.",
+        "rows": {
+          "0": { "label": "Most trained", "value": "Chest & Triceps" },
+          "1": { "label": "Sets", "value": "238" },
+          "2": { "label": "Average duration", "value": "54 min" }
+        }
+      },
+      "3": {
+        "kicker": "New records",
+        "title": "personal bests broken this month.",
+        "rows": {
+          "0": { "label": "Bench press", "value": "82,5 kg × 6" },
+          "1": { "label": "Squat", "value": "100 kg × 5" },
+          "2": { "label": "5 km", "value": "27:41" }
+        }
+      },
+      "4": {
+        "kicker": "And you rested",
+        "title": "of sleep per night on average — 18 min more.",
+        "rows": {
+          "0": { "label": "Nights on target", "value": "19 of 31" },
+          "1": { "label": "Average bedtime", "value": "23:41" },
+          "2": { "label": "Current streak", "value": "12 days" }
+        }
+      }
+    }
+  },
+  "achievements": {
+    "back": "History",
+    "title": "Records & achievements",
+    "tab": {
+      "records": "Records",
+      "badges": "Achievements"
+    },
+    "shareRecord": "Share record of the month",
+    "group": {
+      "strength": "Strength",
+      "run": "Running"
+    },
+    "records": {
+      "bench": { "name": "Barbell bench press", "detail": "6 reps · Oct 23", "delta": "+2,5 kg" },
+      "squat": { "name": "Back squat", "detail": "5 reps · Oct 21", "delta": "+5 kg" },
+      "deadlift": { "name": "Deadlift", "detail": "3 reps · Oct 9", "delta": "new" },
+      "pullup": { "name": "Pull-up", "detail": "bodyweight · Oct 17", "delta": "+2 reps" },
+      "5k": { "name": "5 km", "detail": "Oct 18", "delta": "−0:48" },
+      "10k": { "name": "10 km", "detail": "Oct 4", "delta": "−1:05" },
+      "longest": { "name": "Longest", "detail": "Oct 25", "delta": "+1,8 km" },
+      "best1k": { "name": "Best 1 km", "detail": "Oct 22 · intervals", "delta": "" }
+    },
+    "recordsNote": "Run times use the best continuous stretch of each distance, including within longer runs.",
+    "count": "{{earned}} of {{total}} earned",
+    "earnedOn": "Earned on {{date}}",
+    "badges": {
+      "streak12": { "name": "12-day streak", "description": "trained or walked 12 days in a row" },
+      "workouts50": { "name": "50 workouts", "description": "since you started on Tracta" },
+      "first5k": { "name": "First 5 km", "description": "ran 5 km without stopping" },
+      "oneTon": { "name": "One ton", "description": "1,000 kg of volume in one workout" },
+      "perfectMonth": {
+        "name": "Perfect month",
+        "description": "hit the weekly goal every week",
+        "progress": "3 of 4 weeks"
+      },
+      "tenKSub55": {
+        "name": "10 km under 55 min",
+        "description": "goal for your December race",
+        "progress": "best: 58:12"
+      },
+      "streak30": {
+        "name": "30-day streak",
+        "description": "a bit of movement every day",
+        "progress": "12 of 30 days"
+      },
+      "workouts100": {
+        "name": "100 workouts",
+        "description": "keep the pace",
+        "progress": "64 of 100"
+      }
+    }
+  }
+}

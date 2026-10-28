@@ -1,0 +1,42 @@
+appId: com.tracta.mobile
+name: health-metric-deep-links
+tags:
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://health/metric/hr?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "health.metric.screen"
+- assertVisible:
+    id: "health.metric.title"
+    text: "Heart rate"
+- assertVisible:
+    id: "health.metric.big"
+    text: "58 bpm"
+- assertVisible:
+    id: "health.metric.period"
+- tapOn:
+    id: "health.metric.back"
+- openLink: "tracta://health/metric/sleep?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "health.metric.title"
+    text: "Sleep"
+- tapOn:
+    id: "health.metric.period.M"
+- assertVisible:
+    id: "health.metric.stat.nightsOnGoal"
+- tapOn:
+    id: "health.metric.back"
+- openLink: "tracta://health/metric/steps?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "health.metric.title"
+    text: "Steps"
+- tapOn:
+    id: "health.metric.back"
+- openLink: "tracta://health?tab=body&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "health.body.hero"

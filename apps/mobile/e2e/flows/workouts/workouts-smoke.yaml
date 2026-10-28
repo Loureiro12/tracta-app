@@ -1,0 +1,68 @@
+appId: com.tracta.mobile
+name: workouts-smoke
+tags:
+  - smoke
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- assertVisible:
+    id: "workouts.screen"
+- assertVisible:
+    id: "workouts.header"
+- assertVisible:
+    id: "workouts.header.title"
+    text: "Workouts"
+- assertVisible:
+    id: "workouts.new.label"
+    text: "+ New"
+- assertVisible:
+    id: "workouts.week"
+- assertVisible:
+    id: "workouts.week.0"
+- assertVisible:
+    id: "workouts.start.run"
+- assertVisible:
+    id: "workouts.start.walk"
+- assertVisible:
+    id: "workouts.start.free"
+- assertVisible:
+    id: "workouts.start.others"
+- scrollUntilVisible:
+    element:
+      id: "workouts.start.intervals"
+    centerElement: true
+- assertVisible:
+    id: "workouts.start.intervals.pro"
+    text: "PRO"
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.card"
+    centerElement: true
+- assertVisible:
+    id: "workouts.programs.pro"
+    text: "PRO"
+- scrollUntilVisible:
+    element:
+      id: "workouts.race.card"
+    centerElement: true
+- assertVisible:
+    id: "workouts.race.chip"
+    text: "Set up"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.A"
+    centerElement: true
+- assertVisible:
+    id: "workouts.routines"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.C"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      id: "workouts.library"
+    centerElement: true
+- assertVisible:
+    id: "workouts.library"

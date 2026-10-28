@@ -1,0 +1,94 @@
+appId: com.tracta.mobile
+name: profile-privacy
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.prefs.privacy"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.prefs.privacy"
+- assertVisible:
+    id: "profile.privacy.screen"
+- tapOn:
+    id: "profile.privacy.back"
+- assertVisible:
+    id: "profile.screen"
+- scrollUntilVisible:
+    element:
+      id: "profile.prefs.privacy"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.prefs.privacy"
+- assertVisible:
+    id: "profile.privacy.out"
+- assertVisible:
+    id: "profile.privacy.out.apple-health.value"
+    text: "Active"
+- scrollUntilVisible:
+    element:
+      id: "profile.privacy.actions.account"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "profile.privacy.actions"
+- tapOn:
+    id: "profile.privacy.actions.export"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Export file prepared"
+# Destructive actions need a second tap
+- tapOn:
+    id: "profile.privacy.actions.health"
+- assertVisible:
+    id: "profile.privacy.actions.health.label"
+    text: "Tap again to confirm"
+- tapOn:
+    id: "profile.privacy.actions.health"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Apple Health disconnected"
+- scrollUntilVisible:
+    element:
+      id: "profile.privacy.out.apple-health"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "profile.privacy.out.apple-health.value"
+    text: "Disconnected"
+- scrollUntilVisible:
+    element:
+      id: "profile.privacy.actions.account"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.privacy.actions.history"
+- assertVisible:
+    id: "profile.privacy.actions.history.label"
+    text: "Tap again to confirm"
+# Arming another action disarms the previous one
+- tapOn:
+    id: "profile.privacy.actions.account"
+- assertVisible:
+    id: "profile.privacy.actions.history.label"
+    text: "Delete workout history"
+- assertVisible:
+    id: "profile.privacy.actions.account.label"
+    text: "Tap again to confirm"
+- tapOn:
+    id: "profile.privacy.actions.history"
+- tapOn:
+    id: "profile.privacy.actions.history"
+- assertVisible:
+    id: "app.toast.message"
+    text: "History deleted"
+- tapOn:
+    id: "profile.privacy.done"
+- assertVisible:
+    id: "profile.screen"

@@ -1,0 +1,157 @@
+{
+  "header": {
+    "subtitle": "{{name}} · {{focus}}",
+    "freeName": "Sessão livre",
+    "freeFocus": "sem rotina",
+    "minimize": "Minimizar treino",
+    "pause": "Pausar treino",
+    "resume": "Retomar treino"
+  },
+  "paused": {
+    "text": "Treino pausado · tempo parado",
+    "resume": "Retomar"
+  },
+  "mini": {
+    "title": "{{name}} · {{time}}",
+    "subtitle": "{{name}} · série {{num}} de {{total}}",
+    "rest": "Descanso · {{time}}"
+  },
+  "exercise": {
+    "meta": "Exercício {{num}} de {{total}} · {{group}}",
+    "none": "Adicione o primeiro exercício",
+    "superset": "Superset · alterna com {{names}}",
+    "info": "{{equipment}} · descanso {{rest}} · {{prev}}",
+    "lastTime": "última vez {{sets}}",
+    "firstTime": "primeira vez"
+  },
+  "suggestion": {
+    "label": "Sugestão de carga",
+    "text": "Na última sessão você completou todas as séries de {{reps}} repetições com {{from}} kg. Quer tentar {{to}} kg hoje?",
+    "use": "Usar {{kg}} kg",
+    "keep": "Manter {{kg}} kg"
+  },
+  "empty": {
+    "title": "Monte enquanto treina",
+    "body": "Adicione exercícios da biblioteca à medida que for fazendo. O cronômetro já está contando."
+  },
+  "warmup": {
+    "title": "Aquecimento sugerido",
+    "skip": "Pular",
+    "add": "Adicionar",
+    "label": "Aquecimento · não conta no volume",
+    "prefix": "A{{n}}",
+    "row": "{{kg}} kg × {{reps}}",
+    "toggle": "Série de aquecimento {{n}}"
+  },
+  "set": {
+    "title": "Série {{num}}",
+    "previous": "anterior {{value}}",
+    "none": "—",
+    "kgUnit": "kg",
+    "repsUnit": "reps",
+    "minUnit": "min",
+    "summaryKg": "{{kg}} kg × {{reps}}",
+    "summaryReps": "{{reps}} reps",
+    "summaryMin": "{{reps}} min",
+    "prevKg": "{{kg}}×{{reps}}",
+    "prevReps": "{{reps}} reps",
+    "kgMinus": "Diminuir carga",
+    "kgPlus": "Aumentar carga",
+    "repsMinus": "Menos repetições",
+    "repsPlus": "Mais repetições",
+    "plates": "Calcular anilhas",
+    "toggle": "Série {{num}}"
+  },
+  "actions": {
+    "addExercise": "+ Adicionar exercício",
+    "addSet": "+ Série",
+    "removeSet": "− Série",
+    "skip": "Pular",
+    "finish": "Concluir treino",
+    "prev": "Exercício anterior",
+    "next": "Próximo exercício",
+    "pickerSoon": "Seletor de exercícios em breve",
+    "skipped": "Exercício pulado",
+    "allDone": "Todas as séries concluídas"
+  },
+  "cta": {
+    "addExercise": "Adicionar exercício",
+    "review": "Revisar e salvar",
+    "nextExercise": "Próximo exercício",
+    "completeSet": "Concluir série {{num}}"
+  },
+  "rest": {
+    "label": "Descanso",
+    "pausedLabel": "Descanso pausado",
+    "of": "de {{total}}",
+    "minus": "−15s",
+    "plus": "+15s",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "skip": "Pular descanso",
+    "nextLabel": "A seguir",
+    "next": "{{name}} · série {{num}} · {{value}}",
+    "end": "Fim do treino",
+    "note": "Avisaremos com som e notificação mesmo com a tela bloqueada.",
+    "done": "Descanso concluído"
+  },
+  "summary": {
+    "eyebrow": "{{name}} · revise antes de salvar",
+    "title": "Treino concluído",
+    "duration": "Duração total",
+    "sets": "Séries concluídas",
+    "reps": "Repetições",
+    "volume": "Volume (carga × reps)",
+    "volumeValue": "{{value}} kg",
+    "prsTitle": "Recordes pessoais",
+    "prBadge": "PR",
+    "prKg": "{{name}}: {{value}} kg (antes {{previous}})",
+    "prReps": "{{name}}: {{value}} reps (antes {{previous}})",
+    "noPr": "Nenhum recorde nesta sessão — consistência também conta.",
+    "nextTitle": "Para a próxima sessão",
+    "nextItem": "{{name}}: tente {{kg}} kg",
+    "nextNote": "Você completou todas as repetições. Vamos sugerir essas cargas na próxima vez — você decide na hora.",
+    "notDone": "Não realizado",
+    "destTitle": "Para onde vai",
+    "destLocal": "Tracta · sessão completa",
+    "destHealth": "Apple Health · tipo e duração",
+    "pending": "Pendente",
+    "destNote": "FC e calorias: indisponíveis — nenhum sensor registrou durante a sessão.",
+    "back": "Voltar ao treino",
+    "discard": "Descartar",
+    "save": "Salvar treino",
+    "saveNote": "Salvo no aparelho primeiro; funciona sem internet.",
+    "saved": "Treino salvo",
+    "discarded": "Sessão descartada"
+  },
+  "plates": {
+    "title": "Calculadora de anilhas",
+    "close": "Fechar",
+    "total": "Carga total",
+    "totalValue": "{{value}} kg",
+    "minus": "Menos carga",
+    "plus": "Mais carga",
+    "bar20": "Olímpica 20 kg",
+    "bar15": "15 kg",
+    "bar10": "Barra W 10 kg",
+    "barRow": "Barra",
+    "barValue": "{{kg}} kg",
+    "perSide": "{{kg}} kg por lado",
+    "count": "{{count}}×",
+    "exact": "Carga exata com estas anilhas.",
+    "inexact": "Não fecha exato: faltam {{kg}} kg no total.",
+    "belowBar": "A carga é menor que a barra escolhida."
+  },
+  "recover": {
+    "eyebrow": "Sessão recuperada",
+    "title": "{{name}} · {{focus}}",
+    "line": "Iniciado às {{time}} · {{done}} de {{total}} séries registradas · {{elapsed}}",
+    "body": "O app foi fechado durante a atividade. Pausamos o cronômetro e nada do que você registrou foi perdido.",
+    "resume": "Retomar treino",
+    "review": "Encerrar e revisar",
+    "later": "Agora não",
+    "discard": "Descartar",
+    "confirm": "Toque para confirmar",
+    "discarded": "Sessão descartada"
+  }
+}

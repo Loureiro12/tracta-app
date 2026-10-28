@@ -1,0 +1,15 @@
+# iOS can interrupt a flow with system prompts that have no testID: the keyboard's
+# "Enable Dictation?" alert after typing, or similar. Each branch is a no-op when the prompt is absent.
+# Labels follow the simulator language; the regexes cover en and pt-BR.
+appId: com.tracta.mobile
+---
+- runFlow:
+    when:
+      visible: "Not Now|Agora Não"
+    commands:
+      - tapOn: "Not Now|Agora Não" # system-dialog
+- runFlow:
+    when:
+      visible: "Don't Allow|Não Permitir"
+    commands:
+      - tapOn: "Don't Allow|Não Permitir" # system-dialog

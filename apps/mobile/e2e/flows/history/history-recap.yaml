@@ -1,0 +1,79 @@
+appId: com.tracta.mobile
+name: history-recap
+tags:
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "history.recap.open"
+- assertVisible:
+    id: "history.recap.screen"
+- assertVisible:
+    id: "history.recap.progress"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "In October you trained"
+- assertVisible:
+    id: "history.recap.big"
+    text: "16"
+- assertVisible:
+    id: "history.recap.title"
+    text: "times — 4 more than in September."
+# Tap advances, "Previous" goes back, the fifth tap closes the recap.
+- tapOn:
+    id: "history.recap.next"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "You ran"
+- tapOn:
+    id: "history.recap.next"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "You lifted"
+- tapOn:
+    id: "history.recap.prev"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "You ran"
+- tapOn:
+    id: "history.recap.next"
+- tapOn:
+    id: "history.recap.next"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "New records"
+- assertVisible:
+    id: "history.recap.big"
+    text: "3"
+- tapOn:
+    id: "history.recap.next"
+- assertVisible:
+    id: "history.recap.kicker"
+    text: "And you rested"
+- assertVisible:
+    id: "history.recap.big"
+    text: "7h 02"
+- tapOn:
+    id: "history.recap.next"
+- assertVisible:
+    id: "history.screen"
+# "Fechar" closes from any slide.
+- tapOn:
+    id: "history.recap.open"
+- assertVisible:
+    id: "history.recap.screen"
+- tapOn:
+    id: "history.recap.close"
+- assertVisible:
+    id: "history.screen"
+# "Compartilhar" opens the share overlay with the month template.
+- tapOn:
+    id: "history.recap.open"
+- tapOn:
+    id: "history.recap.share"
+- assertVisible:
+    id: "share.screen"

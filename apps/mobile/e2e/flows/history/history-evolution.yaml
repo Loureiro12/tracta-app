@@ -1,0 +1,124 @@
+appId: com.tracta.mobile
+name: history-evolution
+tags:
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- scrollUntilVisible:
+    element:
+      id: "history.evo.card"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.evo.heading"
+    text: "Evolution by exercise"
+- assertVisible:
+    id: "history.evo.count"
+    text: "8 sessions"
+- assertVisible:
+    id: "history.evo.kind"
+- assertVisible:
+    id: "history.evo.chips"
+- scrollUntilVisible:
+    element:
+      id: "history.evo.big"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.evo.metric"
+- assertVisible:
+    id: "history.evo.big"
+    text: "60 kg"
+- assertVisible:
+    id: "history.evo.big-sub"
+- scrollUntilVisible:
+    element:
+      id: "history.evo.delta"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.evo.chart"
+- assertVisible:
+    id: "history.evo.best"
+- assertVisible:
+    id: "history.evo.delta"
+    text: "+10 kg (+20%)"
+- scrollUntilVisible:
+    element:
+      id: "history.evo.note"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.evo.recent"
+- assertVisible:
+    id: "history.evo.note"
+    text: "Only compares sessions of the same exercise and logging type."
+# Volume metric, then a bodyweight exercise (volume in reps)
+- scrollUntilVisible:
+    element:
+      id: "history.evo.metric"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "history.evo.metric.vol"
+- assertVisible:
+    id: "history.evo.big"
+    text: "1.805 kg"
+# Exercise chips scroll horizontally: swipe to reveal the dip
+# The chip strip scrolls horizontally: swipe it from its own center until the dip chip shows up,
+# then nudge once more so the chip's center is on screen before tapping.
+- scrollUntilVisible:
+    element:
+      id: "history.evo.chips"
+    centerElement: true
+- repeat:
+    times: 8
+    while:
+      notVisible:
+        id: "history.evo.chips.mergulho"
+    commands:
+      - swipe:
+          from:
+            id: "history.evo.chips"
+          direction: LEFT
+          duration: 1200
+- swipe:
+    start: "60%,69%"
+    end: "35%,69%"
+    duration: 1200
+- tapOn:
+    id: "history.evo.chips.mergulho"
+- assertVisible:
+    id: "history.evo.big"
+    text: "30 reps"
+# Cardio: all runs → around 5 km → distance
+- tapOn:
+    id: "history.evo.kind.cardio"
+- assertVisible:
+    id: "history.evo.heading"
+    text: "Cardio evolution"
+- assertVisible:
+    id: "history.evo.count"
+    text: "7 runs"
+- assertVisible:
+    id: "history.evo.big"
+    text: "5:34 /km"
+- tapOn:
+    id: "history.evo.chips.5k"
+- assertVisible:
+    id: "history.evo.count"
+    text: "4 runs"
+- tapOn:
+    id: "history.evo.metric.dist"
+- assertVisible:
+    id: "history.evo.big"
+    text: "5,1 km"
+- tapOn:
+    id: "history.evo.kind.strength"
+- assertVisible:
+    id: "history.evo.heading"
+    text: "Evolution by exercise"

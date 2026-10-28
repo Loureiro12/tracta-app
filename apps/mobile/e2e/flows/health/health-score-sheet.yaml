@@ -1,0 +1,31 @@
+appId: com.tracta.mobile
+name: health-score-sheet
+tags:
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.health"
+- assertVisible:
+    id: "health.screen"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.score-how"
+    centerElement: true
+- tapOn:
+    id: "health.sleep.score-how"
+- assertVisible:
+    id: "health.score.sheet"
+- assertVisible:
+    id: "health.score.sheet.title"
+    text: "How we calculate"
+- assertVisible:
+    id: "health.score.row"
+- assertVisible:
+    id: "health.score.row.duration"
+- assertVisible:
+    id: "health.score.outside"
+- tapOn:
+    id: "health.score.sheet.right"
+- assertVisible:
+    id: "health.screen"

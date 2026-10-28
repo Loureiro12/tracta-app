@@ -1,0 +1,157 @@
+{
+  "header": {
+    "subtitle": "{{name}} · {{focus}}",
+    "freeName": "Free session",
+    "freeFocus": "no routine",
+    "minimize": "Minimize workout",
+    "pause": "Pause workout",
+    "resume": "Resume workout"
+  },
+  "paused": {
+    "text": "Workout paused · timer stopped",
+    "resume": "Resume"
+  },
+  "mini": {
+    "title": "{{name}} · {{time}}",
+    "subtitle": "{{name}} · set {{num}} of {{total}}",
+    "rest": "Rest · {{time}}"
+  },
+  "exercise": {
+    "meta": "Exercise {{num}} of {{total}} · {{group}}",
+    "none": "Add your first exercise",
+    "superset": "Superset · alternates with {{names}}",
+    "info": "{{equipment}} · rest {{rest}} · {{prev}}",
+    "lastTime": "last time {{sets}}",
+    "firstTime": "first time"
+  },
+  "suggestion": {
+    "label": "Load suggestion",
+    "text": "Last session you completed every set of {{reps}} reps with {{from}} kg. Want to try {{to}} kg today?",
+    "use": "Use {{kg}} kg",
+    "keep": "Keep {{kg}} kg"
+  },
+  "empty": {
+    "title": "Build as you go",
+    "body": "Add exercises from the library as you train. The timer is already running."
+  },
+  "warmup": {
+    "title": "Suggested warm-up",
+    "skip": "Skip",
+    "add": "Add",
+    "label": "Warm-up · does not count toward volume",
+    "prefix": "W{{n}}",
+    "row": "{{kg}} kg × {{reps}}",
+    "toggle": "Warm-up set {{n}}"
+  },
+  "set": {
+    "title": "Set {{num}}",
+    "previous": "previous {{value}}",
+    "none": "—",
+    "kgUnit": "kg",
+    "repsUnit": "reps",
+    "minUnit": "min",
+    "summaryKg": "{{kg}} kg × {{reps}}",
+    "summaryReps": "{{reps}} reps",
+    "summaryMin": "{{reps}} min",
+    "prevKg": "{{kg}}×{{reps}}",
+    "prevReps": "{{reps}} reps",
+    "kgMinus": "Decrease load",
+    "kgPlus": "Increase load",
+    "repsMinus": "Fewer reps",
+    "repsPlus": "More reps",
+    "plates": "Plate calculator",
+    "toggle": "Set {{num}}"
+  },
+  "actions": {
+    "addExercise": "+ Add exercise",
+    "addSet": "+ Set",
+    "removeSet": "− Set",
+    "skip": "Skip",
+    "finish": "Finish workout",
+    "prev": "Previous exercise",
+    "next": "Next exercise",
+    "pickerSoon": "Exercise picker coming soon",
+    "skipped": "Exercise skipped",
+    "allDone": "All sets completed"
+  },
+  "cta": {
+    "addExercise": "Add exercise",
+    "review": "Review and save",
+    "nextExercise": "Next exercise",
+    "completeSet": "Complete set {{num}}"
+  },
+  "rest": {
+    "label": "Rest",
+    "pausedLabel": "Rest paused",
+    "of": "of {{total}}",
+    "minus": "−15s",
+    "plus": "+15s",
+    "pause": "Pause",
+    "resume": "Resume",
+    "skip": "Skip rest",
+    "nextLabel": "Up next",
+    "next": "{{name}} · set {{num}} · {{value}}",
+    "end": "End of workout",
+    "note": "We'll let you know with sound and a notification even with the screen locked.",
+    "done": "Rest complete"
+  },
+  "summary": {
+    "eyebrow": "{{name}} · review before saving",
+    "title": "Workout complete",
+    "duration": "Total duration",
+    "sets": "Sets completed",
+    "reps": "Reps",
+    "volume": "Volume (load × reps)",
+    "volumeValue": "{{value}} kg",
+    "prsTitle": "Personal records",
+    "prBadge": "PR",
+    "prKg": "{{name}}: {{value}} kg (before {{previous}})",
+    "prReps": "{{name}}: {{value}} reps (before {{previous}})",
+    "noPr": "No records this session — consistency counts too.",
+    "nextTitle": "For your next session",
+    "nextItem": "{{name}}: try {{kg}} kg",
+    "nextNote": "You completed every rep. We'll suggest these loads next time — you decide on the spot.",
+    "notDone": "Not performed",
+    "destTitle": "Where it goes",
+    "destLocal": "Tracta · full session",
+    "destHealth": "Apple Health · type and duration",
+    "pending": "Pending",
+    "destNote": "HR and calories: unavailable — no sensor recorded during the session.",
+    "back": "Back to workout",
+    "discard": "Discard",
+    "save": "Save workout",
+    "saveNote": "Saved on this device first; works offline.",
+    "saved": "Workout saved",
+    "discarded": "Session discarded"
+  },
+  "plates": {
+    "title": "Plate calculator",
+    "close": "Close",
+    "total": "Total load",
+    "totalValue": "{{value}} kg",
+    "minus": "Less load",
+    "plus": "More load",
+    "bar20": "Olympic 20 kg",
+    "bar15": "15 kg",
+    "bar10": "EZ bar 10 kg",
+    "barRow": "Bar",
+    "barValue": "{{kg}} kg",
+    "perSide": "{{kg}} kg per side",
+    "count": "{{count}}×",
+    "exact": "Exact load with these plates.",
+    "inexact": "Doesn't add up: {{kg}} kg missing in total.",
+    "belowBar": "The load is lighter than the selected bar."
+  },
+  "recover": {
+    "eyebrow": "Recovered session",
+    "title": "{{name}} · {{focus}}",
+    "line": "Started at {{time}} · {{done}} of {{total}} sets logged · {{elapsed}}",
+    "body": "The app was closed during the activity. We paused the timer and nothing you logged was lost.",
+    "resume": "Resume workout",
+    "review": "End and review",
+    "later": "Not now",
+    "discard": "Discard",
+    "confirm": "Tap to confirm",
+    "discarded": "Session discarded"
+  }
+}

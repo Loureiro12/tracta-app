@@ -1,0 +1,185 @@
+appId: com.tracta.mobile
+name: auth-signup
+tags:
+  - smoke
+  - auth
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "auth.screen"
+- assertVisible:
+    id: "auth.welcome.wordmark"
+- assertVisible:
+    id: "auth.welcome.tagline"
+    text: "Sleep, activity and workouts in one place, with your data stored on your device."
+- tapOn:
+    id: "auth.welcome.signup"
+- assertVisible:
+    id: "auth.signup.screen"
+- assertVisible:
+    id: "auth.signup.title"
+    text: "Create account"
+- assertVisible:
+    id: "auth.signup.name"
+- assertVisible:
+    id: "auth.signup.email"
+- assertVisible:
+    id: "auth.signup.password"
+# Empty submit: every field reports its own error inline
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.submit"
+    centerElement: true
+- tapOn:
+    id: "auth.signup.submit"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.name.error"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "auth.signup.name.error"
+    text: "Enter your name"
+- assertVisible:
+    id: "auth.signup.email.error"
+    text: "Enter a valid email"
+- assertVisible:
+    id: "auth.signup.password.error"
+    text: "Password doesn't meet the requirements"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.terms-error"
+    centerElement: true
+- assertVisible:
+    id: "auth.signup.terms-error"
+    text: "Accept the terms to continue"
+# Fill valid data
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.name.input"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "auth.signup.name.input"
+- inputText: "Lucas"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.signup.email.input"
+- inputText: "lucas@tracta.app"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.signup.password.input"
+- inputText: "Tracta2026"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.signup.title"
+- tapOn:
+    id: "auth.signup.toggle-password"
+- assertVisible:
+    id: "auth.signup.toggle-password.label"
+    text: "Hide"
+- assertVisible:
+    id: "auth.signup.rules"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.terms"
+    centerElement: true
+- tapOn:
+    id: "auth.signup.terms"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.submit"
+    centerElement: true
+- tapOn:
+    id: "auth.signup.submit"
+# Mock sign-up → connections (onboarding mode)
+- extendedWaitUntil:
+    visible:
+      id: "auth.connect.screen"
+    timeout: 10000
+- assertVisible:
+    id: "auth.connect.eyebrow"
+- assertVisible:
+    id: "auth.connect.title"
+    text: "Connect your data"
+- assertVisible:
+    id: "auth.connect.health.status"
+- assertVisible:
+    id: "auth.connect.continue.label"
+    text: "Continue"
+- tapOn:
+    id: "auth.connect.health.connect"
+# Apple Health data types
+- assertVisible:
+    id: "auth.health.screen"
+- assertVisible:
+    id: "auth.health.title"
+    text: "Apple Health"
+- assertVisible:
+    id: "auth.health.read"
+- assertVisible:
+    id: "auth.health.allow.label"
+    text: "Allow 8 data types"
+- tapOn:
+    id: "auth.health.toggle-all"
+- assertVisible:
+    id: "auth.health.toggle-all.label"
+    text: "Turn all on"
+- assertVisible:
+    id: "auth.health.allow.label"
+    text: "Allow 1 data type"
+- tapOn:
+    id: "auth.health.read.steps"
+- assertVisible:
+    id: "auth.health.allow.label"
+    text: "Allow 2 data types"
+- scrollUntilVisible:
+    element:
+      id: "auth.health.write"
+    centerElement: true
+- tapOn:
+    id: "auth.health.write.distance"
+- assertVisible:
+    id: "auth.health.allow.label"
+    text: "Allow 3 data types"
+- tapOn:
+    id: "auth.health.allow"
+# Back on connections: importing, then connected
+- assertVisible:
+    id: "auth.connect.screen"
+- assertVisible:
+    id: "auth.connect.health.progress"
+- extendedWaitUntil:
+    visible:
+      id: "auth.connect.health.found"
+    timeout: 10000
+- assertVisible:
+    id: "auth.connect.health.found.sleep.label"
+    text: "Sleep with stages"
+- assertVisible:
+    id: "auth.connect.continue.label"
+    text: "Start using"
+- tapOn:
+    id: "auth.connect.health.review"
+- assertVisible:
+    id: "auth.health.screen"
+- tapOn:
+    id: "auth.health.back"
+- assertVisible:
+    id: "auth.connect.screen"
+- scrollUntilVisible:
+    element:
+      id: "auth.connect.notifications"
+    centerElement: true
+- tapOn:
+    id: "auth.connect.google.notify"
+- tapOn:
+    id: "auth.connect.gps"
+- tapOn:
+    id: "auth.connect.notifications"
+- tapOn:
+    id: "auth.connect.continue"
+- assertVisible:
+    id: "home.screen"

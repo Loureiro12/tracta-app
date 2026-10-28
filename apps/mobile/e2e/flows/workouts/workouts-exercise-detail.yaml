@@ -1,0 +1,78 @@
+appId: com.tracta.mobile
+name: workouts-exercise-detail
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.library"
+    centerElement: true
+- tapOn:
+    id: "workouts.library"
+- tapOn:
+    id: "workouts.picker.items.supino-reto-com-barra"
+- assertVisible:
+    id: "workouts.exercise.screen"
+- assertVisible:
+    id: "workouts.exercise.title"
+    text: "Exercise"
+- assertVisible:
+    id: "workouts.exercise.subtitle"
+    text: "Peito · Barra"
+- assertVisible:
+    id: "workouts.exercise.tags"
+- assertVisible:
+    id: "workouts.exercise.tags.0"
+    text: "Peito"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.instructions"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise.defaults"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.history"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.evolution"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.notes.input"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise.notes"
+- tapOn:
+    id: "workouts.exercise.notes.input"
+- inputText: "Bench at 30"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.favorite"
+    centerElement: true
+# Scrolling with the keyboard open can surface the dictation prompt; clear it before tapping on.
+- tapOn:
+    id: "workouts.exercise.favorite"
+# Leaving the notes field can surface the dictation prompt; clear it before closing.
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "workouts.exercise.close"
+- assertVisible:
+    id: "workouts.picker.screen"
+- assertVisible:
+    id: "workouts.picker.items.supino-reto-com-barra"
+- tapOn:
+    id: "workouts.picker.items.supino-reto-com-barra"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.evolution"
+    centerElement: true
+- tapOn:
+    id: "workouts.exercise.evolution"
+- assertVisible:
+    id: "history.screen"

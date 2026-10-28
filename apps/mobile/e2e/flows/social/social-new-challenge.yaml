@@ -1,0 +1,134 @@
+appId: com.tracta.mobile
+name: social-new-challenge
+tags:
+  - smoke
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "social.hub.create"
+    centerElement: true
+- tapOn:
+    id: "social.hub.create"
+- assertVisible:
+    id: "social.new-challenge.screen"
+- tapOn:
+    id: "social.new-challenge.close"
+- assertVisible:
+    id: "social.screen"
+- tapOn:
+    id: "social.hub.create"
+# Step 1 · scoring type and minimum duration
+- assertVisible:
+    id: "social.new-challenge.step-title"
+    text: "How to score"
+- assertVisible:
+    id: "social.new-challenge.types"
+- tapOn:
+    id: "social.new-challenge.types.minutes"
+- assertNotVisible:
+    id: "social.new-challenge.min"
+- tapOn:
+    id: "social.new-challenge.types.day"
+- assertVisible:
+    id: "social.new-challenge.min.value"
+    text: "20 min"
+- tapOn:
+    id: "social.new-challenge.min.plus"
+- assertVisible:
+    id: "social.new-challenge.min.value"
+    text: "25 min"
+- tapOn:
+    id: "social.new-challenge.min.minus"
+- assertVisible:
+    id: "social.new-challenge.min.value"
+    text: "20 min"
+- tapOn:
+    id: "social.new-challenge.next"
+# Step 2 · duration and start
+- assertVisible:
+    id: "social.new-challenge.step-title"
+    text: "Duration"
+- assertVisible:
+    id: "social.new-challenge.days"
+- assertVisible:
+    id: "social.new-challenge.range"
+    text: "Oct 26 → Nov 1 · 7 days"
+- tapOn:
+    id: "social.new-challenge.days.14"
+- assertVisible:
+    id: "social.new-challenge.start"
+- tapOn:
+    id: "social.new-challenge.start.tomorrow"
+- assertVisible:
+    id: "social.new-challenge.range"
+    text: "Oct 27 → Nov 9 · 14 days"
+- tapOn:
+    id: "social.new-challenge.back"
+- assertVisible:
+    id: "social.new-challenge.step-title"
+    text: "How to score"
+- tapOn:
+    id: "social.new-challenge.next"
+- tapOn:
+    id: "social.new-challenge.next"
+# Step 3 · participants (at least one is required)
+- assertVisible:
+    id: "social.new-challenge.step-title"
+    text: "Who's in"
+- assertVisible:
+    id: "social.new-challenge.people"
+- tapOn:
+    id: "social.new-challenge.people.ana"
+- tapOn:
+    id: "social.new-challenge.people.bruno"
+- tapOn:
+    id: "social.new-challenge.people.carla"
+- tapOn:
+    id: "social.new-challenge.next"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Pick at least one friend"
+- tapOn:
+    id: "social.new-challenge.people.ana"
+- tapOn:
+    id: "social.new-challenge.next"
+# Step 4 · review and create
+- assertVisible:
+    id: "social.new-challenge.step-title"
+    text: "Review"
+- assertVisible:
+    id: "social.new-challenge.review"
+- assertVisible:
+    id: "social.new-challenge.review.duration.value"
+    text: "14 days"
+- assertVisible:
+    id: "social.new-challenge.review.participants.value"
+    text: "You + Ana"
+- assertVisible:
+    id: "social.new-challenge.name"
+- tapOn:
+    id: "social.new-challenge.name.input"
+- inputText: "Duelo de novembro"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- hideKeyboard
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "social.new-challenge.next"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Challenge created · invites sent"
+- assertVisible:
+    id: "social.challenge.screen"
+- assertVisible:
+    id: "social.challenge.title"
+    text: "Duelo de novembro"
+- assertVisible:
+    id: "social.challenge.me-line"
+    text: "The challenge starts tomorrow. Your first workout from then on already counts."
+- assertVisible:
+    id: "social.challenge.ranking.ana.status"
+    text: "waiting to start"

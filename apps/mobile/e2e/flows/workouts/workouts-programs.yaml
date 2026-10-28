@@ -1,0 +1,77 @@
+appId: com.tracta.mobile
+name: workouts-programs
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+# Programs are a Pro feature; the flow deep-links past the paywall (see workouts-pro-gate).
+- openLink: "tracta://workouts/programs?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "workouts.programs.screen"
+- assertVisible:
+    id: "workouts.programs.title"
+    text: "Programs"
+- assertVisible:
+    id: "workouts.programs.list"
+- tapOn:
+    id: "workouts.programs.list.forca"
+- assertVisible:
+    id: "workouts.programs.detail.title"
+    text: "Força em 8 semanas"
+- assertVisible:
+    id: "workouts.programs.detail.week"
+- assertVisible:
+    id: "workouts.programs.detail.week.0"
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.detail.weeks.3"
+    centerElement: true
+- assertVisible:
+    id: "workouts.programs.detail.weeks"
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.detail.cta"
+    centerElement: true
+- assertVisible:
+    id: "workouts.programs.detail.cta.label"
+    text: "Start program"
+- tapOn:
+    id: "workouts.programs.detail.cta"
+- assertVisible:
+    id: "app.toast"
+    text: "Força em 8 semanas started today"
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.program.active"
+    centerElement: true
+- tapOn:
+    id: "workouts.program.active"
+- assertVisible:
+    id: "workouts.programs.screen"
+- tapOn:
+    id: "workouts.programs.back"
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.program.active"
+    centerElement: true
+- tapOn:
+    id: "workouts.program.active"
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.detail.cta"
+    centerElement: true
+- assertVisible:
+    id: "workouts.programs.detail.cta.label"
+    text: "End program"
+- tapOn:
+    id: "workouts.programs.detail.cta"
+- assertVisible:
+    id: "app.toast"
+    text: "Program ended"
+- assertVisible:
+    id: "workouts.screen"

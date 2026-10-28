@@ -1,0 +1,73 @@
+appId: com.tracta.mobile
+name: health-activity
+tags:
+  - smoke
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.health"
+- assertVisible:
+    id: "health.screen"
+- tapOn:
+    id: "health.segment.activity"
+- assertVisible:
+    id: "health.activity.steps"
+- assertVisible:
+    id: "health.activity.steps-value"
+    text: "6,842 / 10,000"
+- scrollUntilVisible:
+    element:
+      id: "health.activity.week"
+    centerElement: true
+- assertVisible:
+    id: "health.activity.week"
+- scrollUntilVisible:
+    element:
+      id: "health.activity.calories"
+    centerElement: true
+- assertVisible:
+    id: "health.activity.calories"
+- scrollUntilVisible:
+    element:
+      id: "health.activity.distance"
+    centerElement: true
+- assertVisible:
+    id: "health.activity.distance"
+# Steps card opens the metric detail overlay
+- scrollUntilVisible:
+    element:
+      id: "health.activity.steps"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "health.activity.steps"
+- assertVisible:
+    id: "health.metric.screen"
+- assertVisible:
+    id: "health.metric.title"
+    text: "Steps"
+- assertVisible:
+    id: "health.metric.big"
+    text: "6,842 steps"
+- assertVisible:
+    id: "health.metric.chart"
+- tapOn:
+    id: "health.metric.period.W"
+- assertVisible:
+    id: "health.metric.big"
+    text: "9,539 steps"
+- assertVisible:
+    id: "health.metric.stat"
+- assertVisible:
+    id: "health.metric.stat.bestDay"
+- scrollUntilVisible:
+    element:
+      id: "health.metric.insight"
+    centerElement: true
+- assertVisible:
+    id: "health.metric.insight"
+- tapOn:
+    id: "health.metric.back"
+- assertVisible:
+    id: "health.screen"

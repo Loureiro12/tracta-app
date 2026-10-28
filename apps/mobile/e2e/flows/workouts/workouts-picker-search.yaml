@@ -1,0 +1,70 @@
+appId: com.tracta.mobile
+name: workouts-picker-search
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- tapOn:
+    id: "workouts.new"
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.add"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.add"
+- assertVisible:
+    id: "workouts.picker.screen"
+- assertVisible:
+    id: "workouts.picker.categories"
+- assertVisible:
+    id: "workouts.picker.create"
+- assertVisible:
+    id: "workouts.picker.items"
+# Filter by muscle group: the strip scrolls horizontally, swipe it to reveal "Pernas"
+- swipe:
+    start: "85%,23%"
+    end: "35%,23%"
+    duration: 400
+- tapOn:
+    id: "workouts.picker.categories.pernas"
+- assertVisible:
+    id: "workouts.picker.items.agachamento-livre"
+# Swipe the strip back so "All" is on screen again
+- swipe:
+    start: "15%,23%"
+    end: "85%,23%"
+    duration: 400
+- tapOn:
+    id: "workouts.picker.categories.all"
+# Search (accent-insensitive)
+- assertVisible:
+    id: "workouts.picker.search"
+- tapOn:
+    id: "workouts.picker.search.input"
+- inputText: "remada"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- assertVisible:
+    id: "workouts.picker.items.remada-curvada"
+- assertVisible:
+    id: "workouts.picker.items.remada-baixa"
+- tapOn:
+    id: "workouts.picker.items.remada-curvada"
+- assertVisible:
+    id: "workouts.picker.add.label"
+    text: "Add 1 exercise"
+- eraseText
+- inputText: "xyzw"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- assertVisible:
+    id: "workouts.picker.empty"
+    text: "No exercises in this category."
+- tapOn:
+    id: "workouts.picker.close"
+- assertVisible:
+    id: "workouts.builder.screen"
+- tapOn:
+    id: "workouts.builder.cancel"
+- assertVisible:
+    id: "workouts.screen"

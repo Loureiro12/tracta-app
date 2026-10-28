@@ -1,0 +1,41 @@
+appId: com.tracta.mobile
+name: social-empty-state
+tags:
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- assertNotVisible:
+    id: "social.hub.empty"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.dev-no-friends"
+    centerElement: true
+- tapOn:
+    id: "social.hub.dev-no-friends"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.empty"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "social.hub.empty"
+- assertNotVisible:
+    id: "social.hub.friends"
+- assertNotVisible:
+    id: "social.hub.challenges"
+# Creating a challenge without friends redirects to the invite overlay
+- tapOn:
+    id: "social.hub.create"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite at least one friend first"
+- assertVisible:
+    id: "social.invite.screen"
+- tapOn:
+    id: "social.invite.close"
+- assertVisible:
+    id: "social.hub.empty"

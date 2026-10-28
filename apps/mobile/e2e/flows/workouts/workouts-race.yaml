@@ -1,0 +1,80 @@
+appId: com.tracta.mobile
+name: workouts-race
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+# "Minha prova" is a Pro feature; the sheet is deep-linked (the gate is covered by workouts-pro-gate).
+- openLink: "tracta://workouts/race?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "workouts.race.screen"
+- assertVisible:
+    id: "workouts.race.screen.title"
+    text: "My race"
+- assertVisible:
+    id: "workouts.race.distances"
+- assertVisible:
+    id: "workouts.race.distances.10"
+- tapOn:
+    id: "workouts.race.distances.21"
+- assertVisible:
+    id: "workouts.race.date"
+- assertVisible:
+    id: "workouts.race.goal"
+- assertVisible:
+    id: "workouts.race.goal.value"
+    text: "1:56:00"
+- assertVisible:
+    id: "workouts.race.date.value"
+    text: "Dec 7"
+- tapOn:
+    id: "workouts.race.date.plus"
+- assertVisible:
+    id: "workouts.race.date.value"
+    text: "Dec 14"
+- assertVisible:
+    id: "workouts.race.rows"
+- assertVisible:
+    id: "workouts.race.rows.required.value"
+    text: "5:29 /km"
+- assertVisible:
+    id: "workouts.race.rows.recent.value"
+    text: "5:36 /km"
+- assertVisible:
+    id: "workouts.race.rows.estimate.value"
+    text: "2:02:52 (+6:52)"
+- assertVisible:
+    id: "workouts.race.save.label"
+    text: "Set race"
+- tapOn:
+    id: "workouts.race.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Race set"
+# The Treinos tab now shows the countdown and the pace stats
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.race.card"
+    centerElement: true
+- assertVisible:
+    id: "workouts.race.chip"
+    text: "49 days left"
+- assertVisible:
+    id: "workouts.race.stats"
+- openLink: "tracta://workouts/race?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "workouts.race.save.label"
+    text: "Save race"
+- scrollUntilVisible:
+    element:
+      id: "workouts.race.remove"
+    centerElement: true
+- tapOn:
+    id: "workouts.race.remove"
+- assertVisible:
+    id: "app.toast"
+    text: "Race removed"

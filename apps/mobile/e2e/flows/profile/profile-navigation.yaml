@@ -1,0 +1,56 @@
+appId: com.tracta.mobile
+name: profile-navigation
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- assertVisible:
+    id: "profile.screen"
+- scrollUntilVisible:
+    element:
+      id: "profile.nav.tour"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.nav.tour"
+- assertVisible:
+    id: "tour.screen"
+# Overlays expose their own back control; restart to come back to a clean Profile tab.
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.nav.social"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.nav.social"
+- assertVisible:
+    id: "social.screen"
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.nav.achievements"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.nav.achievements"
+- assertVisible:
+    id: "history.achievements.screen"
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.nav.connections"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.nav.connections"
+- assertVisible:
+    id: "auth.connect.screen"

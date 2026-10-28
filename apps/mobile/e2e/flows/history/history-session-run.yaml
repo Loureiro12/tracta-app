@@ -1,0 +1,110 @@
+appId: com.tracta.mobile
+name: history-session-run
+tags:
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+# Day 24 (run) is selected by default.
+- tapOn:
+    id: "history.day.sessions.run-24"
+- assertVisible:
+    id: "history.session.screen"
+- assertVisible:
+    id: "history.session.title"
+    text: "Run"
+- assertVisible:
+    id: "history.session.sub"
+    text: "GPS · splits per km"
+- assertVisible:
+    id: "history.session.stats.distance.value"
+    text: "8,20 km"
+- assertVisible:
+    id: "history.session.stats.duration.value"
+    text: "45:41"
+- assertVisible:
+    id: "history.session.stats.pace.value"
+    text: "5:34 /km"
+- assertVisible:
+    id: "history.session.stats.hr.value"
+    text: "154 bpm"
+- scrollUntilVisible:
+    element:
+      id: "history.session.map"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.map"
+- scrollUntilVisible:
+    element:
+      id: "history.session.splits"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.splits.1.label"
+    text: "Km 1"
+- scrollUntilVisible:
+    element:
+      id: "history.session.splits.9.label"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.splits.9.label"
+    text: "0,2 km"
+- scrollUntilVisible:
+    element:
+      id: "history.session.source"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.source.origin.value"
+    text: "Logged in Tracta · GPS"
+- assertVisible:
+    id: "history.session.source.heart.value"
+    text: "Mi Band 8 via Apple Health"
+- scrollUntilVisible:
+    element:
+      id: "history.session.back"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "history.session.back"
+- assertVisible:
+    id: "history.screen"
+# Unknown session id renders the not-found state.
+- openLink: "tracta://history/session/strength-25?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "history.session.missing"
+    text: "Session not found"
+- tapOn:
+    id: "history.session.back"
+- assertVisible:
+    id: "history.screen"
+# Day overlay by deep link
+- openLink: "tracta://history/day/2026-10-24?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "history.day-view.screen"
+- assertVisible:
+    id: "history.day-view.title"
+- assertVisible:
+    id: "history.day.sessions.run-24.title"
+    text: "Outdoor run"
+- tapOn:
+    id: "history.day-view.back"
+- assertVisible:
+    id: "history.screen"
+- openLink: "tracta://history/day/2026-10-24?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "history.day.sessions.run-24"
+- assertVisible:
+    id: "history.session.screen"
+- tapOn:
+    id: "history.session.share"
+- assertVisible:
+    id: "share.screen"

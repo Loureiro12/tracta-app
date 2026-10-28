@@ -1,0 +1,76 @@
+appId: com.tracta.mobile
+name: social-challenge
+tags:
+  - smoke
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "social.hub.challenges.c1"
+- assertVisible:
+    id: "social.challenge.screen"
+- assertVisible:
+    id: "social.challenge.eyebrow"
+- assertVisible:
+    id: "social.challenge.title"
+    text: "Semana em movimento"
+- assertVisible:
+    id: "social.challenge.ranking"
+- assertVisible:
+    id: "social.challenge.ranking.ana.status"
+    text: "worked out today · 52 min"
+- assertVisible:
+    id: "social.challenge.ranking.me.name"
+    text: "You"
+- assertVisible:
+    id: "social.challenge.me-line"
+    text: "Your workout counts automatically when you save a session today."
+- scrollUntilVisible:
+    element:
+      id: "social.challenge.grid"
+    centerElement: true
+- assertVisible:
+    id: "social.challenge.grid"
+- scrollUntilVisible:
+    element:
+      id: "social.challenge.feed.carla.cheer"
+    centerElement: true
+- assertVisible:
+    id: "social.challenge.feed"
+- tapOn:
+    id: "social.challenge.feed.carla.cheer"
+- assertVisible:
+    id: "social.challenge.feed.carla.cheer.label"
+    text: "Cheered"
+- scrollUntilVisible:
+    element:
+      id: "social.challenge.invite"
+    centerElement: true
+- tapOn:
+    id: "social.challenge.invite"
+- assertVisible:
+    id: "social.invite.screen"
+- tapOn:
+    id: "social.invite.close"
+- assertVisible:
+    id: "social.challenge.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.challenge.leave"
+    centerElement: true
+- tapOn:
+    id: "social.challenge.leave"
+- assertVisible:
+    id: "social.challenge.leave.label"
+    text: "Tap again to leave"
+- tapOn:
+    id: "social.challenge.leave"
+- assertVisible:
+    id: "app.toast.message"
+    text: "You left the challenge"
+- assertVisible:
+    id: "social.screen"
+- assertNotVisible:
+    id: "social.hub.challenges.c1"

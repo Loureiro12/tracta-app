@@ -1,0 +1,137 @@
+{
+  "title": "Compartilhar",
+  "close": "Fechar",
+  "nav": {
+    "prev": "Modelo anterior",
+    "next": "Próximo modelo"
+  },
+  "templates": {
+    "today": "Treino de hoje",
+    "evo": "Evolução",
+    "pr": "Recorde",
+    "week": "Semana",
+    "run": "Corrida",
+    "month": "Mês"
+  },
+  "styles": {
+    "ink": "Carvão",
+    "sand": "Areia",
+    "brand": "Tijolo",
+    "photo": "Foto",
+    "photoBadge": "FOTO"
+  },
+  "formats": {
+    "story": "Story",
+    "post": "Post"
+  },
+  "options": {
+    "loads": "Mostrar cargas",
+    "times": "Mostrar tempos",
+    "name": "Meu nome"
+  },
+  "targets": {
+    "stories": "Stories",
+    "whatsapp": "WhatsApp",
+    "save": "Salvar",
+    "more": "Mais"
+  },
+  "exported": "Cartão exportado",
+  "card": {
+    "date": "26 out 2026",
+    "photoPlaceholder": "Sua foto",
+    "handle": "@{{name}} no Tracta",
+    "kg": "{{value}} kg",
+    "pct": "{{value}}%",
+    "km": "{{value}} km",
+    "tons": "{{value}} t",
+    "days": "{{count}} dias",
+    "weekdays": {
+      "d0": "S",
+      "d1": "T",
+      "d2": "Q",
+      "d3": "Q",
+      "d4": "S",
+      "d5": "S",
+      "d6": "D"
+    },
+    "months": {
+      "m0": "mai",
+      "m1": "jun",
+      "m2": "jul",
+      "m3": "ago",
+      "m4": "set",
+      "m5": "out"
+    },
+    "today": {
+      "name": "Treino A",
+      "bigSets_one": "{{count}} série",
+      "bigSets_other": "{{count}} séries",
+      "linePr_one": "Treino concluído com {{count}} recorde novo.",
+      "linePr_other": "Treino concluído com {{count}} recordes novos.",
+      "lineNoPr": "Mais um treino no plano.",
+      "sets": "Séries",
+      "volume": "Volume",
+      "week": "Semana",
+      "weekValue": "{{done}} de {{goal}} treinos"
+    },
+    "evo": {
+      "kicker": "Supino reto · últimos 6 meses",
+      "big": "+{{value}} kg",
+      "bigPct": "+{{value}}%",
+      "line": "{{from}} kg → {{to}} kg na carga máxima",
+      "lineNoLoads": "de força na carga máxima",
+      "workouts": "Treinos no período",
+      "streak": "Sequência atual"
+    },
+    "pr": {
+      "kicker": "Novo recorde pessoal",
+      "bigReps": "× {{reps}}",
+      "line": "Supino reto × {{reps}} · +{{delta}} kg sobre o anterior",
+      "lineNoLoads": "Supino reto · melhor marca até hoje",
+      "month": "Recordes em outubro",
+      "since": "Desde o início",
+      "sinceKg": "+{{value}} kg",
+      "sincePct": "+{{value}}%"
+    },
+    "week": {
+      "kicker": "Semana · 19 a 25 out",
+      "big": "{{done}}/{{goal}}",
+      "line": "Meta semanal batida. {{days}} dias seguidos em movimento.",
+      "strength": "Musculação",
+      "strengthValue_one": "{{count}} treino",
+      "strengthValue_other": "{{count}} treinos",
+      "run": "Corrida"
+    },
+    "run": {
+      "kicker": "Corrida · 25 out",
+      "line": "{{pace}} /km de média, ritmo caindo a cada km.",
+      "lineNoTimes": "Mais longa do mês.",
+      "split": "km {{value}}",
+      "time": "Tempo",
+      "pace": "Ritmo médio",
+      "paceValue": "{{pace}} /km",
+      "distance": "Distância"
+    },
+    "month": {
+      "kicker": "Outubro 2026",
+      "line": "treinos — {{more}} a mais que em setembro.",
+      "run": "Corrida",
+      "volume": "Volume",
+      "records": "Recordes"
+    }
+  },
+  "nudge": {
+    "create": "Criar cartão",
+    "dismiss": "Agora não",
+    "today": {
+      "title_one": "Treino salvo · {{count}} série",
+      "title_other": "Treino salvo · {{count}} séries",
+      "descriptionPr": "Você bateu um recorde. Que tal mostrar?",
+      "descriptionNoPr": "Transforme em um cartão para os stories."
+    },
+    "run": {
+      "title": "Corrida salva · {{km}} km",
+      "description": "Seu ritmo melhorou. Compartilhe o cartão."
+    }
+  }
+}

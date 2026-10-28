@@ -1,0 +1,64 @@
+appId: com.tracta.mobile
+name: run-discard
+tags:
+  - run
+---
+- runFlow: ../../subflows/launch.yaml
+# Walk without GPS: duration only, no splits
+- openLink: "tracta://run/gps?type=walk&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "run.gps.deny"
+    text: "Continue without GPS"
+- tapOn:
+    id: "run.gps.deny"
+- assertVisible:
+    id: "run.screen"
+- assertVisible:
+    id: "run.live.label"
+    text: "Walk"
+- assertVisible:
+    id: "run.live.gps"
+    text: "No GPS"
+- assertVisible:
+    id: "run.live.no-gps"
+    text: "GPS off"
+- assertVisible:
+    id: "run.live.stats.start"
+- assertVisible:
+    id: "run.live.split-hint"
+    text: "Without GPS there are no splits per km."
+# Finish → summary → discard needs a second tap
+- tapOn:
+    id: "run.live.pause"
+- tapOn:
+    id: "run.live.end"
+- assertVisible:
+    id: "run.summary.screen"
+- assertVisible:
+    id: "run.summary.stats.modality"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.dest-health"
+    centerElement: true
+- assertVisible:
+    id: "run.summary.dest-health"
+    text: "Pending"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.discard"
+    centerElement: true
+- tapOn:
+    id: "run.summary.discard"
+- assertVisible:
+    id: "run.summary.discard"
+    text: "Tap again to confirm"
+- tapOn:
+    id: "run.summary.discard"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Activity discarded"
+    timeout: 8000
+- assertVisible:
+    id: "home.screen"

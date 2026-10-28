@@ -4,20 +4,62 @@ tags:
   - home
 ---
 - runFlow: ../../subflows/launch.yaml
-# Copy comes from the "home" namespace (locale pinned to English by launch.yaml)
-- assertVisible:
-    id: "home.nav.settings.label"
-    text: "Settings"
+# Sleep and movement cards open the Health tab
 - tapOn:
-    id: "home.nav.design-system"
+    id: "home.sleep.card"
 - assertVisible:
-    id: "ds.index.screen"
-# Maestro's `back` is Android-only; screens expose their own back control.
+    id: "health.screen"
 - tapOn:
-    id: "ds.index.back"
+    id: "app.tab.home"
 - assertVisible:
     id: "home.screen"
+- scrollUntilVisible:
+    element:
+      id: "home.move.card"
+    centerElement: true
 - tapOn:
-    id: "home.nav.settings"
+    id: "home.move.card"
 - assertVisible:
-    id: "settings.title"
+    id: "health.screen"
+- tapOn:
+    id: "app.tab.home"
+# Avatar opens the Profile tab
+- tapOn:
+    id: "home.nav.profile"
+- assertVisible:
+    id: "profile.screen"
+- tapOn:
+    id: "app.tab.home"
+# "History" shortcut on the last-activity card
+- scrollUntilVisible:
+    element:
+      id: "home.last.history"
+    centerElement: true
+- tapOn:
+    id: "home.last.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "app.tab.home"
+# Friends card opens the social hub (overlay with its own back button)
+- scrollUntilVisible:
+    element:
+      id: "home.friends.card"
+    centerElement: true
+- tapOn:
+    id: "home.friends.card"
+- assertVisible:
+    id: "social.screen"
+- tapOn:
+    id: "social.hub.back"
+- assertVisible:
+    id: "home.screen"
+# "Iniciar treino" starts the planned session
+- scrollUntilVisible:
+    element:
+      id: "home.next.start"
+    centerElement: true
+- tapOn:
+    id: "home.next.start"
+- assertVisible:
+    id: "session.screen"

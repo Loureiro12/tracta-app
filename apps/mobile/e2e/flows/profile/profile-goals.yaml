@@ -1,0 +1,56 @@
+appId: com.tracta.mobile
+name: profile-goals
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- tapOn:
+    id: "profile.goals-list.steps"
+- assertVisible:
+    id: "profile.goals.screen"
+- assertVisible:
+    id: "profile.goals.rows"
+- assertVisible:
+    id: "profile.goals.rows.steps.value"
+    text: "10,000"
+- tapOn:
+    id: "profile.goals.rows.steps.plus"
+- assertVisible:
+    id: "profile.goals.rows.steps.value"
+    text: "10,500"
+- assertVisible:
+    id: "profile.goals.rows.sleep.value"
+    text: "7h 30"
+- tapOn:
+    id: "profile.goals.rows.sleep.minus"
+- assertVisible:
+    id: "profile.goals.rows.sleep.value"
+    text: "7h 15"
+- assertVisible:
+    id: "profile.goals.rows.workouts.value"
+    text: "4×"
+- tapOn:
+    id: "profile.goals.rows.workouts.plus"
+- assertVisible:
+    id: "profile.goals.rows.workouts.value"
+    text: "5×"
+- tapOn:
+    id: "profile.goals.rows.runKm.plus"
+- assertVisible:
+    id: "profile.goals.rows.runKm.value"
+    text: "16 km"
+- tapOn:
+    id: "profile.goals.screen.right"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Goals updated"
+- assertVisible:
+    id: "profile.screen"
+- assertVisible:
+    id: "profile.goals-list.steps.value"
+    text: "10,500"
+- assertVisible:
+    id: "profile.goals-list.workouts.value"
+    text: "5"

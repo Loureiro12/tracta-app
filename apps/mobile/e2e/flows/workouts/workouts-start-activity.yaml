@@ -1,0 +1,12 @@
+appId: com.tracta.mobile
+name: workouts-start-activity
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- tapOn:
+    id: "workouts.start.walk"
+- assertVisible:
+    id: "run.screen"

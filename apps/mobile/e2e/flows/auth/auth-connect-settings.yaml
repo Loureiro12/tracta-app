@@ -1,0 +1,33 @@
+appId: com.tracta.mobile
+name: auth-connect-settings
+tags:
+  - auth
+---
+- runFlow: ../../subflows/launch.yaml
+# Opened from Profile ("Manage connections"): back button, "Done", no onboarding chrome
+- openLink: "tracta://connect?mode=settings&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "auth.connect.screen"
+- assertVisible:
+    id: "auth.connect.back"
+- assertVisible:
+    id: "auth.connect.title"
+    text: "Connect your data"
+- assertVisible:
+    id: "auth.connect.continue.label"
+    text: "Done"
+- assertNotVisible:
+    id: "auth.connect.eyebrow"
+- assertNotVisible:
+    id: "auth.connect.skip"
+- tapOn:
+    id: "auth.connect.back"
+- assertVisible:
+    id: "home.screen"
+- openLink: "tracta://connect?mode=settings&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.connect.continue"
+- assertVisible:
+    id: "home.screen"

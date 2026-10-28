@@ -1,0 +1,29 @@
+appId: com.tracta.mobile
+name: app-tabs
+tags:
+  - smoke
+  - app
+---
+- runFlow: ../../subflows/launch.yaml
+- assertVisible:
+    id: "app.tab-bar"
+- tapOn:
+    id: "app.tab.health"
+- assertVisible:
+    id: "health.screen"
+- tapOn:
+    id: "app.tab.workouts"
+- assertVisible:
+    id: "workouts.screen"
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "app.tab.profile"
+- assertVisible:
+    id: "profile.screen"
+- tapOn:
+    id: "app.tab.home"
+- assertVisible:
+    id: "home.screen"

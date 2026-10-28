@@ -1,0 +1,77 @@
+appId: com.tracta.mobile
+name: home-weekly
+tags:
+  - home
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.weekly.card"
+- assertVisible:
+    id: "home.weekly.screen"
+- assertVisible:
+    id: "home.weekly.title"
+    text: "A consistent week"
+- assertVisible:
+    id: "home.weekly.stats"
+- assertVisible:
+    id: "home.weekly.stats.workouts"
+    text: "5"
+- assertVisible:
+    id: "home.weekly.days"
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.changes"
+    centerElement: true
+- assertVisible:
+    id: "home.weekly.changes"
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.highlights"
+    centerElement: true
+- assertVisible:
+    id: "home.weekly.highlights"
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.goals"
+    centerElement: true
+- assertVisible:
+    id: "home.weekly.goals"
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.note"
+    centerElement: true
+- assertVisible:
+    id: "home.weekly.preview"
+- assertVisible:
+    id: "home.weekly.note"
+# Closing marks the summary as seen: the dark teaser leaves the Home tab
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.back"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "home.weekly.back"
+- assertVisible:
+    id: "home.screen"
+- assertNotVisible:
+    id: "home.weekly.card"
+# The summary is still reachable from the inbox; "Compartilhar resumo" opens the share screen
+- tapOn:
+    id: "home.nav.inbox"
+- scrollUntilVisible:
+    element:
+      id: "inbox.items.n4.open"
+    centerElement: true
+- tapOn:
+    id: "inbox.items.n4.open"
+- assertVisible:
+    id: "home.weekly.screen"
+- scrollUntilVisible:
+    element:
+      id: "home.weekly.share"
+    centerElement: true
+- tapOn:
+    id: "home.weekly.share"
+- assertVisible:
+    id: "share.screen"

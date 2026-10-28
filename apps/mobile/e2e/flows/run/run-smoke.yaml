@@ -1,0 +1,121 @@
+appId: com.tracta.mobile
+name: run-smoke
+tags:
+  - smoke
+  - run
+---
+- runFlow: ../../subflows/launch.yaml
+# Location prompt before the first GPS activity
+- openLink: "tracta://run/gps?type=run&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "run.gps.screen"
+- assertVisible:
+    id: "run.gps.allow"
+    text: "Allow While Using"
+- tapOn:
+    id: "run.gps.allow"
+# Live screen
+- assertVisible:
+    id: "run.screen"
+- assertVisible:
+    id: "run.live.label"
+    text: "Run"
+- assertVisible:
+    id: "run.live.gps"
+    text: "GPS · good signal"
+- assertVisible:
+    id: "run.live.map"
+- assertVisible:
+    id: "run.live.big"
+- assertVisible:
+    id: "run.live.stats"
+- assertVisible:
+    id: "run.live.stats.time"
+- assertVisible:
+    id: "run.live.splits"
+- assertVisible:
+    id: "run.live.split-hint"
+    text: "Splits appear every km."
+# Pause / resume
+- tapOn:
+    id: "run.live.pause"
+- assertVisible:
+    id: "run.live.paused"
+    text: "Activity paused · time and distance stopped"
+- tapOn:
+    id: "run.live.resume"
+- assertVisible:
+    id: "run.live.pause"
+# Demo clock runs 12×: the first km split shows up after ~30 s
+- extendedWaitUntil:
+    visible:
+      id: "run.live.splits.1"
+    timeout: 60000
+- assertVisible:
+    id: "run.live.splits.1.pace"
+# Minimize → mini-player → resume
+- tapOn:
+    id: "run.live.minimize"
+- assertVisible:
+    id: "home.screen"
+- assertVisible:
+    id: "app.mini-player"
+- tapOn:
+    id: "app.mini-player"
+- assertVisible:
+    id: "run.screen"
+- assertVisible:
+    id: "run.live.splits.1"
+# Finish → summary
+- tapOn:
+    id: "run.live.pause"
+- tapOn:
+    id: "run.live.end"
+- assertVisible:
+    id: "run.summary.screen"
+- assertVisible:
+    id: "run.summary.title"
+    text: "Run"
+- assertVisible:
+    id: "run.summary.stats"
+- assertVisible:
+    id: "run.summary.stats.distance"
+- assertVisible:
+    id: "run.summary.stats.avg-pace"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.map"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      id: "run.summary.splits"
+    centerElement: true
+- assertVisible:
+    id: "run.summary.splits.1"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.notes"
+    centerElement: true
+- tapOn:
+    id: "run.summary.notes.input"
+- inputText: "Easy morning run"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- hideKeyboard
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "run.summary.dest-local"
+    centerElement: true
+- assertVisible:
+    id: "run.summary.dest-local"
+    text: "Pending"
+- tapOn:
+    id: "run.summary.save"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Activity saved"
+    timeout: 8000
+- assertVisible:
+    id: "home.screen"

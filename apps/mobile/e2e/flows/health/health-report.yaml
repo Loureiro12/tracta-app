@@ -1,0 +1,72 @@
+appId: com.tracta.mobile
+name: health-report
+tags:
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://health/report?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "health.report.screen"
+- assertVisible:
+    id: "health.report.title"
+    text: "Report"
+- assertVisible:
+    id: "health.report.sessions"
+    text: "4 sessions"
+- assertVisible:
+    id: "health.report.modality"
+- assertVisible:
+    id: "health.report.modality.strength"
+- scrollUntilVisible:
+    element:
+      id: "health.report.stat.records"
+    centerElement: true
+- assertVisible:
+    id: "health.report.stat"
+- scrollUntilVisible:
+    element:
+      id: "health.report.goal.steps"
+    centerElement: true
+- assertVisible:
+    id: "health.report.goal"
+- scrollUntilVisible:
+    element:
+      id: "health.report.export"
+    centerElement: true
+- tapOn:
+    id: "health.report.export"
+- assertVisible:
+    id: "app.toast"
+    text: "Report exported as PDF"
+- scrollUntilVisible:
+    element:
+      id: "health.report.period"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "health.report.period.30"
+- assertVisible:
+    id: "health.report.sessions"
+    text: "19 sessions"
+- tapOn:
+    id: "health.report.period.custom"
+- assertVisible:
+    id: "health.report.from"
+- assertVisible:
+    id: "health.report.to"
+- assertVisible:
+    id: "health.report.from.value"
+    text: "1 Oct"
+- tapOn:
+    id: "health.report.from.plus"
+- assertVisible:
+    id: "health.report.from.value"
+    text: "2 Oct"
+- assertVisible:
+    id: "health.report.to.value"
+    text: "15 Oct"
+- tapOn:
+    id: "health.report.back"
+- assertVisible:
+    id: "home.screen"

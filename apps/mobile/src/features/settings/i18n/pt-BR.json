@@ -1,16 +1,32 @@
 {
-  "title": "Configurações",
+  "title": "Preferências do app",
+  "back": "Voltar",
   "theme": {
+    "label": "Aparência",
     "current": "Tema: {{value}}",
     "system": "Sistema",
     "light": "Claro",
     "dark": "Escuro"
   },
   "language": {
+    "label": "Idioma",
     "current": "Idioma: {{value}}",
     "system": "Sistema",
     "en": "English",
     "pt-BR": "Português (Brasil)"
   },
-  "back": "Voltar"
+  "demo": {
+    "label": "Estados de demonstração",
+    "hint": "Visualize os estados de borda do design: faixa sem internet, falha de sync e toast.",
+    "offline": "Mostrar faixa sem internet",
+    "offlineTitle": "Sem internet",
+    "offlineDescription": "Treinos salvos no aparelho · 2 aguardando envio",
+    "sync": "Mostrar falha de sync",
+    "syncTitle": "Falha de sync",
+    "syncDescription": "Último envio há 2 h",
+    "syncCta": "Tentar de novo",
+    "toast": "Mostrar toast",
+    "toastMessage": "Treino salvo",
+    "clear": "Limpar estados"
+  }
 }

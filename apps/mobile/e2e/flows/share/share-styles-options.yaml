@@ -1,0 +1,91 @@
+appId: com.tracta.mobile
+name: share-styles-options
+tags:
+  - share
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://share?template=evo&style=sand&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Bench press · last 6 months"
+# Styles: Carvão · Areia · Tijolo · Foto (photo adds the placeholder + gradient)
+- tapOn:
+    id: "share.style.ink"
+- assertVisible:
+    id: "share.card"
+- tapOn:
+    id: "share.style.brand"
+- assertVisible:
+    id: "share.card"
+- tapOn:
+    id: "share.style.photo"
+- assertVisible:
+    id: "share.card.photo"
+- tapOn:
+    id: "share.style.sand"
+- assertNotVisible:
+    id: "share.card.photo"
+# Story / Post
+- tapOn:
+    id: "share.format.post"
+- assertVisible:
+    id: "share.card"
+- tapOn:
+    id: "share.format.story"
+- assertVisible:
+    id: "share.card"
+# "Show loads" off → percentages instead of kg
+- assertVisible:
+    id: "share.card.big"
+    text: "+12.5 kg"
+- tapOn:
+    id: "share.option.loads"
+- assertVisible:
+    id: "share.card.big"
+    text: "+18%"
+- assertVisible:
+    id: "share.card.line"
+    text: "stronger at max load"
+- tapOn:
+    id: "share.option.loads"
+- assertVisible:
+    id: "share.card.big"
+    text: "+12.5 kg"
+# "Show times" off → the workout card shows sets instead of duration
+- tapOn:
+    id: "share.template.today"
+- assertVisible:
+    id: "share.card.big"
+    text: "52 min"
+- assertVisible:
+    id: "share.card.row.volume"
+- tapOn:
+    id: "share.option.times"
+- assertVisible:
+    id: "share.card.big"
+    text: "22 sets"
+- tapOn:
+    id: "share.option.times"
+- assertVisible:
+    id: "share.card.big"
+    text: "52 min"
+# Loads off also hides the volume row
+- tapOn:
+    id: "share.option.loads"
+- assertNotVisible:
+    id: "share.card.row.volume"
+- tapOn:
+    id: "share.option.loads"
+# "My name" shows the handle on the card
+- assertNotVisible:
+    id: "share.card.handle"
+- tapOn:
+    id: "share.option.name"
+- assertVisible:
+    id: "share.card.handle"
+    text: "@lucas on Tracta"
+- tapOn:
+    id: "share.option.name"
+- assertNotVisible:
+    id: "share.card.handle"

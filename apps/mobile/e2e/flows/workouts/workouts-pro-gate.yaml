@@ -1,0 +1,59 @@
+appId: com.tracta.mobile
+name: workouts-pro-gate
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+# Interval run → paywall with context
+- scrollUntilVisible:
+    element:
+      id: "workouts.start.intervals"
+    speed: 30
+    centerElement: true
+# Let the list settle so the tap is not swallowed by scroll momentum
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "workouts.start.intervals"
+- assertVisible:
+    id: "profile.paywall.screen"
+- assertVisible:
+    id: "profile.paywall.context"
+- tapOn:
+    id: "profile.paywall.back"
+- assertVisible:
+    id: "workouts.screen"
+# Programs → paywall
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.card"
+    speed: 30
+    centerElement: true
+# Let the list settle so the tap is not swallowed by scroll momentum
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "workouts.programs.card"
+- assertVisible:
+    id: "profile.paywall.screen"
+- tapOn:
+    id: "profile.paywall.back"
+# My race → paywall
+- scrollUntilVisible:
+    element:
+      id: "workouts.race.card"
+    speed: 30
+    centerElement: true
+# Let the list settle so the tap is not swallowed by scroll momentum
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "workouts.race.card"
+- assertVisible:
+    id: "profile.paywall.screen"
+- tapOn:
+    id: "profile.paywall.back"
+- assertVisible:
+    id: "workouts.screen"

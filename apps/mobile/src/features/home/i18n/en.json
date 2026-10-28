@@ -1,13 +1,214 @@
 {
-  "subtitle": "Every screen ships with an end-to-end flow.",
-  "counter": {
-    "taps_one": "{{count}} tap",
-    "taps_other": "{{count}} taps",
-    "tap": "Tap",
-    "reset": "Reset"
+  "header": {
+    "title": "How am I today"
   },
   "nav": {
+    "edit": "Customize home",
+    "inbox": "Notifications",
+    "profile": "Profile",
     "settings": "Settings",
-    "designSystem": "Design system gallery"
+    "designSystem": "Design system"
+  },
+  "checklist": {
+    "title": "Start here",
+    "progress": "{{done}} of {{total}}",
+    "description": "Your home screen fills with numbers after your first workout and your first logged night.",
+    "steps": {
+      "health": {
+        "name": "Connect Apple Health",
+        "description": "sleep, steps and heart rate"
+      },
+      "workout": {
+        "name": "Create your first workout",
+        "description": "or pick a program"
+      },
+      "friend": {
+        "name": "Invite a friend",
+        "description": "to follow along and compete"
+      }
+    }
+  },
+  "sync": {
+    "line": "Apple Health · synced at {{time}}"
+  },
+  "weekly": {
+    "eyebrow": "Weekly summary · {{range}}",
+    "range": "Oct 19–25",
+    "previousRange": "Oct 12–18",
+    "headline": "A consistent week",
+    "homeLine": "5 workouts · 35 min more sleep · 2 records",
+    "view": "View",
+    "back": "Home",
+    "sub": "5 workouts in 7 days, above your goal of {{goal}}.",
+    "stats": {
+      "workouts": "Workouts",
+      "workoutsSub": "goal {{goal}} per week",
+      "active": "Active time",
+      "activeSub": "strength and running",
+      "distance": "Distance",
+      "distanceSub_one": "{{count}} GPS run",
+      "distanceSub_other": "{{count}} GPS runs",
+      "volume": "Volume",
+      "volumeValue": "{{value}} t",
+      "volumeSub_one": "{{count}} strength workout",
+      "volumeSub_other": "{{count}} strength workouts"
+    },
+    "consistency": "Consistency",
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "restNote": "Two rest days — they are part of training.",
+    "changes": "What changed",
+    "change": {
+      "sleep": {
+        "title": "Average sleep 7h 20",
+        "description": "35 min more than the previous week"
+      },
+      "steps": {
+        "title": "Average steps {{value}}",
+        "description": "8% more · goal reached on 3 days"
+      },
+      "hr": {
+        "title": "Resting HR 60 bpm",
+        "description": "stable, 3 bpm variation"
+      },
+      "pace": {
+        "title": "Running pace 5:36 /km",
+        "description": "4 s faster on similar runs"
+      }
+    },
+    "highlights": "Highlights",
+    "highlight": {
+      "bench": "Barbell bench press · 60 kg × 8",
+      "squat": "Back squat · 80 kg × 6",
+      "run": "8.2 km run · longest of the month"
+    },
+    "goals": "Weekly goals",
+    "goal": {
+      "workouts": "Workouts",
+      "workoutsValue": "5 of {{goal}}",
+      "steps": "Steps ({{goal}})",
+      "stepsValue": "3 of 7 days",
+      "sleep": "Sleep ({{goal}})",
+      "sleepValue": "3 of 7 nights"
+    },
+    "preview": {
+      "big": "5 workouts · 13.3 km",
+      "active": "4h 12 active",
+      "records": "2 records",
+      "days": "5 of 7 days",
+      "note": "Card preview · no health data"
+    },
+    "share": "Share summary",
+    "note": "Compared with {{range}}. We describe trends without claiming causes."
+  },
+  "sleep": {
+    "title": "Sleep · last night",
+    "score": "score",
+    "duration": "{{hours}}h {{minutes}}",
+    "goal": "of {{goal}} goal",
+    "window": "{{start}} → {{end}}",
+    "regularity": "regular schedule · ±{{minutes}} min"
+  },
+  "move": {
+    "title": "Movement",
+    "delta": "+{{percent}}% vs. yesterday at this time",
+    "goal": "of {{goal}} steps",
+    "distance": "Distance",
+    "calories": "Active cal.",
+    "activity": "Activity",
+    "km": "{{value}} km",
+    "kcal": "{{value}} kcal",
+    "min": "{{value}} min"
+  },
+  "hr": {
+    "title": "Resting HR ›",
+    "unit": "bpm",
+    "note": "{{delta}} below the 7-day average"
+  },
+  "week": {
+    "title": "Workouts this week",
+    "of": "of {{goal}}"
+  },
+  "next": {
+    "eyebrow": "Today · planned",
+    "duration": "~{{minutes}} min",
+    "subtitle_one": "{{focus}} · {{count}} exercise",
+    "subtitle_other": "{{focus}} · {{count}} exercises",
+    "start": "Start workout",
+    "done": "Done today"
+  },
+  "friends": {
+    "title": "Friends",
+    "meta": {
+      "together": "train together",
+      "friends_one": "{{count}} friend",
+      "friends_other": "{{count}} friends",
+      "day": "day {{day}} of {{days}}"
+    },
+    "line": {
+      "invite": "Invite friends to follow workouts and compete.",
+      "create": "Create a daily challenge with your friends."
+    },
+    "cta": {
+      "invite": "Invite",
+      "create": "Create challenge"
+    },
+    "position": "{{position}}º",
+    "points_one": "{{count}} pt",
+    "points_other": "{{count}} pts"
+  },
+  "last": {
+    "title": "Last activity · {{when}}",
+    "when": "Saturday · Run",
+    "history": "History"
+  },
+  "edit": {
+    "title": "Customize home",
+    "restore": "Restore",
+    "done": "Done",
+    "view": "View",
+    "density": {
+      "summary": "Summary",
+      "summarySub": "numbers only",
+      "detailed": "Detailed",
+      "detailedSub": "with charts"
+    },
+    "cards": "Cards",
+    "count": "{{visible}} of {{total}} visible",
+    "card": {
+      "sleep": {
+        "name": "Sleep",
+        "description": "duration, goal and regularity"
+      },
+      "move": {
+        "name": "Movement",
+        "description": "steps, distance and calories"
+      },
+      "stats": {
+        "name": "HR and weekly workouts",
+        "description": "resting rate and weekly frequency"
+      },
+      "next": {
+        "name": "Next workout",
+        "description": "workout planned for today"
+      },
+      "last": {
+        "name": "Last activity",
+        "description": "shortcut to history"
+      }
+    },
+    "up": "Move {{name}} up",
+    "down": "Move {{name}} down",
+    "toggle": "Show {{name}}",
+    "note": "Hidden cards remain available in Health and History.",
+    "restored": "Home restored",
+    "simulateNewUser": "Simulate new user"
   }
 }

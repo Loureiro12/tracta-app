@@ -1,0 +1,114 @@
+appId: com.tracta.mobile
+name: home-smoke
+tags:
+  - smoke
+  - home
+---
+- runFlow: ../../subflows/launch.yaml
+# Sticky header: date eyebrow, 30px title and the three round actions
+- assertVisible:
+    id: "home.title"
+    text: "How am I today"
+- assertVisible:
+    id: "home.eyebrow"
+- assertVisible:
+    id: "home.nav.edit"
+- assertVisible:
+    id: "home.nav.inbox"
+- assertVisible:
+    id: "home.nav.inbox.badge"
+- assertVisible:
+    id: "home.nav.profile"
+# Apple Health sync line and the dark weekly teaser
+- assertVisible:
+    id: "home.sync.line"
+    text: "Apple Health · synced at 16:12"
+- assertVisible:
+    id: "home.weekly.card"
+- assertVisible:
+    id: "home.weekly.headline"
+    text: "A consistent week"
+- assertVisible:
+    id: "home.weekly.card.view"
+# Sleep card
+- assertVisible:
+    id: "home.sleep.card"
+- assertVisible:
+    id: "home.sleep.value"
+    text: "6h 50"
+- assertVisible:
+    id: "home.sleep.score"
+    text: "85"
+# Movement card (summary density: no mini bars)
+- scrollUntilVisible:
+    element:
+      id: "home.move.card"
+    centerElement: true
+- assertVisible:
+    id: "home.move.value"
+    text: "6,842"
+- assertVisible:
+    id: "home.move.stats"
+- assertNotVisible:
+    id: "home.move.bars"
+- assertNotVisible:
+    id: "home.sleep.bars"
+# Two-column stats
+- scrollUntilVisible:
+    element:
+      id: "home.hr.card"
+    centerElement: true
+- assertVisible:
+    id: "home.hr.value"
+    text: "58"
+- assertVisible:
+    id: "home.week.card"
+- assertVisible:
+    id: "home.week.value"
+    text: "0"
+# Planned workout
+- scrollUntilVisible:
+    element:
+      id: "home.next.card"
+    centerElement: true
+- assertVisible:
+    id: "home.next.title"
+    text: "Treino A"
+- assertVisible:
+    id: "home.next.start.label"
+    text: "Start workout"
+- assertNotVisible:
+    id: "home.next.done"
+# Friends and last activity
+- scrollUntilVisible:
+    element:
+      id: "home.friends.card"
+    centerElement: true
+- assertVisible:
+    id: "home.friends.title"
+    text: "Friends"
+- assertVisible:
+    id: "home.friends.cta"
+- assertVisible:
+    id: "home.friends.cta.label"
+    text: "Invite"
+- assertNotVisible:
+    id: "home.friends.ranking"
+- scrollUntilVisible:
+    element:
+      id: "home.last.card"
+    centerElement: true
+- assertVisible:
+    id: "home.last.history.label"
+    text: "History"
+# Dev-only shortcuts at the end of the scroll
+- scrollUntilVisible:
+    element:
+      id: "home.nav.settings"
+    centerElement: true
+- assertVisible:
+    id: "home.nav.settings.label"
+    text: "Settings"
+- assertVisible:
+    id: "home.nav.design-system.label"
+    text: "Design system"

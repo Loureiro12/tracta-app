@@ -1,0 +1,137 @@
+{
+  "title": "Share",
+  "close": "Close",
+  "nav": {
+    "prev": "Previous template",
+    "next": "Next template"
+  },
+  "templates": {
+    "today": "Today's workout",
+    "evo": "Progress",
+    "pr": "Record",
+    "week": "Week",
+    "run": "Run",
+    "month": "Month"
+  },
+  "styles": {
+    "ink": "Charcoal",
+    "sand": "Sand",
+    "brand": "Brick",
+    "photo": "Photo",
+    "photoBadge": "PHOTO"
+  },
+  "formats": {
+    "story": "Story",
+    "post": "Post"
+  },
+  "options": {
+    "loads": "Show loads",
+    "times": "Show times",
+    "name": "My name"
+  },
+  "targets": {
+    "stories": "Stories",
+    "whatsapp": "WhatsApp",
+    "save": "Save",
+    "more": "More"
+  },
+  "exported": "Card exported",
+  "card": {
+    "date": "Oct 26, 2026",
+    "photoPlaceholder": "Your photo",
+    "handle": "@{{name}} on Tracta",
+    "kg": "{{value}} kg",
+    "pct": "{{value}}%",
+    "km": "{{value}} km",
+    "tons": "{{value}} t",
+    "days": "{{count}} days",
+    "weekdays": {
+      "d0": "M",
+      "d1": "T",
+      "d2": "W",
+      "d3": "T",
+      "d4": "F",
+      "d5": "S",
+      "d6": "S"
+    },
+    "months": {
+      "m0": "May",
+      "m1": "Jun",
+      "m2": "Jul",
+      "m3": "Aug",
+      "m4": "Sep",
+      "m5": "Oct"
+    },
+    "today": {
+      "name": "Workout A",
+      "bigSets_one": "{{count}} set",
+      "bigSets_other": "{{count}} sets",
+      "linePr_one": "Workout done with {{count}} new record.",
+      "linePr_other": "Workout done with {{count}} new records.",
+      "lineNoPr": "One more workout on the plan.",
+      "sets": "Sets",
+      "volume": "Volume",
+      "week": "Week",
+      "weekValue": "{{done}} of {{goal}} workouts"
+    },
+    "evo": {
+      "kicker": "Bench press · last 6 months",
+      "big": "+{{value}} kg",
+      "bigPct": "+{{value}}%",
+      "line": "{{from}} kg → {{to}} kg max load",
+      "lineNoLoads": "stronger at max load",
+      "workouts": "Workouts in period",
+      "streak": "Current streak"
+    },
+    "pr": {
+      "kicker": "New personal record",
+      "bigReps": "× {{reps}}",
+      "line": "Bench press × {{reps}} · +{{delta}} kg over previous",
+      "lineNoLoads": "Bench press · best mark to date",
+      "month": "Records in October",
+      "since": "Since the start",
+      "sinceKg": "+{{value}} kg",
+      "sincePct": "+{{value}}%"
+    },
+    "week": {
+      "kicker": "Week · Oct 19–25",
+      "big": "{{done}}/{{goal}}",
+      "line": "Weekly goal hit. {{days}} days moving in a row.",
+      "strength": "Strength",
+      "strengthValue_one": "{{count}} workout",
+      "strengthValue_other": "{{count}} workouts",
+      "run": "Run"
+    },
+    "run": {
+      "kicker": "Run · Oct 25",
+      "line": "{{pace}} /km average, pace dropping every km.",
+      "lineNoTimes": "Longest of the month.",
+      "split": "km {{value}}",
+      "time": "Time",
+      "pace": "Average pace",
+      "paceValue": "{{pace}} /km",
+      "distance": "Distance"
+    },
+    "month": {
+      "kicker": "October 2026",
+      "line": "workouts — {{more}} more than in September.",
+      "run": "Run",
+      "volume": "Volume",
+      "records": "Records"
+    }
+  },
+  "nudge": {
+    "create": "Create card",
+    "dismiss": "Not now",
+    "today": {
+      "title_one": "Workout saved · {{count}} set",
+      "title_other": "Workout saved · {{count}} sets",
+      "descriptionPr": "You set a record. Want to show it off?",
+      "descriptionNoPr": "Turn it into a card for your stories."
+    },
+    "run": {
+      "title": "Run saved · {{km}} km",
+      "description": "Your pace improved. Share the card."
+    }
+  }
+}

@@ -1,0 +1,34 @@
+appId: com.tracta.mobile
+name: workouts-empty-state
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+# `scenario=new` hides the seeded routines (prototype "usuário novo" demo state)
+- openLink: "tracta://workouts?scenario=new&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.empty"
+    centerElement: true
+- assertVisible:
+    id: "workouts.routines.empty.create.label"
+    text: "Create workout"
+- tapOn:
+    id: "workouts.routines.empty.create"
+- assertVisible:
+    id: "workouts.builder.screen"
+- tapOn:
+    id: "workouts.builder.cancel"
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.empty.programs"
+    centerElement: true
+- tapOn:
+    id: "workouts.routines.empty.programs"
+- assertVisible:
+    id: "profile.paywall.screen"

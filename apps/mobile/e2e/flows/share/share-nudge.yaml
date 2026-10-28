@@ -1,0 +1,62 @@
+appId: com.tracta.mobile
+name: share-nudge
+tags:
+  - share
+---
+- runFlow: ../../subflows/launch.yaml
+# "Criar cartão" opens the share screen on the saved workout's template
+- openLink: "tracta://share/nudge?template=today&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.nudge.screen"
+- assertVisible:
+    id: "share.nudge.card"
+- assertVisible:
+    id: "share.nudge.title"
+    text: "Workout saved · 22 sets"
+- assertVisible:
+    id: "share.nudge.description"
+    text: "You set a record. Want to show it off?"
+- tapOn:
+    id: "share.nudge.create"
+- assertVisible:
+    id: "share.screen"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Workout A"
+- tapOn:
+    id: "share.nav.close"
+- assertVisible:
+    id: "home.screen"
+# The × dismisses the run nudge
+- openLink: "tracta://share/nudge?template=run&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.nudge.title"
+    text: "Run saved · 12.4 km"
+- tapOn:
+    id: "share.nudge.dismiss"
+- assertNotVisible:
+    id: "share.nudge.card"
+- assertVisible:
+    id: "home.screen"
+# Tapping outside dismisses too
+- openLink: "tracta://share/nudge?template=today&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.nudge.card"
+- tapOn:
+    id: "share.nudge.backdrop"
+- assertNotVisible:
+    id: "share.nudge.card"
+# Left alone, the nudge disappears by itself after 7 s
+- openLink: "tracta://share/nudge?template=today&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.nudge.card"
+- extendedWaitUntil:
+    notVisible:
+      id: "share.nudge.card"
+    timeout: 40000
+- assertVisible:
+    id: "home.screen"

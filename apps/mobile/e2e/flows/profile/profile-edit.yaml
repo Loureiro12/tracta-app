@@ -1,0 +1,130 @@
+appId: com.tracta.mobile
+name: profile-edit
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- tapOn:
+    id: "profile.header.edit"
+- assertVisible:
+    id: "profile.edit.screen"
+- tapOn:
+    id: "profile.edit.back"
+- assertVisible:
+    id: "profile.screen"
+- tapOn:
+    id: "profile.header.edit"
+- assertVisible:
+    id: "profile.edit.screen"
+- assertVisible:
+    id: "profile.edit.name"
+- assertVisible:
+    id: "profile.edit.email"
+# Password change: empty fields fail inline
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.change-password"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "profile.edit.current-password"
+- assertVisible:
+    id: "profile.edit.new-password"
+- assertVisible:
+    id: "profile.edit.rules"
+- tapOn:
+    id: "profile.edit.change-password"
+- assertVisible:
+    id: "profile.edit.current-password.error"
+    text: "Enter your current password"
+- assertVisible:
+    id: "profile.edit.new-password.error"
+    text: "The new password does not meet the requirements"
+- tapOn:
+    id: "profile.edit.current-password.input"
+- inputText: "secret1"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# The keyboard covers the next field: close it and bring the field into view before tapping it.
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.new-password.input"
+    centerElement: true
+- tapOn:
+    id: "profile.edit.new-password.input"
+- inputText: "Tracta2026"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.change-password"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.edit.change-password"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Password changed"
+# Name and email validation
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.name"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "profile.edit.name.input"
+- eraseText: 40
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "profile.edit.save"
+- assertVisible:
+    id: "profile.edit.name.error"
+    text: "Enter your name"
+- tapOn:
+    id: "profile.edit.name.input"
+- inputText: "Lucas A."
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "profile.edit.email.input"
+- eraseText: 40
+- inputText: "lucas"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "profile.edit.save"
+- assertVisible:
+    id: "profile.edit.email.error"
+    text: "Enter a valid email"
+- tapOn:
+    id: "profile.edit.email.input"
+- eraseText: 40
+- inputText: "lucas@andrade.me"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "profile.edit.save"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Profile updated"
+- assertVisible:
+    id: "profile.screen"
+- assertVisible:
+    id: "profile.header.name"
+    text: "Lucas A."

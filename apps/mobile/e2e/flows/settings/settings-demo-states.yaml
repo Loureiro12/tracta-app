@@ -1,0 +1,53 @@
+appId: com.tracta.mobile
+name: settings-demo-states
+tags:
+  - settings
+  - app
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "settings.screen"
+- assertVisible:
+    id: "settings.title"
+    text: "App preferences"
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.offline"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.offline"
+- assertVisible:
+    id: "app.banner"
+- assertVisible:
+    id: "app.banner.title"
+    text: "No internet"
+- assertVisible:
+    id: "app.banner.description"
+- tapOn:
+    id: "settings.demo.sync"
+- assertVisible:
+    id: "app.banner.title"
+    text: "Sync failed"
+- tapOn:
+    id: "app.banner.cta"
+- assertNotVisible:
+    id: "app.banner"
+- tapOn:
+    id: "settings.demo.toast"
+- assertVisible:
+    id: "app.toast"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Workout saved"
+- tapOn:
+    id: "settings.demo.offline"
+- tapOn:
+    id: "settings.demo.clear"
+- assertNotVisible:
+    id: "app.banner"
+- tapOn:
+    id: "settings.nav.back"
+- assertVisible:
+    id: "home.screen"

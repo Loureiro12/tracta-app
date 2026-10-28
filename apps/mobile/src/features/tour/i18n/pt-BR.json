@@ -1,0 +1,56 @@
+{
+  "welcome": {
+    "eyebrow": "Bem-vindo",
+    "title": "Vamos conhecer o Tracta?",
+    "titleNamed": "Olá, {{name}}. Vamos conhecer o Tracta?",
+    "body": "Um tour rápido pelas principais áreas. Leva menos de um minuto.",
+    "items": {
+      "item1": "Como estou hoje",
+      "item2": "Saúde explicada",
+      "item3": "Treinos e atividades",
+      "item4": "Evolução e amigos"
+    },
+    "cta": "Começar tour",
+    "cta2": "Pular por agora"
+  },
+  "done": {
+    "eyebrow": "Tudo pronto",
+    "title": "Seu ritmo começa agora",
+    "body": "Você pode rever este tour quando quiser em Perfil → Ver tour do app.",
+    "cta": "Começar a usar",
+    "cta2": "Convidar amigos"
+  },
+  "spot": {
+    "step": "{{n}} de {{total}}",
+    "skip": "Pular tour",
+    "back": "Voltar",
+    "next": "Próximo",
+    "finish": "Concluir"
+  },
+  "steps": {
+    "home": {
+      "title": "Início",
+      "body": "Seu resumo do dia: sono, movimento, frequência cardíaca e o próximo treino. Toque em \"Editar\" para escolher e reordenar os cartões."
+    },
+    "health": {
+      "title": "Saúde",
+      "body": "Sono e atividade explicados de forma simples, sempre com a origem de cada dado. Toque em um cartão para ver dia, semana ou mês."
+    },
+    "workouts": {
+      "title": "Treinos",
+      "body": "Monte suas rotinas, comece uma sessão livre ou registre corrida, caminhada e outras modalidades."
+    },
+    "session": {
+      "title": "Durante o treino",
+      "body": "Ajuste carga e repetições, conclua a série e o descanso começa sozinho. Tudo é salvo a cada toque, mesmo sem internet."
+    },
+    "history": {
+      "title": "Histórico",
+      "body": "Calendário de atividades, evolução por exercício e por cardio, e relatórios de 7 e 30 dias."
+    },
+    "profile": {
+      "title": "Amigos e metas",
+      "body": "Convide amigos para acompanhar treinos e criar desafios diários. Metas, conexões e privacidade também ficam aqui."
+    }
+  }
+}

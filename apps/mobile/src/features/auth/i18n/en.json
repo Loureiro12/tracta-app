@@ -1,0 +1,159 @@
+{
+  "back": "Back",
+  "or": "or",
+  "apple": "Apple",
+  "google": "Google",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "welcome": {
+    "wordmark": "TRACTA",
+    "question1": "How am I?",
+    "question2": "What am I going to do?",
+    "question3": "How am I progressing?",
+    "tagline": "Sleep, activity and workouts in one place, with your data stored on your device.",
+    "signup": "Create account",
+    "signupHint": "Free · takes less than a minute",
+    "login": "Sign in",
+    "loginHint": "Already have an account? Use the same email to sign in."
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Good to see you again.",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "forgot": "I forgot my password",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "signup": "Create account",
+    "welcomeToast": "Welcome back",
+    "errors": {
+      "email": "Enter a valid email",
+      "password": "Enter your password",
+      "general": "Incorrect email or password. Try again or reset your password."
+    }
+  },
+  "signup": {
+    "title": "Create account",
+    "subtitle": "It takes less than a minute. You can connect your data right after.",
+    "name": "Name",
+    "namePlaceholder": "What should we call you?",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "rules": {
+      "length": "At least 8 characters",
+      "number": "One number",
+      "uppercase": "One uppercase letter"
+    },
+    "terms": "I have read and accept the <b>Terms of use</b> and the <b>Privacy policy</b>. Health data is never sold or shared.",
+    "submit": "Create account",
+    "hasAccount": "Already have an account?",
+    "login": "Sign in",
+    "errors": {
+      "name": "Enter your name",
+      "email": "Enter a valid email",
+      "password": "Password doesn't meet the requirements",
+      "terms": "Accept the terms to continue"
+    }
+  },
+  "forgot": {
+    "title": "I forgot my password",
+    "subtitle": "Enter your account email. We'll send you a link to create a new password.",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "submit": "Send link",
+    "backToLogin": "Back to sign in",
+    "errors": {
+      "email": "Enter a valid email"
+    }
+  },
+  "sent": {
+    "title": "Check your email",
+    "body": "We sent a link to <b>{{email}}</b>. It expires in 30 minutes.",
+    "spam": "Can't find it? Check your spam folder.",
+    "openMail": "Open email app",
+    "openMailToast": "Opening your email app…",
+    "resend": "Resend link",
+    "resendIn": "Resend in {{time}}",
+    "resentToast": "Link resent",
+    "backToLogin": "Back to sign in"
+  },
+  "social": {
+    "connectedToast": "Signed in with {{provider}}"
+  },
+  "connect": {
+    "eyebrow": "Last step",
+    "title": "Connect your data",
+    "subtitle": "Choose where Tracta can read your metrics from. Everything is optional and can be changed later in Profile.",
+    "health": {
+      "title": "Apple Health",
+      "status": {
+        "off": "Not connected",
+        "busy": "Connecting",
+        "on": "Connected"
+      },
+      "description": "Steps, sleep, heart rate and workouts. Reading and writing are authorized separately.",
+      "connect": "Connect Apple Health",
+      "importing": "Importing the last 30 days…",
+      "review": "Review permissions",
+      "found": {
+        "sleep": { "name": "Sleep with stages", "source": "Mi Band 8" },
+        "steps": { "name": "Steps and distance", "source": "iPhone, Mi Band 8" },
+        "heart": { "name": "Heart rate", "source": "Mi Band 8" },
+        "workouts": { "name": "Workouts", "source": "12 in 30 days" }
+      }
+    },
+    "google": {
+      "title": "Google Health",
+      "status": "In validation",
+      "description": "Still testing which workouts show up there. We only enable it after confirming with real tests.",
+      "notify": "Let me know when it's available"
+    },
+    "gps": {
+      "title": "Location (GPS)",
+      "description": "Route and pace of your runs. Only during activities.",
+      "toast": "Location: only while in use"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "End of rest and workout reminders.",
+      "toast": "Notifications allowed"
+    },
+    "cta": {
+      "continue": "Continue",
+      "start": "Start using",
+      "done": "Done"
+    },
+    "skip": "Set up later"
+  },
+  "health": {
+    "title": "Apple Health",
+    "subtitle": "Choose what Tracta can access. You can change this at any time in Settings › Health.",
+    "readLabel": "Read from Apple Health",
+    "writeLabel": "Write to Apple Health",
+    "enableAll": "Turn all on",
+    "disableAll": "Turn all off",
+    "note": "Sets, loads and reps stay only in Tracta. Read permission does not grant write permission.",
+    "read": {
+      "steps": { "name": "Steps", "why": "daily summary and trends" },
+      "distance": { "name": "Distance", "why": "walking and running" },
+      "active": { "name": "Active energy", "why": "movement calories" },
+      "resting": { "name": "Resting energy", "why": "total calories for the day" },
+      "heart": { "name": "Heart rate", "why": "during workouts and at rest" },
+      "sleep": { "name": "Sleep", "why": "duration, times and stages" },
+      "workouts": { "name": "Workouts", "why": "activities from other apps" }
+    },
+    "write": {
+      "workouts": { "name": "Workouts", "why": "type, duration and calories of sessions" },
+      "distance": { "name": "Distance", "why": "route of recorded runs" }
+    },
+    "allow_one": "Allow {{count}} data type",
+    "allow_other": "Allow {{count}} data types",
+    "allowNone": "Select at least one",
+    "allowNoneToast": "Turn on at least one data type",
+    "connectedToast": "Apple Health connected"
+  }
+}

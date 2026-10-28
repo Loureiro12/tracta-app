@@ -1,0 +1,192 @@
+{
+  "hub": {
+    "back": "Back",
+    "title": "Friends",
+    "subtitle": "Train together, each at your own pace.",
+    "empty": {
+      "title": "Invite the people you train with",
+      "body": "Follow each other's workouts and create daily challenges. Health, loads and sets stay private."
+    },
+    "challenges": "Challenges",
+    "challenge": {
+      "whenStarted": "Day 1 of {{days}} · ends {{end}}",
+      "whenTomorrow": "Starts tomorrow · {{days}} days",
+      "count_one": "{{count}} participant",
+      "count_other": "{{count}} participants",
+      "me_one": "You're ranked #{{pos}} · {{count}} point",
+      "me_other": "You're ranked #{{pos}} · {{count}} points",
+      "meTomorrow": "Ranking starts tomorrow",
+      "ranking": "See ranking ›"
+    },
+    "create": "Create challenge",
+    "needFriend": "Invite at least one friend first",
+    "today": "Today",
+    "todayMeta": "{{done}} of {{total}} worked out",
+    "friend": {
+      "statusDone": "{{what}} · {{min}} min",
+      "statusDonePrivate": "Worked out today",
+      "statusTodo": "Hasn't worked out yet today",
+      "cheer": "Cheer",
+      "cheered": "Cheered",
+      "streak_one": "{{count}} day in a row",
+      "streak_other": "{{count}} days in a row"
+    },
+    "pending": "Invites sent",
+    "pendingStatus": "Invite sent · waiting",
+    "pendingStatusSignup": "Invite sent · waiting for sign-up",
+    "invite": "Invite friends",
+    "privacy": "What your friends see",
+    "privacyLine_one": "{{count}} item shared · never health",
+    "privacyLine_other": "{{count}} items shared · never health",
+    "dev": {
+      "noFriends": "Simulate no friends"
+    }
+  },
+  "detail": {
+    "back": "Friends",
+    "eyebrowStarted": "Challenge · day 1 of {{days}}",
+    "eyebrowTomorrow": "Challenge · starts tomorrow",
+    "rule": {
+      "day": "1 point per day with a {{min}}+ min workout",
+      "minutes": "1 point per 10 active minutes, up to 6 a day",
+      "steps": "1 point per day you reach your step goal"
+    },
+    "you": "You",
+    "rank": {
+      "waiting": "waiting to start",
+      "below": "trained {{min}} min · below the minimum",
+      "stepsOk": "step goal reached",
+      "stepsNo": "step goal not reached",
+      "done": "worked out today · {{min}} min",
+      "todo": "hasn't worked out yet today",
+      "points_one": "point",
+      "points_other": "points"
+    },
+    "me": {
+      "tomorrow": "The challenge starts tomorrow. Your first workout from then on already counts.",
+      "done": "Today's workout already counted. Nice work — rest well.",
+      "partial": "You trained {{min}} min today. {{left}} more min to score, if you want.",
+      "auto": "Your workout counts automatically when you save a session today.",
+      "train": "Train now"
+    },
+    "grid": {
+      "week": "Week 1",
+      "days": "Challenge days",
+      "ends": "ends {{end}}",
+      "range": "from {{start}} to {{end}}",
+      "legendPoint": "point",
+      "legendNone": "no point",
+      "legendNext": "upcoming"
+    },
+    "activity": "Activity",
+    "feedLine": "<b>{{first}}</b> {{what}}",
+    "feedWhat": "{{what}} · {{min}} min",
+    "feedWhatPrivate": "worked out today",
+    "feedWhen": "today, {{at}}",
+    "rules": {
+      "title": "Rules",
+      "first": "· {{rule}}.",
+      "any": "· Any activity logged in Tracta or imported from Apple Health counts.",
+      "max": "· At most 1 point per day. Resting never costs points.",
+      "maxMinutes": "· At most 1 point per day per block, up to 6. Resting never costs points.",
+      "ties": "· Ties share the same position."
+    },
+    "inviteMore": "Invite more friends",
+    "leave": "Leave challenge",
+    "leaveConfirm": "Tap again to leave",
+    "left": "You left the challenge"
+  },
+  "invite": {
+    "title": "Invite friends",
+    "close": "Close",
+    "linkLabel": "Your invite link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "linkCopied": "Link copied",
+    "share": {
+      "messages": "Messages",
+      "whatsapp": "WhatsApp",
+      "email": "Email"
+    },
+    "opening": "Opening {{target}}…",
+    "byHandle": "Invite by username or email",
+    "placeholder": "@username or email@example.com",
+    "send": "Send",
+    "error": "Use @username or a valid email",
+    "sent": "Invite sent",
+    "sentTo": "Invite sent to {{name}}",
+    "contacts": "Contacts using Tracta",
+    "contactInvite": "Invite",
+    "contactSent": "Sent",
+    "noContacts": "All your contacts have already been invited.",
+    "note": "Friends only see what you choose in \"What your friends see\". Health data is never shared."
+  },
+  "newChallenge": {
+    "title": "New challenge",
+    "close": "Close",
+    "step1": "How to score",
+    "types": {
+      "day": {
+        "label": "Workout day",
+        "desc": "1 point for each day you work out for the minimum time."
+      },
+      "minutes": {
+        "label": "Active minutes",
+        "desc": "1 point per 10 minutes of training, up to 6 a day."
+      },
+      "steps": {
+        "label": "Step goal",
+        "desc": "1 point for each day everyone reaches their own goal."
+      }
+    },
+    "min": {
+      "label": "Minimum duration",
+      "desc": "any activity counts",
+      "value": "{{min}} min",
+      "minus": "Decrease",
+      "plus": "Increase"
+    },
+    "step2": "Duration",
+    "days": "days",
+    "start": "Start",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "range": "{{start}} → {{end}} · {{days}} days",
+    "step3": "Who's in",
+    "participantsNote": "You take part automatically. Invitees must accept to enter the ranking.",
+    "step4": "Review",
+    "nameLabel": "Challenge name",
+    "namePlaceholder": "e.g. Week in motion",
+    "review": {
+      "scoring": "Scoring",
+      "scoringDay": "{{type}} · {{min}}+ min",
+      "duration": "Duration",
+      "durationValue": "{{days}} days",
+      "period": "Period",
+      "periodValue": "{{start}} – {{end}}",
+      "participants": "Participants",
+      "participantsValue": "You + {{names}}"
+    },
+    "note": "Max 1 point per day. Rest days never cost anyone points — the goal is consistency, not excess.",
+    "back": "Back",
+    "next": "Continue",
+    "create": "Create challenge",
+    "pickFriend": "Pick at least one friend",
+    "created": "Challenge created · invites sent",
+    "defaultName": "Daily challenge"
+  },
+  "privacy": {
+    "title": "What your friends see",
+    "close": "Close",
+    "intro": "Choose what the people you invited can see. Applies to every challenge.",
+    "rows": {
+      "done": { "label": "Completed workouts", "desc": "required to score in challenges" },
+      "kind": { "label": "Type and duration", "desc": "e.g. \"Leg day · 52 min\"" },
+      "streak": { "label": "Day streak", "desc": "how many days in a row you've trained" },
+      "loads": { "label": "Loads and sets", "desc": "strength training details" },
+      "prs": { "label": "Personal records", "desc": "when you set a record" }
+    },
+    "locked": "Required to take part in challenges",
+    "note": "Sleep, heart rate and other health metrics are never shared. Steps only appear as \"goal reached: yes/no\" in step challenges."
+  }
+}

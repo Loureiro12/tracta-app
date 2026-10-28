@@ -1,0 +1,77 @@
+appId: com.tracta.mobile
+name: tour-smoke
+tags:
+  - smoke
+  - tour
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://tour?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "tour.screen"
+- assertVisible:
+    id: "tour.modal"
+- assertVisible:
+    id: "tour.modal.title"
+    text: "Let's get to know Tracta?"
+- tapOn:
+    id: "tour.modal.primary"
+# Spotlight 1 of 6: no "Back" yet
+- assertVisible:
+    id: "tour.spot"
+- assertVisible:
+    id: "tour.tab"
+- assertVisible:
+    id: "tour.spot.step"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Home"
+- assertVisible:
+    id: "tour.spot.body"
+- assertNotVisible:
+    id: "tour.spot.back"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Health"
+- tapOn:
+    id: "tour.spot.back"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Home"
+- tapOn:
+    id: "tour.spot.next"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Workouts"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "During the workout"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "History"
+- tapOn:
+    id: "tour.spot.next"
+- assertVisible:
+    id: "tour.spot.title"
+    text: "Friends and goals"
+- assertVisible:
+    id: "tour.spot.next.label"
+    text: "Finish"
+- tapOn:
+    id: "tour.spot.next"
+# "All set" modal closes back to home
+- assertVisible:
+    id: "tour.modal.title"
+    text: "Your pace starts now"
+- tapOn:
+    id: "tour.modal.primary"
+- assertVisible:
+    id: "home.screen"

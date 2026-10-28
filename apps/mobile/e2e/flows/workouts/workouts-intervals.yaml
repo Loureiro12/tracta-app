@@ -1,0 +1,58 @@
+appId: com.tracta.mobile
+name: workouts-intervals
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+# Interval runs are a Pro feature; the sheet is deep-linked (the gate is covered by workouts-pro-gate).
+- openLink: "tracta://workouts/intervals?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "workouts.intervals.screen"
+- assertVisible:
+    id: "workouts.intervals.screen.title"
+    text: "Interval run"
+- assertVisible:
+    id: "workouts.intervals.reps"
+- assertVisible:
+    id: "workouts.intervals.work"
+- assertVisible:
+    id: "workouts.intervals.rest"
+- assertVisible:
+    id: "workouts.intervals.warm"
+- assertVisible:
+    id: "workouts.intervals.reps.value"
+    text: "6×"
+- tapOn:
+    id: "workouts.intervals.reps.plus"
+- assertVisible:
+    id: "workouts.intervals.reps.value"
+    text: "7×"
+- assertVisible:
+    id: "workouts.intervals.work.value"
+    text: "1:00"
+- tapOn:
+    id: "workouts.intervals.work.minus"
+- assertVisible:
+    id: "workouts.intervals.work.value"
+    text: "0:45"
+- assertVisible:
+    id: "workouts.intervals.rest.value"
+    text: "1:30"
+- assertVisible:
+    id: "workouts.intervals.warm.value"
+    text: "5:00"
+- tapOn:
+    id: "workouts.intervals.warm.plus"
+- assertVisible:
+    id: "workouts.intervals.warm.value"
+    text: "6:00"
+- assertVisible:
+    id: "workouts.intervals.structure"
+- assertVisible:
+    id: "workouts.intervals.total"
+    text: "Total ~25 min · 7 intervals of 0:45"
+- tapOn:
+    id: "workouts.intervals.start"
+- assertVisible:
+    id: "run.screen"

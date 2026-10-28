@@ -1,0 +1,72 @@
+appId: com.tracta.mobile
+name: workouts-routine-detail
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.A"
+    centerElement: true
+- tapOn:
+    id: "workouts.routines.A"
+- assertVisible:
+    id: "workouts.detail.screen"
+- assertVisible:
+    id: "workouts.detail.title"
+    text: "Peito & Tríceps"
+- assertVisible:
+    id: "workouts.detail.stats"
+- assertVisible:
+    id: "workouts.detail.exercises"
+- assertVisible:
+    id: "workouts.detail.exercises.0"
+- scrollUntilVisible:
+    element:
+      id: "workouts.detail.duplicate"
+    centerElement: true
+- tapOn:
+    id: "workouts.detail.duplicate"
+- assertVisible:
+    id: "app.toast"
+    text: "Treino A duplicated as Workout D"
+- assertVisible:
+    id: "workouts.detail.title"
+    text: "Peito & Tríceps"
+- scrollUntilVisible:
+    element:
+      id: "workouts.detail.edit"
+    centerElement: true
+- tapOn:
+    id: "workouts.detail.edit"
+- assertVisible:
+    id: "workouts.builder.screen"
+- assertVisible:
+    id: "workouts.builder.title"
+    text: "Edit workout"
+- tapOn:
+    id: "workouts.builder.cancel"
+- assertVisible:
+    id: "workouts.detail.screen"
+- tapOn:
+    id: "workouts.detail.back"
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.D"
+    centerElement: true
+- tapOn:
+    id: "workouts.routines.D"
+- assertVisible:
+    id: "workouts.detail.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.detail.start"
+    centerElement: true
+- tapOn:
+    id: "workouts.detail.start"
+- assertVisible:
+    id: "session.screen"

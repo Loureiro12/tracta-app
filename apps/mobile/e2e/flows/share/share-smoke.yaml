@@ -1,0 +1,33 @@
+appId: com.tracta.mobile
+name: share-smoke
+tags:
+  - smoke
+  - share
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://share?template=today&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "share.screen"
+- assertVisible:
+    id: "share.title"
+    text: "Share"
+- assertVisible:
+    id: "share.card"
+- assertVisible:
+    id: "share.card.kicker"
+    text: "Workout A"
+- assertVisible:
+    id: "share.card.big"
+    text: "52 min"
+- assertVisible:
+    id: "share.card.date"
+    text: "Oct 26, 2026"
+- assertVisible:
+    id: "share.format"
+- assertVisible:
+    id: "share.target.stories"
+- tapOn:
+    id: "share.nav.close"
+- assertVisible:
+    id: "home.screen"

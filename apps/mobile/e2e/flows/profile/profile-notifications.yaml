@@ -1,0 +1,95 @@
+appId: com.tracta.mobile
+name: profile-notifications
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.prefs.notifications"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.prefs.notifications"
+- assertVisible:
+    id: "profile.notifications.screen"
+- tapOn:
+    id: "profile.notifications.back"
+- assertVisible:
+    id: "profile.screen"
+- scrollUntilVisible:
+    element:
+      id: "profile.prefs.notifications"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.prefs.notifications"
+- assertVisible:
+    id: "profile.notifications.screen"
+- assertVisible:
+    id: "profile.notifications.system-off"
+- tapOn:
+    id: "profile.notifications.allow"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Notifications allowed"
+- assertNotVisible:
+    id: "profile.notifications.system-off"
+- assertVisible:
+    id: "profile.notifications.rows"
+- assertVisible:
+    id: "profile.notifications.rows.rest.label"
+    text: "Rest over"
+# Reminder time stepper only shows while the workout reminder is on
+- scrollUntilVisible:
+    element:
+      id: "profile.notifications.hour"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "profile.notifications.hour.value"
+    text: "18:30"
+- tapOn:
+    id: "profile.notifications.hour.plus"
+- assertVisible:
+    id: "profile.notifications.hour.value"
+    text: "19:00"
+- tapOn:
+    id: "profile.notifications.hour.minus"
+- tapOn:
+    id: "profile.notifications.hour.minus"
+- assertVisible:
+    id: "profile.notifications.hour.value"
+    text: "18:00"
+- scrollUntilVisible:
+    element:
+      id: "profile.notifications.rows.remind.switch"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "profile.notifications.rows.remind.switch"
+- assertNotVisible:
+    id: "profile.notifications.hour"
+- tapOn:
+    id: "profile.notifications.rows.remind.switch"
+- scrollUntilVisible:
+    element:
+      id: "profile.notifications.rows.daily.switch"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.notifications.rows.daily.switch"
+- tapOn:
+    id: "profile.notifications.done"
+- assertVisible:
+    id: "profile.screen"
+- scrollUntilVisible:
+    element:
+      id: "profile.prefs.notifications"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "profile.prefs.notifications.value"
+    text: "6 on"

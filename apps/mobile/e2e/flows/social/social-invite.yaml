@@ -1,0 +1,87 @@
+appId: com.tracta.mobile
+name: social-invite
+tags:
+  - smoke
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "social.hub.invite"
+    centerElement: true
+- tapOn:
+    id: "social.hub.invite"
+- assertVisible:
+    id: "social.invite.screen"
+- assertVisible:
+    id: "social.invite.close.title"
+    text: "Invite friends"
+- assertVisible:
+    id: "social.invite.link"
+    text: "tracta.app/convite/voce-7f2k"
+- tapOn:
+    id: "social.invite.copy"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Link copied"
+- assertVisible:
+    id: "social.invite.copy.label"
+    text: "Copied"
+- assertVisible:
+    id: "social.invite.share"
+- tapOn:
+    id: "social.invite.share.whatsapp"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Opening WhatsApp…"
+# Empty / invalid handle shows the inline error
+- tapOn:
+    id: "social.invite.send"
+- assertVisible:
+    id: "social.invite.query.error"
+    text: "Use @username or a valid email"
+- assertVisible:
+    id: "social.invite.query"
+- tapOn:
+    id: "social.invite.query.input"
+- inputText: "@diegor"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- hideKeyboard
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "social.invite.send"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite sent"
+- assertVisible:
+    id: "social.invite.contacts"
+- assertVisible:
+    id: "social.invite.contacts.diego.button.label"
+    text: "Sent"
+- tapOn:
+    id: "social.invite.contacts.elisa.button"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite sent to Elisa"
+- assertVisible:
+    id: "social.invite.contacts.elisa.button.label"
+    text: "Sent"
+- assertVisible:
+    id: "social.invite.no-contacts"
+    text: "All your contacts have already been invited."
+- tapOn:
+    id: "social.invite.close"
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.pending"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.pending.diego.status"
+    text: "Invite sent · waiting"
+- assertVisible:
+    id: "social.hub.pending.elisa.name"
+    text: "Elisa Prado"

@@ -1,0 +1,110 @@
+appId: com.tracta.mobile
+name: home-edit
+tags:
+  - home
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "home.nav.edit"
+- assertVisible:
+    id: "home.edit.sheet"
+- assertVisible:
+    id: "home.edit.sheet.title"
+    text: "Customize home"
+- assertVisible:
+    id: "home.edit.density"
+- assertVisible:
+    id: "home.edit.count"
+    text: "5 of 5 visible"
+- assertVisible:
+    id: "home.edit.rows"
+- assertVisible:
+    id: "home.edit.rows.sleep"
+- assertVisible:
+    id: "home.edit.note"
+    text: "Hidden cards remain available in Health and History."
+# Density: detailed shows the mini bar charts on Sleep and Movement
+- tapOn:
+    id: "home.edit.density.detailed"
+- tapOn:
+    id: "home.edit.sheet.right"
+- assertVisible:
+    id: "home.screen"
+- assertVisible:
+    id: "home.sleep.bars"
+- scrollUntilVisible:
+    element:
+      id: "home.move.card"
+    centerElement: true
+- assertVisible:
+    id: "home.move.bars"
+# Back to summary
+- tapOn:
+    id: "home.nav.edit"
+- tapOn:
+    id: "home.edit.density.summary"
+- tapOn:
+    id: "home.edit.sheet.right"
+- assertNotVisible:
+    id: "home.sleep.bars"
+# Hide the Sleep card and move Movement below the stats row
+- tapOn:
+    id: "home.nav.edit"
+- tapOn:
+    id: "home.edit.rows.sleep.toggle"
+- assertVisible:
+    id: "home.edit.count"
+    text: "4 of 5 visible"
+- tapOn:
+    id: "home.edit.rows.move.down"
+- tapOn:
+    id: "home.edit.rows.move.up"
+- tapOn:
+    id: "home.edit.rows.move.down"
+- tapOn:
+    id: "home.edit.sheet.right"
+- assertNotVisible:
+    id: "home.sleep.card"
+- assertVisible:
+    id: "home.hr.card"
+# Restore defaults
+- tapOn:
+    id: "home.nav.edit"
+- tapOn:
+    id: "home.edit.reset"
+- assertVisible:
+    id: "home.edit.count"
+    text: "5 of 5 visible"
+- assertVisible:
+    id: "app.toast"
+    text: "Home restored"
+# Demo switch: brand-new account shows the "Start here" checklist
+- scrollUntilVisible:
+    element:
+      id: "home.edit.simulate-new-user"
+    centerElement: true
+- tapOn:
+    id: "home.edit.simulate-new-user.switch"
+- tapOn:
+    id: "home.edit.sheet.right"
+- assertVisible:
+    id: "home.sleep.card"
+# The checklist card sits at the top of the feed; the sheet may have left the list scrolled down.
+- scrollUntilVisible:
+    element:
+      id: "home.checklist.progress"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "home.checklist.card"
+- assertVisible:
+    id: "home.checklist.progress"
+    text: "0 of 3"
+- assertVisible:
+    id: "home.checklist.steps"
+- assertVisible:
+    id: "home.checklist.steps.health.check"
+- tapOn:
+    id: "home.checklist.steps.workout"
+- assertVisible:
+    id: "workouts.screen"

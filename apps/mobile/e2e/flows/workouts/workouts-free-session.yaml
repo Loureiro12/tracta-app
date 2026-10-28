@@ -1,0 +1,12 @@
+appId: com.tracta.mobile
+name: workouts-free-session
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- tapOn:
+    id: "workouts.start.free"
+- assertVisible:
+    id: "session.screen"

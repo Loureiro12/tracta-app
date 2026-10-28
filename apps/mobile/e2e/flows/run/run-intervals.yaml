@@ -1,0 +1,51 @@
+appId: com.tracta.mobile
+name: run-intervals
+tags:
+  - run
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://run/gps?type=intervals&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "run.gps.once"
+    text: "Allow Once"
+- tapOn:
+    id: "run.gps.once"
+- assertVisible:
+    id: "run.screen"
+# Interval phase strip: warm-up first, next block announced
+- assertVisible:
+    id: "run.live.interval"
+- assertVisible:
+    id: "run.live.interval.label"
+    text: "Warm-up"
+- assertVisible:
+    id: "run.live.interval.remaining"
+- assertVisible:
+    id: "run.live.interval.next"
+    text: "Next: Rep 1 of 6 · 1:00"
+# Summary and back to the (still paused) activity
+- tapOn:
+    id: "run.live.pause"
+- tapOn:
+    id: "run.live.end"
+- assertVisible:
+    id: "run.summary.screen"
+- assertVisible:
+    id: "run.summary.stats.duration"
+- scrollUntilVisible:
+    element:
+      id: "run.summary.back"
+    centerElement: true
+- tapOn:
+    id: "run.summary.back"
+- assertVisible:
+    id: "run.screen"
+- assertVisible:
+    id: "run.live.resume"
+- tapOn:
+    id: "run.live.resume"
+- assertVisible:
+    id: "run.live.pause"
+- assertVisible:
+    id: "run.live.interval.label"

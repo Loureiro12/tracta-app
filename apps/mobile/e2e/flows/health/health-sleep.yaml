@@ -1,0 +1,78 @@
+appId: com.tracta.mobile
+name: health-sleep
+tags:
+  - smoke
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.health"
+- assertVisible:
+    id: "health.screen"
+- assertVisible:
+    id: "health.header"
+- assertVisible:
+    id: "health.header.title"
+    text: "Health"
+- assertVisible:
+    id: "health.segment"
+- assertVisible:
+    id: "health.segment.sleep"
+    text: "Sleep"
+- assertVisible:
+    id: "health.sleep.hero"
+- assertVisible:
+    id: "health.sleep.stages"
+- assertVisible:
+    id: "health.sleep.stage"
+- assertVisible:
+    id: "health.sleep.stage.deep"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.score"
+    centerElement: true
+- assertVisible:
+    id: "health.sleep.score"
+    text: "85/100"
+- assertVisible:
+    id: "health.sleep.factor"
+- assertVisible:
+    id: "health.sleep.factor.duration"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.range"
+    centerElement: true
+- assertVisible:
+    id: "health.sleep.week"
+- tapOn:
+    id: "health.sleep.range.30"
+- assertVisible:
+    id: "health.sleep.month"
+- tapOn:
+    id: "health.sleep.range.cmp"
+- assertVisible:
+    id: "health.sleep.compare"
+- assertVisible:
+    id: "health.sleep.compare.duration"
+- tapOn:
+    id: "health.sleep.range.7"
+- assertVisible:
+    id: "health.sleep.week"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.bedtime"
+    centerElement: true
+- assertVisible:
+    id: "health.sleep.bedtime"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.train-rest"
+    centerElement: true
+- assertVisible:
+    id: "health.sleep.train-rest.steps"
+- scrollUntilVisible:
+    element:
+      id: "health.sleep.suggestion"
+    centerElement: true
+- assertVisible:
+    id: "health.sleep.suggestion"

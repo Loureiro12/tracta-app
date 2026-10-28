@@ -1,0 +1,168 @@
+appId: com.tracta.mobile
+name: workouts-exercise-form
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.library"
+    centerElement: true
+- tapOn:
+    id: "workouts.library"
+- assertVisible:
+    id: "workouts.picker.screen"
+- assertVisible:
+    id: "workouts.picker.title"
+    text: "Library"
+- tapOn:
+    id: "workouts.picker.create"
+- assertVisible:
+    id: "workouts.exercise-form.screen"
+- assertVisible:
+    id: "workouts.exercise-form.title"
+    text: "New exercise"
+# Validation: name, then main group
+- tapOn:
+    id: "workouts.exercise-form.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Give the exercise a name"
+- assertVisible:
+    id: "workouts.exercise-form.name"
+- tapOn:
+    id: "workouts.exercise-form.name.input"
+- inputText: "Cable curl"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- pressKey: Enter
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "workouts.exercise-form.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Choose the main muscle group"
+- assertVisible:
+    id: "workouts.exercise-form.groups"
+- tapOn:
+    id: "workouts.exercise-form.groups.biceps"
+- assertVisible:
+    id: "workouts.exercise-form.secondary"
+- tapOn:
+    id: "workouts.exercise-form.secondary.ombros"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise-form.equipment.polia"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise-form.equipment"
+- tapOn:
+    id: "workouts.exercise-form.equipment.polia"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise-form.types.c"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise-form.types"
+- tapOn:
+    id: "workouts.exercise-form.types.c"
+- assertVisible:
+    id: "workouts.exercise-form.duration"
+- assertVisible:
+    id: "workouts.exercise-form.duration.value"
+    text: "10 min"
+- tapOn:
+    id: "workouts.exercise-form.types.s"
+- assertVisible:
+    id: "workouts.exercise-form.reps"
+- assertVisible:
+    id: "workouts.exercise-form.load"
+- assertVisible:
+    id: "workouts.exercise-form.rest"
+- assertVisible:
+    id: "workouts.exercise-form.reps.value"
+    text: "10"
+- assertVisible:
+    id: "workouts.exercise-form.load.value"
+    text: "20 kg"
+- assertVisible:
+    id: "workouts.exercise-form.rest.value"
+    text: "1:00"
+- tapOn:
+    id: "workouts.exercise-form.load.plus"
+- assertVisible:
+    id: "workouts.exercise-form.load.value"
+    text: "22,5 kg"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise-form.notes.input"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise-form.notes"
+- tapOn:
+    id: "workouts.exercise-form.notes.input"
+- inputText: "Elbows tucked"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# The name field may still have the keyboard up: close it so the lower controls are tappable.
+- hideKeyboard
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise-form.favorite"
+    centerElement: true
+- tapOn:
+    id: "workouts.exercise-form.favorite"
+- tapOn:
+    id: "workouts.exercise-form.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Exercise registered"
+- assertVisible:
+    id: "workouts.picker.screen"
+# Favorites are listed first; the custom exercise opens its detail with edit/delete
+- assertVisible:
+    id: "workouts.picker.items.cable-curl"
+- tapOn:
+    id: "workouts.picker.items.cable-curl"
+- assertVisible:
+    id: "workouts.exercise.screen"
+- assertVisible:
+    id: "workouts.exercise.subtitle"
+    text: "Bíceps · Polia · custom"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.history.empty"
+    centerElement: true
+- assertVisible:
+    id: "workouts.exercise.history.empty"
+    text: "No records of this exercise yet."
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.custom"
+    centerElement: true
+- tapOn:
+    id: "workouts.exercise.edit"
+- assertVisible:
+    id: "workouts.exercise-form.title"
+    text: "Edit exercise"
+- tapOn:
+    id: "workouts.exercise-form.cancel"
+- assertVisible:
+    id: "workouts.exercise.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.exercise.delete"
+    centerElement: true
+- tapOn:
+    id: "workouts.exercise.delete"
+- assertVisible:
+    id: "workouts.exercise.delete.label"
+    text: "Tap to confirm"
+- tapOn:
+    id: "workouts.exercise.delete"
+- assertVisible:
+    id: "app.toast"
+    text: "Exercise deleted"
+- assertVisible:
+    id: "workouts.picker.screen"

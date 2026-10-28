@@ -1,13 +1,214 @@
 {
-  "subtitle": "Toda tela nasce com um fluxo de ponta a ponta.",
-  "counter": {
-    "taps_one": "{{count}} toque",
-    "taps_other": "{{count}} toques",
-    "tap": "Tocar",
-    "reset": "Zerar"
+  "header": {
+    "title": "Como estou hoje"
   },
   "nav": {
+    "edit": "Editar início",
+    "inbox": "Notificações",
+    "profile": "Perfil",
     "settings": "Configurações",
-    "designSystem": "Galeria do design system"
+    "designSystem": "Design system"
+  },
+  "checklist": {
+    "title": "Comece por aqui",
+    "progress": "{{done}} de {{total}}",
+    "description": "Sua tela inicial ganha números depois do primeiro treino e da primeira noite registrada.",
+    "steps": {
+      "health": {
+        "name": "Conectar Apple Health",
+        "description": "sono, passos e frequência cardíaca"
+      },
+      "workout": {
+        "name": "Criar seu primeiro treino",
+        "description": "ou escolha um programa"
+      },
+      "friend": {
+        "name": "Convidar um amigo",
+        "description": "para acompanhar e competir"
+      }
+    }
+  },
+  "sync": {
+    "line": "Apple Health · sincronizado às {{time}}"
+  },
+  "weekly": {
+    "eyebrow": "Resumo semanal · {{range}}",
+    "range": "19–25 out",
+    "previousRange": "12–18 out",
+    "headline": "Semana consistente",
+    "homeLine": "5 treinos · sono 35 min maior · 2 recordes",
+    "view": "Ver",
+    "back": "Início",
+    "sub": "5 treinos em 7 dias, acima da sua meta de {{goal}}.",
+    "stats": {
+      "workouts": "Treinos",
+      "workoutsSub": "meta {{goal}} por semana",
+      "active": "Tempo ativo",
+      "activeSub": "musculação e corrida",
+      "distance": "Distância",
+      "distanceSub_one": "{{count}} corrida com GPS",
+      "distanceSub_other": "{{count}} corridas com GPS",
+      "volume": "Volume",
+      "volumeValue": "{{value}} t",
+      "volumeSub_one": "{{count}} treino de musculação",
+      "volumeSub_other": "{{count}} treinos de musculação"
+    },
+    "consistency": "Constância",
+    "days": {
+      "mon": "Seg",
+      "tue": "Ter",
+      "wed": "Qua",
+      "thu": "Qui",
+      "fri": "Sex",
+      "sat": "Sáb",
+      "sun": "Dom"
+    },
+    "restNote": "Dois dias de descanso — eles fazem parte do treino.",
+    "changes": "O que mudou",
+    "change": {
+      "sleep": {
+        "title": "Sono médio 7h 20",
+        "description": "35 min a mais que na semana anterior"
+      },
+      "steps": {
+        "title": "Passos médios {{value}}",
+        "description": "8% a mais · meta atingida em 3 dias"
+      },
+      "hr": {
+        "title": "FC de repouso 60 bpm",
+        "description": "estável, variação de 3 bpm"
+      },
+      "pace": {
+        "title": "Ritmo de corrida 5:36 /km",
+        "description": "4 s mais rápido em corridas parecidas"
+      }
+    },
+    "highlights": "Destaques",
+    "highlight": {
+      "bench": "Supino reto com barra · 60 kg × 8",
+      "squat": "Agachamento livre · 80 kg × 6",
+      "run": "Corrida de 8,2 km · maior distância do mês"
+    },
+    "goals": "Metas da semana",
+    "goal": {
+      "workouts": "Treinos",
+      "workoutsValue": "5 de {{goal}}",
+      "steps": "Passos ({{goal}})",
+      "stepsValue": "3 de 7 dias",
+      "sleep": "Sono ({{goal}})",
+      "sleepValue": "3 de 7 noites"
+    },
+    "preview": {
+      "big": "5 treinos · 13,3 km",
+      "active": "4h 12 ativo",
+      "records": "2 recordes",
+      "days": "5 de 7 dias",
+      "note": "Prévia do cartão · sem dados de saúde"
+    },
+    "share": "Compartilhar resumo",
+    "note": "Comparações com {{range}}. Descrevemos tendências, sem afirmar causas."
+  },
+  "sleep": {
+    "title": "Sono · noite passada",
+    "score": "pontuação",
+    "duration": "{{hours}}h {{minutes}}",
+    "goal": "de {{goal}} de meta",
+    "window": "{{start}} → {{end}}",
+    "regularity": "horário regular · ±{{minutes}} min"
+  },
+  "move": {
+    "title": "Movimento",
+    "delta": "+{{percent}}% vs. ontem neste horário",
+    "goal": "de {{goal}} passos",
+    "distance": "Distância",
+    "calories": "Cal. ativas",
+    "activity": "Atividade",
+    "km": "{{value}} km",
+    "kcal": "{{value}} kcal",
+    "min": "{{value}} min"
+  },
+  "hr": {
+    "title": "FC de repouso ›",
+    "unit": "bpm",
+    "note": "{{delta}} abaixo da média de 7 dias"
+  },
+  "week": {
+    "title": "Treinos na semana",
+    "of": "de {{goal}}"
+  },
+  "next": {
+    "eyebrow": "Hoje · planejado",
+    "duration": "~{{minutes}} min",
+    "subtitle_one": "{{focus}} · {{count}} exercício",
+    "subtitle_other": "{{focus}} · {{count}} exercícios",
+    "start": "Iniciar treino",
+    "done": "Concluído hoje"
+  },
+  "friends": {
+    "title": "Amigos",
+    "meta": {
+      "together": "treinar junto",
+      "friends_one": "{{count}} amigo",
+      "friends_other": "{{count}} amigos",
+      "day": "dia {{day}} de {{days}}"
+    },
+    "line": {
+      "invite": "Convide amigos para acompanhar treinos e competir.",
+      "create": "Crie um desafio diário com seus amigos."
+    },
+    "cta": {
+      "invite": "Convidar",
+      "create": "Criar desafio"
+    },
+    "position": "{{position}}º",
+    "points_one": "{{count}} pt",
+    "points_other": "{{count}} pts"
+  },
+  "last": {
+    "title": "Última atividade · {{when}}",
+    "when": "Sábado · Corrida",
+    "history": "Histórico"
+  },
+  "edit": {
+    "title": "Personalizar início",
+    "restore": "Restaurar",
+    "done": "Concluir",
+    "view": "Visualização",
+    "density": {
+      "summary": "Resumida",
+      "summarySub": "só os números",
+      "detailed": "Detalhada",
+      "detailedSub": "com gráficos"
+    },
+    "cards": "Cartões",
+    "count": "{{visible}} de {{total}} visíveis",
+    "card": {
+      "sleep": {
+        "name": "Sono",
+        "description": "duração, meta e regularidade"
+      },
+      "move": {
+        "name": "Movimento",
+        "description": "passos, distância e calorias"
+      },
+      "stats": {
+        "name": "FC e treinos da semana",
+        "description": "repouso e frequência semanal"
+      },
+      "next": {
+        "name": "Próximo treino",
+        "description": "treino planejado para hoje"
+      },
+      "last": {
+        "name": "Última atividade",
+        "description": "atalho para o histórico"
+      }
+    },
+    "up": "Subir {{name}}",
+    "down": "Descer {{name}}",
+    "toggle": "Mostrar {{name}}",
+    "note": "Cartões ocultos continuam disponíveis em Saúde e Histórico.",
+    "restored": "Início restaurado",
+    "simulateNewUser": "Simular usuário novo"
   }
 }

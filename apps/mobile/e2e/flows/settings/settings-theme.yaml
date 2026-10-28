@@ -5,6 +5,10 @@ tags:
   - settings
 ---
 - runFlow: ../../subflows/launch.yaml
+- scrollUntilVisible:
+    element:
+      id: "home.nav.settings"
+    centerElement: true
 - tapOn:
     id: "home.nav.settings"
 - assertVisible:

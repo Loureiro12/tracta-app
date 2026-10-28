@@ -6,6 +6,10 @@ tags:
   - i18n
 ---
 - runFlow: ../../subflows/launch.yaml
+- scrollUntilVisible:
+    element:
+      id: "home.nav.settings"
+    centerElement: true
 - tapOn:
     id: "home.nav.settings"
 - assertVisible:
@@ -16,7 +20,7 @@ tags:
     id: "settings.language.pt-br"
 - assertVisible:
     id: "settings.title"
-    text: "Configurações"
+    text: "Preferências do app"
 - assertVisible:
     id: "settings.language.current"
     text: "Idioma: Português (Brasil)"
@@ -26,21 +30,14 @@ tags:
 - tapOn:
     id: "settings.nav.back"
 - assertVisible:
-    id: "home.counter.value"
-    text: "0 toque"
-- tapOn:
-    id: "home.counter.increment"
-- tapOn:
-    id: "home.counter.increment"
-- assertVisible:
-    id: "home.counter.value"
-    text: "2 toques"
+    id: "home.title"
+    text: "Como estou hoje"
 # Deep-link override pins the locale back to English
 - openLink: "tracta://settings?locale=en"
 - runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:
     id: "settings.title"
-    text: "Settings"
+    text: "App preferences"
 - assertVisible:
     id: "settings.language.current"
     text: "Language: English"

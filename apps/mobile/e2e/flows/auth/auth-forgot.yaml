@@ -1,0 +1,65 @@
+appId: com.tracta.mobile
+name: auth-forgot
+tags:
+  - auth
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "auth.welcome.login"
+- tapOn:
+    id: "auth.login.forgot"
+- assertVisible:
+    id: "auth.forgot.screen"
+- assertVisible:
+    id: "auth.forgot.title"
+    text: "I forgot my password"
+# Both ways back to sign in
+- tapOn:
+    id: "auth.forgot.back"
+- assertVisible:
+    id: "auth.login.screen"
+- tapOn:
+    id: "auth.login.forgot"
+- tapOn:
+    id: "auth.forgot.login"
+- assertVisible:
+    id: "auth.login.screen"
+- tapOn:
+    id: "auth.login.forgot"
+- assertVisible:
+    id: "auth.forgot.email"
+# Validation, then the mock send
+- tapOn:
+    id: "auth.forgot.submit"
+- assertVisible:
+    id: "auth.forgot.email.error"
+    text: "Enter a valid email"
+- tapOn:
+    id: "auth.forgot.email.input"
+- inputText: "lucas@tracta.app"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "auth.forgot.title"
+- tapOn:
+    id: "auth.forgot.submit"
+- extendedWaitUntil:
+    visible:
+      id: "auth.sent.screen"
+    timeout: 10000
+- assertVisible:
+    id: "auth.sent.title"
+    text: "Check your email"
+- assertVisible:
+    id: "auth.sent.body"
+- tapOn:
+    id: "auth.sent.open-mail"
+- assertVisible:
+    id: "app.toast"
+- assertVisible:
+    id: "auth.sent.resend"
+- tapOn:
+    id: "auth.sent.login"
+- assertVisible:
+    id: "auth.login.screen"

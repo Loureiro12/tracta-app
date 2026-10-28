@@ -1,0 +1,65 @@
+appId: com.tracta.mobile
+name: profile-paywall
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- tapOn:
+    id: "profile.pro.cta"
+- assertVisible:
+    id: "profile.paywall.screen"
+- tapOn:
+    id: "profile.paywall.back"
+- assertVisible:
+    id: "profile.screen"
+- tapOn:
+    id: "profile.pro.card"
+- assertVisible:
+    id: "profile.paywall.screen"
+- assertVisible:
+    id: "profile.paywall.title"
+    text: "Plan whole weeks, not just today's workout"
+- assertVisible:
+    id: "profile.paywall.table"
+- assertVisible:
+    id: "profile.paywall.plan.year.price"
+    text: "R$ 119.90"
+- assertVisible:
+    id: "profile.paywall.plan.month.price"
+    text: "R$ 14.90"
+- assertVisible:
+    id: "profile.paywall.buy.label"
+    text: "Start 7 free days"
+- tapOn:
+    id: "profile.paywall.plan.month"
+- assertVisible:
+    id: "profile.paywall.buy.label"
+    text: "Subscribe for R$ 14.90/month"
+- tapOn:
+    id: "profile.paywall.plan.year"
+- assertVisible:
+    id: "profile.paywall.buy.label"
+    text: "Start 7 free days"
+- tapOn:
+    id: "profile.paywall.restore"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Purchase restored"
+- assertVisible:
+    id: "profile.screen"
+- assertVisible:
+    id: "profile.pro.cta.label"
+    text: "Manage"
+- assertVisible:
+    id: "profile.pro.description"
+    text: "yearly plan · renews Oct 27, 2027"
+# Pro gates open the paywall with a context line
+- openLink: "tracta://profile/paywall?context=programs&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "profile.paywall.screen"
+- assertVisible:
+    id: "profile.paywall.context"
+    text: "Programs is part of Pro"

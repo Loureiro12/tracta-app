@@ -1,0 +1,56 @@
+{
+  "welcome": {
+    "eyebrow": "Welcome",
+    "title": "Let's get to know Tracta?",
+    "titleNamed": "Hi, {{name}}. Let's get to know Tracta?",
+    "body": "A quick tour of the main areas. It takes less than a minute.",
+    "items": {
+      "item1": "How I'm doing today",
+      "item2": "Health, explained",
+      "item3": "Workouts and activities",
+      "item4": "Progress and friends"
+    },
+    "cta": "Start tour",
+    "cta2": "Skip for now"
+  },
+  "done": {
+    "eyebrow": "All set",
+    "title": "Your pace starts now",
+    "body": "You can replay this tour anytime in Profile → See app tour.",
+    "cta": "Start using",
+    "cta2": "Invite friends"
+  },
+  "spot": {
+    "step": "{{n}} of {{total}}",
+    "skip": "Skip tour",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish"
+  },
+  "steps": {
+    "home": {
+      "title": "Home",
+      "body": "Your summary of the day: sleep, movement, heart rate and the next workout. Tap \"Edit\" to pick and reorder the cards."
+    },
+    "health": {
+      "title": "Health",
+      "body": "Sleep and activity explained simply, always with the source of each data point. Tap a card to see day, week or month."
+    },
+    "workouts": {
+      "title": "Workouts",
+      "body": "Build your routines, start a free session or log a run, a walk and other activities."
+    },
+    "session": {
+      "title": "During the workout",
+      "body": "Adjust load and reps, complete the set and the rest starts by itself. Everything is saved on every tap, even offline."
+    },
+    "history": {
+      "title": "History",
+      "body": "Activity calendar, progress per exercise and per cardio, and 7- and 30-day reports."
+    },
+    "profile": {
+      "title": "Friends and goals",
+      "body": "Invite friends to follow workouts and create daily challenges. Goals, connections and privacy also live here."
+    }
+  }
+}

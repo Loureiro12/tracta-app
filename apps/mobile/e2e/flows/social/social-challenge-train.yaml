@@ -1,0 +1,28 @@
+appId: com.tracta.mobile
+name: social-challenge-train
+tags:
+  - social
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "social.hub.challenges.c1"
+- assertVisible:
+    id: "social.challenge.screen"
+- tapOn:
+    id: "social.challenge.back"
+- assertVisible:
+    id: "social.screen"
+- tapOn:
+    id: "social.hub.challenges.c1"
+- scrollUntilVisible:
+    element:
+      id: "social.challenge.train"
+    centerElement: true
+- tapOn:
+    id: "social.challenge.train"
+- extendedWaitUntil:
+    visible:
+      id: "workouts.screen"
+    timeout: 10000

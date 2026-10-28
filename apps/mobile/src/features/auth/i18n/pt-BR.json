@@ -1,0 +1,159 @@
+{
+  "back": "Voltar",
+  "or": "ou",
+  "apple": "Apple",
+  "google": "Google",
+  "showPassword": "Mostrar",
+  "hidePassword": "Ocultar",
+  "welcome": {
+    "wordmark": "TRACTA",
+    "question1": "Como estou?",
+    "question2": "O que vou fazer?",
+    "question3": "Como estou evoluindo?",
+    "tagline": "Sono, atividade e treinos em um só lugar, com seus dados guardados no seu aparelho.",
+    "signup": "Criar conta",
+    "signupHint": "Grátis · leva menos de um minuto",
+    "login": "Entrar",
+    "loginHint": "Já tem conta? Use o mesmo e-mail para entrar."
+  },
+  "login": {
+    "title": "Entrar",
+    "subtitle": "Bom te ver de novo.",
+    "email": "E-mail",
+    "emailPlaceholder": "voce@email.com",
+    "password": "Senha",
+    "passwordPlaceholder": "Sua senha",
+    "forgot": "Esqueci minha senha",
+    "submit": "Entrar",
+    "noAccount": "Não tem conta?",
+    "signup": "Criar conta",
+    "welcomeToast": "Bem-vindo de volta",
+    "errors": {
+      "email": "Informe um e-mail válido",
+      "password": "Informe sua senha",
+      "general": "E-mail ou senha incorretos. Tente de novo ou redefina sua senha."
+    }
+  },
+  "signup": {
+    "title": "Criar conta",
+    "subtitle": "Leva menos de um minuto. Você pode conectar seus dados em seguida.",
+    "name": "Nome",
+    "namePlaceholder": "Como quer ser chamado",
+    "email": "E-mail",
+    "emailPlaceholder": "voce@email.com",
+    "password": "Senha",
+    "passwordPlaceholder": "Sua senha",
+    "rules": {
+      "length": "Pelo menos 8 caracteres",
+      "number": "Um número",
+      "uppercase": "Uma letra maiúscula"
+    },
+    "terms": "Li e aceito os <b>Termos de uso</b> e a <b>Política de privacidade</b>. Dados de saúde não são vendidos nem compartilhados.",
+    "submit": "Criar conta",
+    "hasAccount": "Já tem conta?",
+    "login": "Entrar",
+    "errors": {
+      "name": "Informe seu nome",
+      "email": "Informe um e-mail válido",
+      "password": "A senha não atende aos requisitos",
+      "terms": "Aceite os termos para continuar"
+    }
+  },
+  "forgot": {
+    "title": "Esqueci minha senha",
+    "subtitle": "Informe o e-mail da sua conta. Enviaremos um link para você criar uma nova senha.",
+    "email": "E-mail",
+    "emailPlaceholder": "voce@email.com",
+    "submit": "Enviar link",
+    "backToLogin": "Voltar para entrar",
+    "errors": {
+      "email": "Informe um e-mail válido"
+    }
+  },
+  "sent": {
+    "title": "Verifique seu e-mail",
+    "body": "Enviamos um link para <b>{{email}}</b>. Ele expira em 30 minutos.",
+    "spam": "Não encontrou? Confira a caixa de spam.",
+    "openMail": "Abrir app de e-mail",
+    "openMailToast": "Abrindo o app de e-mail…",
+    "resend": "Reenviar link",
+    "resendIn": "Reenviar em {{time}}",
+    "resentToast": "Link reenviado",
+    "backToLogin": "Voltar para entrar"
+  },
+  "social": {
+    "connectedToast": "Conectado com {{provider}}"
+  },
+  "connect": {
+    "eyebrow": "Último passo",
+    "title": "Conecte seus dados",
+    "subtitle": "Escolha de onde o Tracta pode ler suas métricas. Tudo é opcional e pode ser alterado depois em Perfil.",
+    "health": {
+      "title": "Apple Health",
+      "status": {
+        "off": "Não conectado",
+        "busy": "Conectando",
+        "on": "Conectado"
+      },
+      "description": "Passos, sono, frequência cardíaca e treinos. Leitura e gravação são autorizadas separadamente.",
+      "connect": "Conectar Apple Health",
+      "importing": "Importando os últimos 30 dias…",
+      "review": "Revisar permissões",
+      "found": {
+        "sleep": { "name": "Sono com estágios", "source": "Mi Band 8" },
+        "steps": { "name": "Passos e distância", "source": "iPhone, Mi Band 8" },
+        "heart": { "name": "Frequência cardíaca", "source": "Mi Band 8" },
+        "workouts": { "name": "Treinos", "source": "12 em 30 dias" }
+      }
+    },
+    "google": {
+      "title": "Google Health",
+      "status": "Em validação",
+      "description": "Ainda testando quais treinos aparecem por lá. Só ativamos depois de confirmar com testes reais.",
+      "notify": "Avisar quando estiver disponível"
+    },
+    "gps": {
+      "title": "Localização (GPS)",
+      "description": "Percurso e ritmo das corridas. Só durante atividades.",
+      "toast": "Localização: apenas durante o uso"
+    },
+    "notifications": {
+      "title": "Notificações",
+      "description": "Fim do descanso e lembretes de treino.",
+      "toast": "Notificações permitidas"
+    },
+    "cta": {
+      "continue": "Continuar",
+      "start": "Começar a usar",
+      "done": "Concluir"
+    },
+    "skip": "Configurar depois"
+  },
+  "health": {
+    "title": "Apple Health",
+    "subtitle": "Escolha o que o Tracta pode acessar. Você pode mudar isso a qualquer momento em Ajustes › Saúde.",
+    "readLabel": "Ler do Apple Health",
+    "writeLabel": "Gravar no Apple Health",
+    "enableAll": "Ativar tudo",
+    "disableAll": "Desativar tudo",
+    "note": "Séries, cargas e repetições ficam só no Tracta. Permissão de leitura não dá permissão de gravação.",
+    "read": {
+      "steps": { "name": "Passos", "why": "resumo diário e tendências" },
+      "distance": { "name": "Distância", "why": "caminhada e corrida" },
+      "active": { "name": "Energia ativa", "why": "calorias de movimento" },
+      "resting": { "name": "Energia de repouso", "why": "calorias totais do dia" },
+      "heart": { "name": "Frequência cardíaca", "why": "em treinos e em repouso" },
+      "sleep": { "name": "Sono", "why": "duração, horários e estágios" },
+      "workouts": { "name": "Treinos", "why": "atividades de outros apps" }
+    },
+    "write": {
+      "workouts": { "name": "Treinos", "why": "tipo, duração e calorias das sessões" },
+      "distance": { "name": "Distância", "why": "percurso das corridas registradas" }
+    },
+    "allow_one": "Permitir {{count}} tipo de dado",
+    "allow_other": "Permitir {{count}} tipos de dados",
+    "allowNone": "Selecione ao menos um",
+    "allowNoneToast": "Ative pelo menos um tipo de dado",
+    "connectedToast": "Apple Health conectado"
+  }
+}

@@ -1,16 +1,32 @@
 {
-  "title": "Settings",
+  "title": "App preferences",
+  "back": "Back",
   "theme": {
+    "label": "Appearance",
     "current": "Theme: {{value}}",
     "system": "System",
     "light": "Light",
     "dark": "Dark"
   },
   "language": {
+    "label": "Language",
     "current": "Language: {{value}}",
     "system": "System",
     "en": "English",
     "pt-BR": "Português (Brasil)"
   },
-  "back": "Back"
+  "demo": {
+    "label": "Demo states",
+    "hint": "Preview the edge states from the design: offline strip, sync failure and toast.",
+    "offline": "Show offline strip",
+    "offlineTitle": "No internet",
+    "offlineDescription": "Workouts are saved on the device · 2 waiting to upload",
+    "sync": "Show sync failure",
+    "syncTitle": "Sync failed",
+    "syncDescription": "Last upload 2 h ago",
+    "syncCta": "Try again",
+    "toast": "Show toast",
+    "toastMessage": "Workout saved",
+    "clear": "Clear states"
+  }
 }

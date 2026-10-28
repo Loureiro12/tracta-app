@@ -1,0 +1,110 @@
+appId: com.tracta.mobile
+name: session-recover
+tags:
+  - session
+---
+- runFlow: ../../subflows/launch.yaml
+# Start routine C (legs): the squat gets a load suggestion → keep the current load
+- openLink: "tracta://session?routine=C&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "session.screen"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Agachamento livre"
+- assertVisible:
+    id: "session.suggestion.card"
+- tapOn:
+    id: "session.suggestion.keep"
+- assertNotVisible:
+    id: "session.suggestion.card"
+- tapOn:
+    id: "session.warmup.skip"
+- assertNotVisible:
+    id: "session.warmup.offer"
+- tapOn:
+    id: "session.header.minimize"
+- assertVisible:
+    id: "home.screen"
+# "Sessão recuperada" sheet for the session in progress
+- openLink: "tracta://session/recover?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "session.recover.sheet"
+- assertVisible:
+    id: "session.recover.title"
+    text: "Treino C · Pernas"
+- assertVisible:
+    id: "session.recover.line"
+# Discard needs a second tap; "Not now" just closes the sheet
+- tapOn:
+    id: "session.recover.discard"
+- assertVisible:
+    id: "session.recover.discard.label"
+    text: "Tap to confirm"
+- tapOn:
+    id: "session.recover.later"
+- assertVisible:
+    id: "home.screen"
+# Resume → back in the session (still on the squat)
+- openLink: "tracta://session/recover?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "session.recover.resume"
+- assertVisible:
+    id: "session.screen"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Agachamento livre"
+- assertNotVisible:
+    id: "session.paused.banner"
+# Finish with nothing logged → no records → discard in two taps
+- scrollUntilVisible:
+    element:
+      id: "session.actions.finish"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "session.actions.finish"
+- assertVisible:
+    id: "session.summary.screen"
+- assertVisible:
+    id: "session.summary.no-pr"
+    text: "No records this session — consistency counts too."
+- scrollUntilVisible:
+    element:
+      id: "session.summary.discard"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "session.summary.discard"
+- assertVisible:
+    id: "session.summary.discard.label"
+    text: "Tap again to confirm"
+- tapOn:
+    id: "session.summary.discard"
+- assertVisible:
+    id: "app.toast"
+    text: "Session discarded"
+- assertVisible:
+    id: "home.screen"
+# No session active: the sheet seeds a recovered "Treino A" → end and review → save
+- openLink: "tracta://session/recover?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "session.recover.title"
+    text: "Treino A · Peito & Tríceps"
+- tapOn:
+    id: "session.recover.review"
+- assertVisible:
+    id: "session.summary.screen"
+- assertVisible:
+    id: "session.summary.sets"
+    text: "5"
+- tapOn:
+    id: "session.summary.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Workout saved"
+- assertVisible:
+    id: "home.screen"

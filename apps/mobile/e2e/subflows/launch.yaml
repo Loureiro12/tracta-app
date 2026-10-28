@@ -1,13 +1,20 @@
-# Cold start with a clean state and the locale pinned to English, so text assertions are stable
-# regardless of the simulator language. Every top-level flow begins with this.
+# Cold start with a clean state, then the locale pinned to English so text assertions are stable
+# regardless of the simulator language. The app must be interactive BEFORE the deep link is sent:
+# a link delivered while the JS bundle is still loading is lost (no Linking listener yet).
 appId: com.tracta.mobile
 ---
 - launchApp:
     clearState: true
     clearKeychain: true
+# A system alert left behind by a previous flow would hide the app: clear it before waiting.
+- runFlow: ./dismiss-system-dialogs.yaml
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 60000
+- runFlow: ./dismiss-system-dialogs.yaml
 - openLink: "tracta://?locale=en"
 - runFlow: ./accept-deep-link-prompt.yaml
-# Cold start + deep link can take a few seconds on a fresh simulator; wait explicitly.
 - extendedWaitUntil:
     visible:
       id: "home.screen"

@@ -1,0 +1,67 @@
+appId: com.tracta.mobile
+name: profile-photos
+tags:
+  - profile
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.nav.photos"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.nav.photos"
+- assertVisible:
+    id: "profile.photos.screen"
+- assertVisible:
+    id: "profile.photos.tabs"
+- assertVisible:
+    id: "profile.photos.add.label"
+    text: "Log today's photo"
+- assertVisible:
+    id: "profile.photos.grid"
+- tapOn:
+    id: "profile.photos.add"
+- assertVisible:
+    id: "app.toast.message"
+    text: "New frame added to the timeline"
+# Compare: newest (today) vs oldest, with the weight difference
+- tapOn:
+    id: "profile.photos.tabs.compare"
+- assertVisible:
+    id: "profile.photos.swap-a.label"
+    text: "27 out · swap"
+- assertVisible:
+    id: "profile.photos.swap-b.label"
+    text: "1 jun · swap"
+- assertVisible:
+    id: "profile.photos.diff"
+- assertVisible:
+    id: "profile.photos.diff.value"
+    text: "-5.2"
+- assertVisible:
+    id: "profile.photos.span"
+    text: "From 1 jun to 27 out · weight logged on the day of the photo"
+- tapOn:
+    id: "profile.photos.swap-a"
+- assertVisible:
+    id: "profile.photos.swap-a.label"
+    text: "26 out · swap"
+- assertVisible:
+    id: "profile.photos.diff.value"
+    text: "-5.1"
+- tapOn:
+    id: "profile.photos.swap-b"
+- assertVisible:
+    id: "profile.photos.swap-b.label"
+    text: "27 out · swap"
+- tapOn:
+    id: "profile.photos.tabs.list"
+- assertVisible:
+    id: "profile.photos.add"
+- tapOn:
+    id: "profile.photos.back"
+- assertVisible:
+    id: "profile.screen"

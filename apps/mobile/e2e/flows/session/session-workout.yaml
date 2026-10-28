@@ -1,0 +1,276 @@
+appId: com.tracta.mobile
+name: session-workout
+tags:
+  - smoke
+  - session
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://session?routine=A&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "session.screen"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Supino reto com barra"
+- assertVisible:
+    id: "session.exercise.meta"
+    text: "Exercise 1 of 5 · Peito"
+- assertVisible:
+    id: "session.header.timer"
+- assertVisible:
+    id: "session.pill"
+# Suggested warm-up (40/60/80 % of 60 kg) → add it and tick the first set
+- assertVisible:
+    id: "session.warmup.offer"
+- tapOn:
+    id: "session.warmup.add"
+- assertVisible:
+    id: "session.warmup.row"
+- assertVisible:
+    id: "session.warmup.row.0"
+- tapOn:
+    id: "session.warmup.row.0"
+- assertVisible:
+    id: "session.warmup.row.0.check"
+# Steppers on the active set
+- assertVisible:
+    id: "session.set.active"
+- assertVisible:
+    id: "session.set.kg"
+- assertVisible:
+    id: "session.set.reps"
+- assertVisible:
+    id: "session.set.row"
+- tapOn:
+    id: "session.set.kg.plus"
+- assertVisible:
+    id: "session.set.kg.value"
+    text: "62.5"
+- tapOn:
+    id: "session.set.reps.minus"
+- assertVisible:
+    id: "session.set.reps.value"
+    text: "7"
+# Plate calculator (bar exercise)
+- tapOn:
+    id: "session.set.plates"
+- assertVisible:
+    id: "session.plates.sheet"
+- assertVisible:
+    id: "session.plates.total"
+- assertVisible:
+    id: "session.plates.bar"
+- assertVisible:
+    id: "session.plates.row"
+- assertVisible:
+    id: "session.plates.total.value"
+    text: "62.5 kg"
+- tapOn:
+    id: "session.plates.total.plus"
+- assertVisible:
+    id: "session.plates.total.value"
+    text: "65 kg"
+- tapOn:
+    id: "session.plates.bar.15"
+- assertVisible:
+    id: "session.plates.row.bar.value"
+    text: "15 kg"
+- assertVisible:
+    id: "session.plates.row.0.value"
+    text: "1×"
+- assertVisible:
+    id: "session.plates.note"
+    text: "Exact load with these plates."
+- tapOn:
+    id: "session.plates.total.minus"
+- assertVisible:
+    id: "session.plates.total.value"
+    text: "62.5 kg"
+- tapOn:
+    id: "session.plates.bar.20"
+- tapOn:
+    id: "session.plates.sheet.right"
+- assertVisible:
+    id: "session.screen"
+# Complete set 1 → rest screen
+- assertVisible:
+    id: "session.nav.main.label"
+    text: "Complete set 1"
+- tapOn:
+    id: "session.nav.main"
+- assertVisible:
+    id: "session.rest.screen"
+- assertVisible:
+    id: "session.rest.label"
+    text: "Rest"
+- assertVisible:
+    id: "session.rest.time"
+- assertVisible:
+    id: "session.rest.total"
+    text: "of 2:00"
+- tapOn:
+    id: "session.rest.plus"
+- assertVisible:
+    id: "session.rest.total"
+    text: "of 2:15"
+- tapOn:
+    id: "session.rest.minus"
+- assertVisible:
+    id: "session.rest.total"
+    text: "of 2:00"
+- tapOn:
+    id: "session.rest.pause"
+- assertVisible:
+    id: "session.rest.label"
+    text: "Rest paused"
+- assertVisible:
+    id: "session.rest.next"
+    text: "Supino reto com barra · set 2 · 60 kg × 8"
+- tapOn:
+    id: "session.rest.skip"
+- assertVisible:
+    id: "session.screen"
+# Done row is collapsed; toggling a later row marks it done and back
+- assertVisible:
+    id: "session.set.row.0"
+- assertVisible:
+    id: "session.set.row.0.check"
+- tapOn:
+    id: "session.set.row.2"
+- tapOn:
+    id: "session.set.row.2"
+- scrollUntilVisible:
+    element:
+      id: "session.actions.add-set"
+    centerElement: true
+- tapOn:
+    id: "session.actions.add-set"
+- scrollUntilVisible:
+    element:
+      id: "session.set.row.4"
+    centerElement: true
+- assertVisible:
+    id: "session.set.row.4"
+- tapOn:
+    id: "session.actions.remove-set"
+- assertNotVisible:
+    id: "session.set.row.4"
+# Load suggestion on the next exercise
+- tapOn:
+    id: "session.nav.next"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Supino inclinado"
+- assertVisible:
+    id: "session.suggestion.card"
+- tapOn:
+    id: "session.suggestion.apply"
+- assertVisible:
+    id: "session.set.kg.value"
+    text: "24"
+# Finish every set of this exercise: rows 2 and 3 by hand, set 1 via the CTA → rest
+- tapOn:
+    id: "session.set.row.1"
+- tapOn:
+    id: "session.set.row.2"
+- tapOn:
+    id: "session.nav.main"
+- assertVisible:
+    id: "session.rest.screen"
+- tapOn:
+    id: "session.rest.skip"
+- tapOn:
+    id: "session.nav.prev"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Supino inclinado"
+# Superset label on the paired exercises
+- tapOn:
+    id: "session.pill.3"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Tríceps na corda"
+- assertVisible:
+    id: "session.exercise.superset"
+    text: "Superset · alternates with Mergulho nas paralelas"
+- tapOn:
+    id: "session.actions.skip"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Mergulho nas paralelas"
+# Pause / resume
+- tapOn:
+    id: "session.header.pause"
+- assertVisible:
+    id: "session.paused.banner"
+- tapOn:
+    id: "session.paused.resume"
+- assertNotVisible:
+    id: "session.paused.banner"
+# Exercise picker belongs to the workouts feature
+- tapOn:
+    id: "session.actions.add-exercise"
+- assertVisible:
+    id: "app.toast"
+    text: "Exercise picker coming soon"
+# Minimize → mini-player above the tab bar → tap to come back
+- tapOn:
+    id: "session.header.minimize"
+- assertVisible:
+    id: "home.screen"
+- assertVisible:
+    id: "app.mini-player"
+- tapOn:
+    id: "app.mini-player"
+- assertVisible:
+    id: "session.screen"
+- assertNotVisible:
+    id: "app.mini-player"
+# Finish → summary → back to the workout → finish again → save
+- scrollUntilVisible:
+    element:
+      id: "session.actions.finish"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "session.actions.finish"
+- assertVisible:
+    id: "session.summary.screen"
+- assertVisible:
+    id: "session.summary.title"
+    text: "Workout complete"
+- assertVisible:
+    id: "session.summary.sets"
+    text: "4"
+- assertVisible:
+    id: "session.summary.volume"
+    text: "1,157.5 kg"
+- assertVisible:
+    id: "session.summary.next"
+- scrollUntilVisible:
+    element:
+      id: "session.summary.back"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "session.summary.back"
+- assertVisible:
+    id: "session.screen"
+- scrollUntilVisible:
+    element:
+      id: "session.actions.finish"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "session.actions.finish"
+- assertVisible:
+    id: "session.summary.screen"
+- tapOn:
+    id: "session.summary.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Workout saved"
+- assertVisible:
+    id: "home.screen"
+- assertNotVisible:
+    id: "app.mini-player"

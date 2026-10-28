@@ -1,0 +1,170 @@
+import { useState } from 'react';
+
+import { useRouter } from 'expo-router';
+
+import {
+  BackHeader,
+  Button,
+  CheckCircle,
+  Divider,
+  HStack,
+  Screen,
+  Text,
+  TextField,
+  VStack,
+} from '@tracta/design-system';
+
+import { useFeedbackStore } from '@/shared/feedback';
+import { useTranslation } from '@/shared/i18n';
+
+import { useProfileStore } from '../model/profile.store';
+import { profileIds as ids } from '../profile.testids';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+type Errors = {
+  name?: string | undefined;
+  email?: string | undefined;
+  current?: string | undefined;
+  next?: string | undefined;
+};
+
+/** Password rules from the handoff: length ≥ 8, one digit, one uppercase letter. */
+function passwordRules(pw: string) {
+  return [
+    { key: 'ruleLength', ok: pw.length >= 8 },
+    { key: 'ruleNumber', ok: /\d/.test(pw) },
+    { key: 'ruleUpper', ok: /[A-Z]/.test(pw) },
+  ] as const;
+}
+
+export function ProfileEditScreen() {
+  const router = useRouter();
+  const { t } = useTranslation('profile');
+  const showToast = useFeedbackStore((s) => s.showToast);
+  const account = useProfileStore((s) => s.account);
+  const updateAccount = useProfileStore((s) => s.updateAccount);
+
+  const [name, setName] = useState(account.name);
+  const [email, setEmail] = useState(account.email);
+  const [current, setCurrent] = useState('');
+  const [next, setNext] = useState('');
+  const [errors, setErrors] = useState<Errors>({});
+
+  const rules = passwordRules(next);
+
+  const save = () => {
+    const e: Errors = {};
+    if (!name.trim()) e.name = t('edit.errorName');
+    if (!EMAIL_RE.test(email.trim())) e.email = t('edit.errorEmail');
+    setErrors((prev) => ({ ...prev, name: e.name, email: e.email }));
+    if (e.name || e.email) return;
+    const emailChanged = email.trim() !== account.email;
+    updateAccount({ name: name.trim(), email: emailChanged ? account.email : email.trim() });
+    showToast(
+      emailChanged ? t('edit.emailSentToast', { email: email.trim() }) : t('edit.savedToast'),
+    );
+    router.back();
+  };
+
+  const changePassword = () => {
+    const e: Errors = {};
+    if (!current) e.current = t('edit.errorCurrentRequired');
+    else if (current.length < 6) e.current = t('edit.errorCurrentWrong');
+    if (!rules.every((r) => r.ok)) e.next = t('edit.errorNewWeak');
+    else if (next === current) e.next = t('edit.errorNewSame');
+    setErrors((prev) => ({ ...prev, current: e.current, next: e.next }));
+    if (e.current || e.next) return;
+    setCurrent('');
+    setNext('');
+    showToast(t('edit.passwordToast'));
+  };
+
+  return (
+    <Screen
+      testID={ids.editScreen}
+      header={
+        <BackHeader
+          testID={ids.editBack}
+          label={t('nav.backToProfile')}
+          onPress={() => router.back()}
+        />
+      }
+    >
+      <Text variant="overlayTitle">{t('edit.title')}</Text>
+      <TextField
+        testID={ids.editName}
+        label={t('edit.name')}
+        placeholder={t('edit.namePlaceholder')}
+        value={name}
+        onChangeText={setName}
+        {...(errors.name ? { errorText: errors.name } : {})}
+        autoCapitalize="words"
+      />
+      <TextField
+        testID={ids.editEmail}
+        label={t('edit.email')}
+        placeholder={t('edit.emailPlaceholder')}
+        value={email}
+        onChangeText={setEmail}
+        {...(errors.email ? { errorText: errors.email } : {})}
+        helperText={t('edit.emailHint')}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <Button testID={ids.editSave} label={t('edit.save')} size="lg" fullWidth onPress={save} />
+
+      <Divider my="xs" />
+      <Text variant="secondarySemibold">{t('edit.passwordSection')}</Text>
+      <TextField
+        testID={ids.editCurrentPassword}
+        label={t('edit.currentPassword')}
+        placeholder={t('edit.currentPassword')}
+        value={current}
+        onChangeText={setCurrent}
+        {...(errors.current ? { errorText: errors.current } : {})}
+        secureTextEntry
+        // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
+        textContentType="oneTimeCode"
+      />
+      <TextField
+        testID={ids.editNewPassword}
+        label={t('edit.newPassword')}
+        placeholder={t('edit.newPassword')}
+        value={next}
+        onChangeText={setNext}
+        {...(errors.next ? { errorText: errors.next } : {})}
+        secureTextEntry
+        // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
+        textContentType="oneTimeCode"
+      />
+      <VStack testID={ids.editRules} gap="sm">
+        {rules.map((rule) => (
+          <HStack key={rule.key} gap="sm">
+            <CheckCircle
+              testID={`${ids.editRules}.${rule.key}.check`}
+              checked={rule.ok}
+              size={18}
+            />
+            <Text
+              testID={`${ids.editRules}.${rule.key}`}
+              variant="secondary"
+              color={rule.ok ? 'text' : 'text2'}
+            >
+              {t(`edit.${rule.key}`)}
+            </Text>
+          </HStack>
+        ))}
+      </VStack>
+      <Button
+        testID={ids.editChangePassword}
+        label={t('edit.changePassword')}
+        variant="surface"
+        size="lg"
+        fullWidth
+        onPress={changePassword}
+      />
+    </Screen>
+  );
+}

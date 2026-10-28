@@ -4,9 +4,30 @@
     "back": "Voltar",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
-    "retry": "Tentar novamente"
+    "retry": "Tentar novamente",
+    "resume": "Retomar",
+    "close": "Fechar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "confirmAgain": "Toque de novo para confirmar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "skip": "Pular",
+    "done": "Concluir",
+    "edit": "Editar",
+    "share": "Compartilhar"
   },
   "errors": {
     "generic": "Algo deu errado. Tente novamente."
+  },
+  "tabs": {
+    "home": "Início",
+    "health": "Saúde",
+    "workouts": "Treinos",
+    "history": "Histórico",
+    "profile": "Perfil"
+  },
+  "pro": {
+    "badge": "PRO"
   }
 }

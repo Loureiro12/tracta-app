@@ -1,0 +1,124 @@
+appId: com.tracta.mobile
+name: history-calendar
+tags:
+  - smoke
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- assertVisible:
+    id: "history.header"
+- assertVisible:
+    id: "history.header.title"
+    text: "History"
+- assertVisible:
+    id: "history.recap.open"
+- assertVisible:
+    id: "history.achievements.open"
+- assertVisible:
+    id: "history.calendar"
+- assertVisible:
+    id: "history.calendar.month"
+    text: "October 2026"
+- assertVisible:
+    id: "history.calendar.days"
+# Day 24 (a run) is selected by default; its sessions show under the calendar.
+- assertVisible:
+    id: "history.day.card"
+- assertVisible:
+    id: "history.day.date"
+- assertVisible:
+    id: "history.day.meta"
+- assertVisible:
+    id: "history.day.sessions"
+- assertVisible:
+    id: "history.day.sessions.run-24.tag"
+    text: "Run"
+- assertVisible:
+    id: "history.day.sessions.run-24.title"
+    text: "Outdoor run"
+- assertVisible:
+    id: "history.day.sessions.run-24.line"
+    text: "8,2 km · 45:41 · 5:34 /km"
+# Strength day
+- tapOn:
+    id: "history.calendar.days.19"
+- assertVisible:
+    id: "history.day.sessions.strength-19.tag"
+    text: "Strength"
+- assertVisible:
+    id: "history.day.sessions.strength-19.title"
+    text: "Treino A · Peito & Tríceps"
+- assertVisible:
+    id: "history.day.sessions.strength-19.line"
+    text: "61 min · 16 sets"
+# Rest day
+- tapOn:
+    id: "history.calendar.days.25"
+- assertVisible:
+    id: "history.day.empty"
+    text: "Rest day"
+- assertVisible:
+    id: "history.day.empty-line"
+    text: "No activity recorded."
+# Future day
+- tapOn:
+    id: "history.calendar.days.27"
+- assertVisible:
+    id: "history.day.empty"
+    text: "No records"
+- assertVisible:
+    id: "history.day.empty-line"
+    text: "Data shows up after the day."
+# Today: planned workout
+- tapOn:
+    id: "history.calendar.days.26"
+- assertVisible:
+    id: "history.day.sessions.planned-26.tag"
+    text: "Planned"
+- assertVisible:
+    id: "history.day.sessions.planned-26.line"
+    text: "Tap to start"
+# Month stats and reports
+- scrollUntilVisible:
+    element:
+      id: "history.stats.workouts"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.stats.workouts.value"
+    text: "14"
+- assertVisible:
+    id: "history.stats.run"
+- assertVisible:
+    id: "history.stats.run.value"
+    text: "38,4 km"
+- assertVisible:
+    id: "history.stats.volume"
+- assertVisible:
+    id: "history.stats.volume.value"
+    text: "42,2 t"
+- scrollUntilVisible:
+    element:
+      id: "history.reports.custom"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.reports.7d"
+- assertVisible:
+    id: "history.reports.30d"
+- assertVisible:
+    id: "history.reports.custom"
+# Header "Share" opens the share overlay with the month template.
+- scrollUntilVisible:
+    element:
+      id: "history.recap.open"
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: "history.share"
+- assertVisible:
+    id: "share.screen"

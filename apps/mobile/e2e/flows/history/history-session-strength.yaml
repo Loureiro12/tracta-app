@@ -1,0 +1,106 @@
+appId: com.tracta.mobile
+name: history-session-strength
+tags:
+  - smoke
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "history.calendar.days.19"
+- tapOn:
+    id: "history.day.sessions.strength-19"
+- assertVisible:
+    id: "history.session.screen"
+- assertVisible:
+    id: "history.session.date"
+- assertVisible:
+    id: "history.session.title"
+    text: "Peito & Tríceps"
+- assertVisible:
+    id: "history.session.sub"
+    text: "Treino A · 18:41 – 19:42"
+- assertVisible:
+    id: "history.session.stats"
+- assertVisible:
+    id: "history.session.stats.duration.value"
+    text: "61 min"
+- assertVisible:
+    id: "history.session.stats.sets.value"
+    text: "16"
+- assertVisible:
+    id: "history.session.stats.reps.value"
+    text: "157"
+- assertVisible:
+    id: "history.session.stats.volume.value"
+    text: "4.575 kg"
+- assertVisible:
+    id: "history.session.exercises"
+- assertVisible:
+    id: "history.session.exercises.supino-reto.name"
+    text: "Supino reto com barra"
+- assertVisible:
+    id: "history.session.exercises.supino-reto.line"
+    text: "60 × 8 · 60 × 8 · 60 × 7 · 57,5 × 8"
+- scrollUntilVisible:
+    element:
+      id: "history.session.exercises.mergulho.line"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.exercises.mergulho.line"
+    text: "10 reps · 9 reps · 8 reps"
+- scrollUntilVisible:
+    element:
+      id: "history.session.notes"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.notes"
+- scrollUntilVisible:
+    element:
+      id: "history.session.source"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.source.origin.value"
+    text: "Logged in Tracta"
+- assertVisible:
+    id: "history.session.source.heart.value"
+    text: "Unavailable"
+# Destructive action needs two taps.
+- scrollUntilVisible:
+    element:
+      id: "history.session.delete"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.session.delete.label"
+    text: "Delete session"
+- tapOn:
+    id: "history.session.delete"
+- assertVisible:
+    id: "history.session.delete.label"
+    text: "Tap again to delete"
+- tapOn:
+    id: "history.session.delete"
+- assertVisible:
+    id: "history.screen"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Session deleted"
+# Day 19 is now empty and the month count dropped.
+- assertVisible:
+    id: "history.day.empty"
+    text: "Rest day"
+- scrollUntilVisible:
+    element:
+      id: "history.stats.workouts"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.stats.workouts.value"
+    text: "13"

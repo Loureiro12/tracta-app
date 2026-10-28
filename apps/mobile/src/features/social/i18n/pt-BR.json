@@ -1,0 +1,192 @@
+{
+  "hub": {
+    "back": "Voltar",
+    "title": "Amigos",
+    "subtitle": "Treinar junto, cada um no seu ritmo.",
+    "empty": {
+      "title": "Convide quem treina com você",
+      "body": "Acompanhem os treinos uns dos outros e criem desafios diários. Saúde, cargas e séries continuam privados."
+    },
+    "challenges": "Desafios",
+    "challenge": {
+      "whenStarted": "Dia 1 de {{days}} · termina {{end}}",
+      "whenTomorrow": "Começa amanhã · {{days}} dias",
+      "count_one": "{{count}} participante",
+      "count_other": "{{count}} participantes",
+      "me_one": "Você está em {{pos}}º · {{count}} ponto",
+      "me_other": "Você está em {{pos}}º · {{count}} pontos",
+      "meTomorrow": "Ranking começa amanhã",
+      "ranking": "Ver ranking ›"
+    },
+    "create": "Criar desafio",
+    "needFriend": "Convide pelo menos um amigo primeiro",
+    "today": "Hoje",
+    "todayMeta": "{{done}} de {{total}} treinaram",
+    "friend": {
+      "statusDone": "{{what}} · {{min}} min",
+      "statusDonePrivate": "Treinou hoje",
+      "statusTodo": "Ainda não treinou hoje",
+      "cheer": "Aplaudir",
+      "cheered": "Aplaudido",
+      "streak_one": "{{count}} dia seguido",
+      "streak_other": "{{count}} dias seguidos"
+    },
+    "pending": "Convites enviados",
+    "pendingStatus": "Convite enviado · aguardando",
+    "pendingStatusSignup": "Convite enviado · aguardando cadastro",
+    "invite": "Convidar amigos",
+    "privacy": "O que seus amigos veem",
+    "privacyLine_one": "{{count}} item compartilhado · saúde nunca",
+    "privacyLine_other": "{{count}} itens compartilhados · saúde nunca",
+    "dev": {
+      "noFriends": "Simular sem amigos"
+    }
+  },
+  "detail": {
+    "back": "Amigos",
+    "eyebrowStarted": "Desafio · dia 1 de {{days}}",
+    "eyebrowTomorrow": "Desafio · começa amanhã",
+    "rule": {
+      "day": "1 ponto por dia com treino de {{min}}+ min",
+      "minutes": "1 ponto a cada 10 min ativos, até 6 por dia",
+      "steps": "1 ponto por dia com a meta de passos atingida"
+    },
+    "you": "Você",
+    "rank": {
+      "waiting": "aguardando início",
+      "below": "treinou {{min}} min · abaixo do mínimo",
+      "stepsOk": "meta de passos atingida",
+      "stepsNo": "meta de passos não atingida",
+      "done": "treinou hoje · {{min}} min",
+      "todo": "ainda não treinou hoje",
+      "points_one": "ponto",
+      "points_other": "pontos"
+    },
+    "me": {
+      "tomorrow": "O desafio começa amanhã. Seu primeiro treino a partir de então já conta.",
+      "done": "Seu treino de hoje já contou. Bom trabalho — descanse bem.",
+      "partial": "Você treinou {{min}} min hoje. Faltam {{left}} min para pontuar, se quiser.",
+      "auto": "Seu treino conta automaticamente quando você salvar uma sessão hoje.",
+      "train": "Treinar agora"
+    },
+    "grid": {
+      "week": "Semana 1",
+      "days": "Dias do desafio",
+      "ends": "termina {{end}}",
+      "range": "de {{start}} a {{end}}",
+      "legendPoint": "ponto",
+      "legendNone": "sem ponto",
+      "legendNext": "a seguir"
+    },
+    "activity": "Atividade",
+    "feedLine": "<b>{{first}}</b> {{what}}",
+    "feedWhat": "{{what}} · {{min}} min",
+    "feedWhatPrivate": "treinou hoje",
+    "feedWhen": "hoje, {{at}}",
+    "rules": {
+      "title": "Regras",
+      "first": "· {{rule}}.",
+      "any": "· Vale qualquer modalidade registrada no Tracta ou importada do Apple Health.",
+      "max": "· No máximo 1 ponto por dia. Descansar não tira pontos.",
+      "maxMinutes": "· No máximo 1 ponto por dia por bloco, até 6. Descansar não tira pontos.",
+      "ties": "· Empates ficam na mesma posição."
+    },
+    "inviteMore": "Convidar mais amigos",
+    "leave": "Sair do desafio",
+    "leaveConfirm": "Toque de novo para sair",
+    "left": "Você saiu do desafio"
+  },
+  "invite": {
+    "title": "Convidar amigos",
+    "close": "Fechar",
+    "linkLabel": "Seu link de convite",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "linkCopied": "Link copiado",
+    "share": {
+      "messages": "Mensagens",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail"
+    },
+    "opening": "Abrindo {{target}}…",
+    "byHandle": "Convidar por usuário ou e-mail",
+    "placeholder": "@usuario ou email@exemplo.com",
+    "send": "Enviar",
+    "error": "Use @usuario ou um e-mail válido",
+    "sent": "Convite enviado",
+    "sentTo": "Convite enviado para {{name}}",
+    "contacts": "Contatos que usam o Tracta",
+    "contactInvite": "Convidar",
+    "contactSent": "Enviado",
+    "noContacts": "Todos os seus contatos já foram convidados.",
+    "note": "Amigos veem só o que você escolher em \"O que seus amigos veem\". Dados de saúde nunca são compartilhados."
+  },
+  "newChallenge": {
+    "title": "Novo desafio",
+    "close": "Fechar",
+    "step1": "Como pontuar",
+    "types": {
+      "day": {
+        "label": "Dia com treino",
+        "desc": "1 ponto por dia em que você treinar pelo tempo mínimo."
+      },
+      "minutes": {
+        "label": "Minutos ativos",
+        "desc": "1 ponto a cada 10 min de treino, até 6 por dia."
+      },
+      "steps": {
+        "label": "Meta de passos",
+        "desc": "1 ponto por dia em que cada um atingir a própria meta."
+      }
+    },
+    "min": {
+      "label": "Duração mínima",
+      "desc": "qualquer modalidade conta",
+      "value": "{{min}} min",
+      "minus": "Diminuir",
+      "plus": "Aumentar"
+    },
+    "step2": "Duração",
+    "days": "dias",
+    "start": "Início",
+    "today": "Hoje",
+    "tomorrow": "Amanhã",
+    "range": "{{start}} → {{end}} · {{days}} dias",
+    "step3": "Quem participa",
+    "participantsNote": "Você participa automaticamente. Os convidados precisam aceitar para entrar no ranking.",
+    "step4": "Revisar",
+    "nameLabel": "Nome do desafio",
+    "namePlaceholder": "Ex.: Semana em movimento",
+    "review": {
+      "scoring": "Pontuação",
+      "scoringDay": "{{type}} · {{min}}+ min",
+      "duration": "Duração",
+      "durationValue": "{{days}} dias",
+      "period": "Período",
+      "periodValue": "{{start}} – {{end}}",
+      "participants": "Participantes",
+      "participantsValue": "Você + {{names}}"
+    },
+    "note": "Máximo de 1 ponto por dia. Dias de descanso não tiram pontos de ninguém — o objetivo é constância, não excesso.",
+    "back": "Voltar",
+    "next": "Continuar",
+    "create": "Criar desafio",
+    "pickFriend": "Escolha pelo menos um amigo",
+    "created": "Desafio criado · convites enviados",
+    "defaultName": "Desafio diário"
+  },
+  "privacy": {
+    "title": "O que seus amigos veem",
+    "close": "Fechar",
+    "intro": "Escolha o que aparece para quem você convidou. Vale para todos os desafios.",
+    "rows": {
+      "done": { "label": "Treinos concluídos", "desc": "necessário para pontuar em desafios" },
+      "kind": { "label": "Tipo e duração", "desc": "ex.: \"Treino de pernas · 52 min\"" },
+      "streak": { "label": "Sequência de dias", "desc": "quantos dias seguidos você treinou" },
+      "loads": { "label": "Cargas e séries", "desc": "detalhes de musculação" },
+      "prs": { "label": "Recordes pessoais", "desc": "quando você bater um recorde" }
+    },
+    "locked": "Necessário para participar de desafios",
+    "note": "Sono, frequência cardíaca e outras métricas de saúde nunca são compartilhadas. Passos só entram como \"meta atingida: sim/não\" em desafios de passos."
+  }
+}
