@@ -63,6 +63,16 @@ Além disso:
 
 ## Rodando localmente
 
+Dois modos:
+
+- **Debug + Metro (iteração rápida):** `pnpm ios` uma vez (build Debug no simulador), depois `pnpm dev` em outro terminal e `pnpm e2e`. O app carrega o bundle do Metro; mudanças de JS recarregam sem rebuild. Não edite código enquanto a suíte roda: o reload derruba o fluxo em execução.
+- **Disco:** cada execução grava logs e screenshots em `~/.maestro/tests` (dezenas de MB por fluxo; uma suíte inteira passa de 5 GB). Limpe periodicamente com `rm -rf ~/.maestro/tests`; com o disco cheio o Maestro aborta a suíte no meio sem gerar o relatório.
+- **Atenção ao watcher do Metro:** sem o Watchman instalado (`brew install watchman`), o Metro pode não perceber mudanças em `packages/design-system` nem remoção/criação de arquivos em `app/` e seguir servindo um bundle antigo. Se um comportamento "não muda", reinicie com `pnpm expo start --clear`.
+- **Limite do modo Debug:** no build Debug os snapshots de hierarquia são lentos e, em fluxos longos (>60 s), o Maestro pode derrubar o próprio runner ("Exiting due to IDE disconnection" → "Failed to connect"). Use o Debug para iterar; a referência de aprovação é a suíte no build Release.
+- **Release (o que a CI faz):** `pnpm --filter @tracta/mobile e2e:ios` (build Release com `EXPO_PUBLIC_E2E=1` e bundle embutido) e depois `pnpm e2e`.
+
+Comandos:
+
 ```bash
 pnpm ios                                   # ou pnpm android: build de desenvolvimento
 pnpm e2e                                   # todos os fluxos
@@ -83,7 +93,19 @@ Builds para E2E usam `EXPO_PUBLIC_E2E=1` (scripts `e2e:ios`/`e2e:android` e a CI
 
 Na primeira vez que um deep link de scheme custom abre em um simulador, o iOS pede confirmação. O subflow `subflows/accept-deep-link-prompt.yaml` toca em "Open|Abrir" se o alerta estiver visível e é chamado após todo `openLink`. A aceitação fica gravada no simulador. Se fluxos forem abortados repetidas vezes, os alertas se empilham e nenhum tap resolve: reinicie o simulador (`xcrun simctl shutdown <udid> && xcrun simctl boot <udid>`).
 
+O iOS também pode interromper um fluxo com alertas de sistema sem testID (ex.: "Ativar Ditado?" após digitar num campo). O subflow `subflows/dismiss-system-dialogs.yaml` dispensa esses alertas e é chamado no `launch.yaml` e logo após cada `inputText`; um alerta preso bloqueia todos os fluxos seguintes, então reinicie o simulador se a suíte inteira começar a falhar na `home.screen`.
+
 O comando `back` do Maestro só funciona no Android. Toda tela que precisa de "voltar" expõe o próprio botão com testID (`settings.nav.back`, `ds.index.back`).
+
+## Regras aprendidas no iOS (XCUITest)
+
+- `assertVisible: { id, text }` só casa quando **id e texto estão no mesmo elemento**. Asserte o texto no `Text` filho (`<id>.label`, `<id>.title`, `.message`), não no container. `Chip` e `Toast` expõem o texto no container de propósito.
+- Um `Switch` dentro de uma linha tocável (`ListRow onPress`) não aparece para o XCUITest: toque na linha.
+- `hideKeyboard` é instável (falha no teclado numérico e às vezes no alfanumérico). Toque num texto simples dentro do scroll (`<campo>.label`) ou role a lista: `Screen` e `Sheet` fecham o teclado ao arrastar.
+- Listas horizontais: `scrollUntilVisible` só rola a partir do centro da tela. Use `repeat … while notVisible` com `swipe from: <id do container> direction: LEFT` (ver `history-evolution.yaml`).
+- Antes de tocar em algo perto do rodapé, `scrollUntilVisible` com `centerElement: true`, senão o toque cai na tab bar.
+- Toasts aparecem sobre sheets porque cada rota `(sheets)` monta o próprio `AppChrome` (`screenLayout` no `_layout.tsx` raiz); overlays de janela inteira (`FullWindowOverlay`) escondem o app do Maestro.
+- Deep link a frio é perdido: espere a `home.screen` antes de `openLink` (o `launch.yaml` já faz isso).
 
 ## Boas práticas
 

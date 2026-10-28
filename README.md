@@ -8,7 +8,7 @@ Monorepo do app mobile (React Native + Expo). O projeto é **E2E-first**: toda t
 tracta/
 ├── apps/
 │   └── mobile/                 # app Expo (expo-router)
-│       ├── app/                # rotas (finas: só exportam telas das features)
+│       ├── app/                # rotas finas em grupos: (tabs) · (auth) · (overlays) · (sheets)
 │       ├── src/
 │       │   ├── features/<f>/   # screens, components, hooks, model, i18n/, <f>.testids.ts, index.ts
 │       │   ├── shared/         # config, i18n (mecânica), código sem domínio
@@ -18,6 +18,7 @@ tracta/
 │           └── subflows/                # passos reutilizáveis
 ├── packages/
 │   └── design-system/          # tokens, tema, primitivos testáveis, galeria
+├── design_handoff_tracta_app/  # referência de design (protótipo HTML + README com tokens); não é código
 ├── tooling/
 │   ├── eslint-config/          # regras compartilhadas (força o DS e isola features)
 │   ├── tsconfig/               # bases de TypeScript

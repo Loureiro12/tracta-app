@@ -15,10 +15,14 @@
 ```
 apps/mobile/
 ├── app/                         # expo-router. Cada arquivo = rota. Só re-exporta telas.
-│   ├── _layout.tsx              # AppProviders + Stack
-│   ├── index.tsx                # → features/home
-│   ├── <feature>.tsx            # → features/<feature>
-│   └── design-system/           # galeria do DS (dev); deep link tracta://design-system/<slug>
+│   ├── _layout.tsx              # AppProviders + Stack raiz + AppChrome (banner/toast)
+│   ├── (tabs)/                  # as 5 abas: index(home) · health · workouts · history · profile
+│   │   └── _layout.tsx          # Tabs com AppTabBar (TabBar do DS + mini-player)
+│   ├── (auth)/                  # welcome · login · signup · forgot · sent · connect/
+│   ├── (overlays)/<feature>/    # overlays de tela cheia ("‹ Voltar"), slide lateral
+│   ├── (sheets)/<feature>/      # bottom sheets (Sheet do DS em modal transparente)
+│   ├── settings.tsx             # preferências do app (tema, idioma, estados demo)
+│   └── design-system/           # galeria do DS (dev/E2E); deep link tracta://design-system/<slug>
 ├── src/
 │   ├── app-providers/           # composição de providers (tema, i18n) e i18n/resources.ts + common/
 │   ├── features/<feature>/      # domínio vertical
@@ -31,9 +35,13 @@ apps/mobile/
 │   │   ├── api/                 # chamadas remotas
 │   │   ├── lib/                 # utilitários da feature
 │   │   └── i18n/                # en.json, pt-BR.json, index.ts (namespace = nome da feature)
-│   └── shared/                  # sem domínio: config/, i18n/ (mecânica), hooks/
+│   └── shared/                  # sem domínio: config/, i18n/ (mecânica), feedback/ (toast, banner, mini-player)
 └── e2e/                         # fluxos Maestro (ver TESTING.md)
 ```
+
+### Grupos de rota e hrefs
+
+Os nomes de grupo são omitidos nos hrefs: `app/(overlays)/workouts/builder.tsx` abre com `router.push('/workouts/builder')`. Overlays desenham o próprio `BackHeader`; sheets renderizam `Sheet` com `onClose={() => router.back()}`. O `check-tests` ignora os grupos ao mapear rota → feature.
 
 ### Regras de dependência
 
