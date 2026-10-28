@@ -51,7 +51,7 @@ export function ${Pascal}Screen() {
   return (
     <Screen testID={${camel}Ids.screen}>
       <Heading testID={${camel}Ids.title}>{t('title')}</Heading>
-      <Text color="textSecondary">{t('subtitle')}</Text>
+      <Text color="text2">{t('subtitle')}</Text>
     </Screen>
   );
 }

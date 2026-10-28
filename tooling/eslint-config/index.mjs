@@ -16,11 +16,12 @@ const RESTRICTED_RN_PRIMITIVES = [
   'TouchableHighlight',
   'TouchableWithoutFeedback',
   'TextInput',
-  'ScrollView',
   'Button',
   'Switch',
   'Image',
 ];
+// Allowed from react-native inside the app: ScrollView/FlatList/SectionList (horizontal strips,
+// long lists), Animated, Modal, KeyboardAvoidingView, StyleSheet, Dimensions, Platform.
 
 const ignores = {
   ignores: [

@@ -67,10 +67,10 @@ function domainOf(path) {
     };
   }
   if ((m = path.match(/^apps\/mobile\/app\/(.+)$/))) {
-    const seg = m[1]
-      .split('/')[0]
-      .replace(/\.tsx?$/, '')
-      .replace(/^\(|\)$/g, '');
+    // Skip expo-router groups "(tabs)", "(sheets)", "(overlays)" and layouts: the first real
+    // segment names the feature (app/(overlays)/workouts/builder.tsx → "workouts").
+    const segments = m[1].split('/').filter((s) => !/^\(.*\)$/.test(s));
+    const seg = (segments[0] ?? '').replace(/\.tsx?$/, '');
     if (seg === 'design-system') {
       return {
         key: 'ds:routes',

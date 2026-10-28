@@ -4,7 +4,15 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  { ignores: ['apps/**', 'packages/**', '**/node_modules/**', '**/.turbo/**'] },
+  {
+    ignores: [
+      'apps/**',
+      'packages/**',
+      'design_handoff_tracta_app/**',
+      '**/node_modules/**',
+      '**/.turbo/**',
+    ],
+  },
   js.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs}'],

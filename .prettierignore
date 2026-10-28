@@ -7,3 +7,5 @@ pnpm-lock.yaml
 apps/mobile/ios
 apps/mobile/android
 CHANGELOG.md
+# design reference (prototype), not code
+design_handoff_tracta_app
