@@ -28,7 +28,7 @@ export type TabBarProps = Testable & {
   items: readonly TabBarItem[];
 };
 
-/** 5-tab bar: translucent sand with blur, 24px line icons and 10.5px labels. */
+/** 5-tab bar: translucent sand with blur, 24px line icons and 10.5px labels; the active tab uses the brand orange. */
 export function TabBar({ items, testID }: TabBarProps) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -57,8 +57,8 @@ export function TabBar({ items, testID }: TabBarProps) {
             accessibilityLabel={item.label}
             style={styles.item}
           >
-            <Icon name={item.icon} size={24} color={item.active ? 'text' : 'text3'} />
-            <Text variant="tab" color={item.active ? 'text' : 'text3'}>
+            <Icon name={item.icon} size={24} color={item.active ? 'brandText' : 'text3'} />
+            <Text variant="tab" color={item.active ? 'brandText' : 'text3'}>
               {item.label}
             </Text>
           </Pressable>
