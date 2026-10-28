@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E6E0D4}*{box-sizing:border-box}button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}a{color:#B4482A}a:hover{color:#8F3A22}</style>
+</helmet>
+<div style="font-family:'Archivo',system-ui,sans-serif;color:#1A1A17;padding:56px;display:flex;flex-direction:column;gap:64px">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:720px">
+<span style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B4482A">Tracta · além do celular</span>
+<span style="font-size:48px;line-height:1;font-weight:800;font-stretch:75%">Widgets, tela bloqueada e relógio</span>
+<span style="font-size:16px;line-height:1.5;color:#6B6A63">O mesmo dado em três distâncias: um olhar na tela bloqueada, um resumo na tela inicial e o controle do treino no pulso.</span>
+</div>
+
+<section id="1a" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:12px"><span style="height:28px;padding:0 10px;border-radius:8px;background:#1A1A17;color:#FFFFFF;font-size:13px;font-weight:800;display:flex;align-items:center">1a</span><span style="font-size:22px;font-weight:700">Tela bloqueada</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+<div style="width:390px;height:844px;flex:none;border-radius:56px;background:#CFCBBE;position:relative;overflow:hidden;box-shadow:0 0 0 11px #161616,0 0 0 12px #3b3b3b,0 40px 90px rgba(0,0,0,.25);color:#1A1A17">
+<div style="position:absolute;left:50%;top:11px;width:122px;height:35px;margin-left:-61px;border-radius:20px;background:#000"></div>
+<div style="position:absolute;top:96px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:6px">
+<span style="font-size:17px;font-weight:600">Segunda, 26 de outubro</span>
+<span style="font-size:13px;font-weight:600;color:#3E3D38">Tracta · Treino A às 18:30</span>
+<span style="font-size:96px;line-height:.95;font-weight:700;font-stretch:80%;letter-spacing:-.02em">16:20</span>
+</div>
+<div style="position:absolute;top:268px;left:24px;right:24px;display:grid;grid-template-columns:72px 72px minmax(0,1fr);gap:12px;align-items:center">
+<div style="width:72px;height:72px;border-radius:36px;background:rgba(255,255,255,.42);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative">
+<svg width="72" height="72" viewBox="0 0 72 72" style="position:absolute;inset:0"><circle cx="36" cy="36" r="31" fill="none" stroke="rgba(26,26,23,.15)" stroke-width="5"></circle><circle cx="36" cy="36" r="31" fill="none" stroke="#1A1A17" stroke-width="5" stroke-linecap="round" stroke-dasharray="146 195" transform="rotate(-90 36 36)"></circle></svg>
+<span style="font-size:22px;font-weight:800;font-stretch:75%;line-height:1">3/4</span><span style="font-size:10px;font-weight:600">treinos</span>
+</div>
+<div style="width:72px;height:72px;border-radius:36px;background:rgba(255,255,255,.42);display:flex;flex-direction:column;align-items:center;justify-content:center">
+<span style="font-size:22px;font-weight:800;font-stretch:75%;line-height:1">12</span><span style="font-size:10px;font-weight:600">dias seguidos</span>
+</div>
+<div style="height:72px;border-radius:18px;background:rgba(255,255,255,.42);padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0">
+<span style="font-size:11px;font-weight:700;color:#3E3D38">Prova de 10 km</span>
+<span style="font-size:20px;font-weight:800;font-stretch:78%;line-height:1.05">faltam 40 dias</span>
+<span style="font-size:11px;color:#3E3D38;white-space:nowrap">ritmo-alvo 5:30 /km</span>
+</div>
+</div>
+
+<div style="position:absolute;left:12px;right:12px;bottom:118px;border-radius:26px;background:#1A1A17;color:#FFFFFF;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700"><span style="width:20px;height:20px;border-radius:6px;background:#F2EEE6;display:flex;align-items:flex-end;justify-content:center;gap:2px;padding-bottom:5px"><span style="width:3px;height:4px;border-radius:1px;background:#1A1A17"></span><span style="width:3px;height:7px;border-radius:1px;background:#1A1A17"></span><span style="width:3px;height:10px;border-radius:1px;background:#D8613C"></span></span>Treino A · descanso</span><span style="font-size:12px;color:rgba(255,255,255,.7);white-space:nowrap">Supino reto · série 3 de 4</span></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+<span style="font-size:56px;line-height:.9;font-weight:800;font-stretch:72%;font-variant-numeric:tabular-nums">{{ lockRest }}</span>
+<div style="display:flex;gap:8px"><span style="height:40px;padding:0 14px;border-radius:20px;background:rgba(255,255,255,.14);font-size:14px;font-weight:700;display:flex;align-items:center">+30 s</span><span style="height:40px;padding:0 14px;border-radius:20px;background:#FFFFFF;color:#1A1A17;font-size:14px;font-weight:700;display:flex;align-items:center">Pular</span></div>
+</div>
+<div style="height:5px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden"><div style="height:100%;width:{{ lockPct }}%;background:#F0A487"></div></div>
+<span style="font-size:12px;color:rgba(255,255,255,.7)">A seguir: 80 kg × 8</span>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#1A1A17"></div>
+</div>
+
+<div style="max-width:320px;display:flex;flex-direction:column;gap:18px;padding-top:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Widgets da tela bloqueada</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Três formatos: anel de treinos da semana, sequência de dias e contagem para a prova. A linha acima do relógio mostra o próximo treino.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Atividade ao vivo</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Durante o treino, o descanso aparece na tela bloqueada com +30 s e Pular, sem abrir o app. Na corrida, mostra tempo, distância e ritmo.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Sem dados sensíveis</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Com o iPhone bloqueado, sono e frequência cardíaca nunca aparecem; só números de treino.</span></div>
+</div>
+</div>
+</section>
+
+<section id="2a" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:12px"><span style="height:28px;padding:0 10px;border-radius:8px;background:#1A1A17;color:#FFFFFF;font-size:13px;font-weight:800;display:flex;align-items:center">2a</span><span style="font-size:22px;font-weight:700">Tela inicial · pequeno, médio e grande</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+<div style="width:390px;height:844px;flex:none;border-radius:56px;background:#CFCBBE;position:relative;overflow:hidden;box-shadow:0 0 0 11px #161616,0 0 0 12px #3b3b3b,0 40px 90px rgba(0,0,0,.25)">
+<div style="position:absolute;left:50%;top:11px;width:122px;height:35px;margin-left:-61px;border-radius:20px;background:#000"></div>
+<div style="position:absolute;top:70px;left:24px;right:24px;display:flex;flex-direction:column;gap:20px">
+
+<div style="display:grid;grid-template-columns:155px 155px;gap:20px">
+<div style="height:155px;border-radius:24px;background:#F2EEE6;padding:14px;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:700;color:#B4482A">Hoje</span><span style="font-size:11px;color:#6B6A63">18:30</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:36px;line-height:.9;font-weight:800;font-stretch:72%;color:#B4482A">A</span><span style="font-size:15px;font-weight:700;line-height:1.15">Peito & Tríceps</span><span style="font-size:11px;color:#6B6A63">6 exercícios · ~55 min</span></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:20px 18px;padding:6px 8px">
+<sc-for list="{{ apps }}" as="a" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;align-items:center;gap:5px"><span style="width:52px;height:52px;border-radius:14px;background:{{ a.bg }};display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:13px"><sc-if value="{{ a.logo }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:12px;border-radius:2px;background:#F2EEE6"></span><span style="width:8px;height:19px;border-radius:2px;background:#F2EEE6"></span><span style="width:8px;height:27px;border-radius:2px;background:#D8613C"></span></sc-if></span><span style="font-size:10px;font-weight:500">{{ a.n }}</span></div></sc-for>
+</div>
+</div>
+
+<div style="height:155px;border-radius:24px;background:#F2EEE6;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700">Esta semana</span><span style="font-size:12px;color:#6B6A63">3 de 4 · 18 km</span></div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px">
+<sc-for list="{{ week }}" as="d" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 0;border-radius:11px;background:{{ d.bg }};color:{{ d.fg }};box-shadow:{{ d.ring }}"><span style="font-size:10px;font-weight:600">{{ d.d }}</span><span style="font-size:14px;font-weight:800;font-stretch:80%">{{ d.p }}</span></div></sc-for>
+</div>
+<span style="font-size:11px;color:#6B6A63">Próximo: Treino A hoje · Corrida qua</span>
+</div>
+
+<div style="height:345px;border-radius:24px;background:#F2EEE6;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700">Como estou hoje</span><span style="font-size:11px;color:#6B6A63">atualizado 16:05</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#FFFFFF;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px"><span style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600"><span style="width:7px;height:7px;border-radius:4px;background:#5B5FD6"></span>Sono</span><span style="font-size:30px;line-height:.9;font-weight:800;font-stretch:72%">6h 50</span><div style="height:5px;border-radius:3px;background:#E3DDD0;overflow:hidden"><div style="width:91%;height:100%;background:#5B5FD6"></div></div></div>
+<div style="background:#FFFFFF;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px"><span style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600"><span style="width:7px;height:7px;border-radius:4px;background:#D8613C"></span>Passos</span><span style="font-size:30px;line-height:.9;font-weight:800;font-stretch:72%">6.482</span><div style="height:5px;border-radius:3px;background:#E3DDD0;overflow:hidden"><div style="width:65%;height:100%;background:#D8613C"></div></div></div>
+</div>
+<div style="background:#FFFFFF;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:12px;font-weight:700">Prova de 10 km · 5 dez</span><span style="font-size:11px;font-weight:700;color:#B4482A">40 dias</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><div style="display:flex;flex-direction:column"><span style="font-size:10px;color:#6B6A63">Alvo</span><span style="font-size:16px;font-weight:800;font-stretch:80%">5:30 /km</span></div><div style="display:flex;flex-direction:column"><span style="font-size:10px;color:#6B6A63">Recente</span><span style="font-size:16px;font-weight:800;font-stretch:80%">5:36 /km</span></div><div style="display:flex;flex-direction:column"><span style="font-size:10px;color:#6B6A63">Estimativa</span><span style="font-size:16px;font-weight:800;font-stretch:80%">56:00</span></div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto">
+<span style="height:44px;border-radius:14px;background:#1A1A17;color:#FFFFFF;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">Começar Treino A</span>
+<span style="height:44px;border-radius:14px;background:#E8E2D6;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">Corrida</span>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#1A1A17"></div>
+</div>
+
+<div style="max-width:320px;display:flex;flex-direction:column;gap:18px;padding-top:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Pequeno · treino de hoje</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Mostra o treino do plano ou do programa ativo. Em dia livre: "Dia livre · 6.482 passos".</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Médio · semana</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">A mesma faixa de dias da aba Treinos, com o progresso da meta. O contorno marca hoje.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Grande · resumo do dia</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Sono, passos e a prova, com botões que abrem direto o treino ou a corrida.</span></div>
+</div>
+</div>
+</section>
+
+<section id="3a" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:12px"><span style="height:28px;padding:0 10px;border-radius:8px;background:#1A1A17;color:#FFFFFF;font-size:13px;font-weight:800;display:flex;align-items:center">3a</span><span style="font-size:22px;font-weight:700">Relógio · interativo</span></div>
+<div style="display:flex;gap:56px;flex-wrap:wrap;align-items:flex-start">
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:20px">
+<div style="width:250px;height:300px;border-radius:64px;background:#1F1F1C;padding:14px;box-shadow:0 30px 60px rgba(0,0,0,.25),inset 0 0 0 2px #3b3b3b;position:relative;flex:none">
+<div style="position:absolute;right:-9px;top:70px;width:10px;height:44px;border-radius:5px;background:#3b3b3b"></div>
+<div style="width:100%;height:100%;border-radius:52px;background:#000000;color:#FFFFFF;overflow:hidden;padding:18px 18px 16px;display:flex;flex-direction:column">
+
+<sc-if value="{{ isSet }}" hint-placeholder-val="{{ true }}"><div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:#F0A487;font-weight:700">Treino A</span><span style="color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums">{{ elapsed }}</span></div>
+<span style="font-size:15px;font-weight:700;line-height:1.1">Supino reto</span>
+<span style="font-size:12px;color:rgba(255,255,255,.6)">Série {{ setN }} de 4</span>
+<div style="display:flex;align-items:baseline;gap:6px;margin-top:2px"><span style="font-size:40px;line-height:.9;font-weight:800;font-stretch:72%">{{ kg }}</span><span style="font-size:13px;color:rgba(255,255,255,.6)">kg</span><span style="font-size:40px;line-height:.9;font-weight:800;font-stretch:72%;margin-left:6px">{{ reps }}</span><span style="font-size:13px;color:rgba(255,255,255,.6)">reps</span></div>
+<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#F0A08A"><span style="width:6px;height:6px;border-radius:3px;background:#F0A08A"></span>{{ hr }} bpm</div>
+<button onClick="{{ doneSet }}" style="margin-top:auto;height:44px;border-radius:22px;background:#D8613C;color:#FFFFFF;font-size:15px;font-weight:800">Série feita</button>
+</div></sc-if>
+
+<sc-if value="{{ isRest }}" hint-placeholder-val="{{ false }}"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+<span style="font-size:12px;color:#F0A487;font-weight:700">Descanso</span>
+<div style="width:118px;height:118px;position:relative;display:flex;align-items:center;justify-content:center">
+<svg width="118" height="118" viewBox="0 0 118 118" style="position:absolute;inset:0"><circle cx="59" cy="59" r="52" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="8"></circle><circle cx="59" cy="59" r="52" fill="none" stroke="#F0A487" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ dash }}" transform="rotate(-90 59 59)"></circle></svg>
+<span style="font-size:34px;font-weight:800;font-stretch:72%;font-variant-numeric:tabular-nums">{{ restL }}</span>
+</div>
+<span style="font-size:11px;color:rgba(255,255,255,.6)">A seguir: {{ kg }} kg × {{ reps }}</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;margin-top:auto"><button onClick="{{ addRest }}" style="height:38px;border-radius:19px;background:rgba(255,255,255,.14);font-size:13px;font-weight:700">+30 s</button><button onClick="{{ skipRest }}" style="height:38px;border-radius:19px;background:#FFFFFF;color:#000000;font-size:13px;font-weight:700">Pular</button></div>
+</div></sc-if>
+
+<sc-if value="{{ isRun }}" hint-placeholder-val="{{ false }}"><div style="flex:1;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:#8EC3E6;font-weight:700">Corrida</span><span style="color:rgba(255,255,255,.6)">GPS</span></div>
+<span style="font-size:44px;line-height:.95;font-weight:800;font-stretch:72%;font-variant-numeric:tabular-nums;color:#F5D36B">{{ runTime }}</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:4px"><div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:800;font-stretch:78%">{{ runKm }}</span><span style="font-size:10px;color:rgba(255,255,255,.6)">km</span></div><div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:800;font-stretch:78%">5:34</span><span style="font-size:10px;color:rgba(255,255,255,.6)">ritmo /km</span></div><div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:800;font-stretch:78%;color:#F0A08A">152</span><span style="font-size:10px;color:rgba(255,255,255,.6)">bpm · zona 3</span></div><div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:800;font-stretch:78%">5:30</span><span style="font-size:10px;color:rgba(255,255,255,.6)">alvo</span></div></div>
+<button onClick="{{ endRun }}" style="margin-top:auto;height:40px;border-radius:20px;background:rgba(255,255,255,.14);font-size:14px;font-weight:700">Encerrar</button>
+</div></sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}"><div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<span style="font-size:12px;color:#F0A487;font-weight:700">Concluído</span>
+<span style="font-size:22px;line-height:1.05;font-weight:800;font-stretch:78%">{{ doneTitle }}</span>
+<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px"><sc-for list="{{ doneRows }}" as="x" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:rgba(255,255,255,.6)">{{ x.l }}</span><span style="font-weight:700">{{ x.v }}</span></div></sc-for></div>
+<span style="font-size:11px;color:rgba(255,255,255,.6);margin-top:auto">Sincronizado com o iPhone</span>
+</div></sc-if>
+
+</div>
+</div>
+<div style="display:flex;background:#DCDAD2;border-radius:14px;padding:4px;gap:4px">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.go }}" style="height:36px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;background:{{ m.bg }};color:{{ m.fg }}">{{ m.l }}</button></sc-for>
+</div>
+</div>
+
+<div style="max-width:340px;display:flex;flex-direction:column;gap:18px;padding-top:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Treino no pulso</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Mostra a série atual com carga e reps do iPhone. "Série feita" inicia o descanso nos dois aparelhos. Gire a coroa para ajustar a carga.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Corrida</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">Tempo em destaque, depois distância, ritmo, FC com zona e o ritmo-alvo da prova. Intervalados vibram a cada troca.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">Sem o iPhone</span><span style="font-size:14px;line-height:1.5;color:#6B6A63">O relógio grava sozinho e envia tudo quando os aparelhos se reencontram.</span></div>
+<span style="font-size:13px;color:#6B6A63">Toque nos botões da tela do relógio ou use os modos abaixo dele.</span>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const pad = n => String(n).padStart(2,'0'), clock = s => Math.floor(s/60)+':'+pad(Math.floor(s%60));
+class Component extends DCLogic {
+  state = { mode:'set', set:3, restEnd:0, restTotal:90, now:Date.now(), runStart:Date.now(), t0:Date.now() };
+  componentDidMount() { this.iv = setInterval(() => { const now = Date.now(); this.setState({now}); if (this.state.mode === 'rest' && now >= this.state.restEnd) this.setState({mode:'set'}); }, 250); }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const st = this.state, rem = Math.max(0, (st.restEnd - st.now)/1000), C = 2*Math.PI*52;
+    const lockRem = 90 - Math.floor(((st.now - st.t0)/1000) % 90);
+    const runSec = 1680 + (st.now - st.runStart)/1000;
+    const go = m => () => this.setState(m === 'rest' ? {mode:'rest', restEnd:Date.now()+90000, restTotal:90} : m === 'run' ? {mode:'run', runStart:Date.now()} : {mode:m});
+    return {
+      lockRest: clock(lockRem), lockPct: Math.round(lockRem/90*100),
+      apps: [{n:'Tracta', bg:'#1A1A17', logo:true},{n:'Mapas', bg:'#B9B5A6'},{n:'Música', bg:'#A8A496'},{n:'Saúde', bg:'#B9B5A6'}],
+      week: [['Seg','A',1],['Ter','—'],['Qua','⟶'],['Qui','B'],['Sex','—'],['Sáb','C'],['Dom','—']].map(([d,p,today]) => ({ d, p, bg: p === '—' ? '#E5DFD2' : (p === '⟶' ? '#2E86C1' : '#D8613C'), fg: p === '—' ? '#8F8E86' : '#FFFFFF', ring: today ? '0 0 0 2px #F2EEE6,0 0 0 4px #1A1A17' : 'none' })),
+      isSet: st.mode === 'set', isRest: st.mode === 'rest', isRun: st.mode === 'run', isDone: st.mode === 'done',
+      setN: st.set, kg: st.set >= 3 ? '80' : '77,5', reps: st.set >= 3 ? '8' : '10', hr: 118 + (Math.floor(st.now/1500) % 7),
+      elapsed: clock(1460 + (st.now - st.t0)/1000),
+      restL: clock(Math.ceil(rem)), dash: (C*rem/st.restTotal).toFixed(1)+' '+C.toFixed(1),
+      runTime: clock(runSec), runKm: (runSec/334).toFixed(2).replace('.', ','),
+      doneTitle: st.set > 4 || st.lastRun !== true ? 'Treino A' : 'Corrida',
+      doneRows: st.lastRun ? [{l:'Distância', v:'5,02 km'},{l:'Ritmo médio', v:'5:34 /km'},{l:'FC média', v:'148 bpm'}] : [{l:'Duração', v:'52:10'},{l:'Séries', v:'22'},{l:'Volume', v:'8,4 t'}],
+      doneSet:() => { if (st.set >= 4) return this.setState({mode:'done', set:1, lastRun:false}); this.setState({set:st.set+1, mode:'rest', restEnd:Date.now()+90000, restTotal:90}); },
+      addRest:() => this.setState(s => ({restEnd:s.restEnd+30000, restTotal:s.restTotal+30})), skipRest:() => this.setState({mode:'set'}),
+      endRun:() => this.setState({mode:'done', lastRun:true}),
+      modes: [['set','Série'],['rest','Descanso'],['run','Corrida'],['done','Resumo']].map(([k,l]) => ({ l, bg: st.mode === k ? '#FFFFFF' : 'transparent', fg: st.mode === k ? '#1A1A17' : '#6B6A63', go: go(k) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
