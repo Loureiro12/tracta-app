@@ -120,10 +120,63 @@ function domainOf(path) {
       strict: false,
     };
   }
+  // ---- Backend: covered by integration tests (vitest) and database tests (pgTAP), not flows.
+  if ((m = path.match(/^packages\/api\/src\/domains\/([^/]+)\.ts$/))) {
+    return {
+      key: `api:${m[1]}`,
+      label: `api domain "${m[1]}"`,
+      testFile: `packages/api/tests/${m[1]}.test.ts`,
+      backend: true,
+      strict: true,
+    };
+  }
+  if (/^packages\/api\/src\//.test(path) && !path.endsWith('database.types.ts')) {
+    return {
+      key: 'api:core',
+      label: 'api core (client, errors)',
+      testsDir: 'packages/api/tests',
+      testExt: '.test.ts',
+      backend: true,
+      strict: false,
+    };
+  }
+  if (/^supabase\/migrations\/[^/]+\.sql$/.test(path)) {
+    return {
+      key: 'db:schema',
+      label: 'database schema (migrations)',
+      testsDir: 'supabase/tests/database',
+      testExt: '.test.sql',
+      backend: true,
+      strict: true,
+    };
+  }
+  if (/^supabase\/seeds\/[^/]+\.sql$/.test(path)) {
+    return {
+      key: 'db:seeds',
+      label: 'database seeds (demo data)',
+      testsDir: 'supabase/tests/database',
+      testExt: '.test.sql',
+      backend: true,
+      strict: false,
+    };
+  }
   return null;
 }
 
-const isSource = (p) => /\.(ts|tsx)$/.test(p) && !/\.d\.ts$/.test(p);
+/** Test files that cover a domain: Maestro flows for app code, vitest/pgTAP files for backend code. */
+function coveringTests(d) {
+  if (d.testFile) return exists(d.testFile) ? [d.testFile] : [];
+  if (d.testsDir) return walk(d.testsDir, { ext: [d.testExt] });
+  if (d.flowsDir) return listFlowFiles().filter((p) => p.startsWith(`${d.flowsDir}/`));
+  return exists(d.flowFile) ? [d.flowFile] : [];
+}
+
+const isSource = (p) =>
+  (/\.(ts|tsx)$/.test(p) && !/\.d\.ts$/.test(p) && !p.endsWith('database.types.ts')) ||
+  /^supabase\/(migrations|seeds)\/[^/]+\.sql$/.test(p);
+const isBackendTest = (p) =>
+  /^packages\/api\/tests\/.+\.test\.ts$/.test(p) ||
+  /^supabase\/tests\/database\/.+\.test\.sql$/.test(p);
 const isFlow = (p) =>
   p.startsWith(`${PATHS.flows}/`) && /\.ya?ml$/.test(p) && !p.endsWith('config.yaml');
 const isSubflow = (p) => p.startsWith(`${PATHS.subflows}/`) && /\.ya?ml$/.test(p);
@@ -142,6 +195,8 @@ if (args.all) {
     ...walk(PATHS.routes, { ext: ['.ts', '.tsx'] }),
     ...walk('apps/mobile/src', { ext: ['.ts', '.tsx'] }),
     ...walk(PATHS.ds, { ext: ['.ts', '.tsx'] }),
+    ...walk('packages/api/src', { ext: ['.ts'] }),
+    ...walk('supabase/migrations', { ext: ['.sql'] }),
   ].map((path) => ({ status: 'M', path }));
 } else if (args.staged) {
   mode = 'staged';
@@ -175,7 +230,9 @@ report.info(
 
 const changedSources = changed.filter((f) => isSource(f.path));
 const changedFlows = new Set(
-  changed.filter((f) => isFlow(f.path) || isSubflow(f.path)).map((f) => f.path),
+  changed
+    .filter((f) => isFlow(f.path) || isSubflow(f.path) || isBackendTest(f.path))
+    .map((f) => f.path),
 );
 
 if (changedSources.length === 0 && mode !== 'all') {
@@ -204,7 +261,9 @@ for (const f of changedSources) {
   entry.files.push(f.path);
   if (mode !== 'all') {
     const lines = addedLines(f.path, { mode, base });
-    const hits = lines.filter((l) => BEHAVIOUR_RE.test(l));
+    const hits = d.backend
+      ? lines.filter((l) => l.trim() && !/^\s*(--|\/\/|\*|\/\*)/.test(l))
+      : lines.filter((l) => BEHAVIOUR_RE.test(l));
     if (hits.length) entry.behaviour.push({ file: f.path, hits: hits.length });
   }
 }
@@ -216,18 +275,21 @@ if (untracked.length && mode !== 'all') {
 }
 
 for (const { descriptor: d, files, behaviour } of domains.values()) {
-  const domainFlows = d.flowsDir
-    ? flowFiles.filter((p) => p.startsWith(`${d.flowsDir}/`))
-    : exists(d.flowFile)
-      ? [d.flowFile]
-      : [];
+  const domainFlows = coveringTests(d);
+  const kindOfTest = d.backend ? 'test' : 'E2E flow';
 
-  // Rule 1: a flow must exist
+  // Rule 1: a flow (app) or test file (backend) must exist
   if (domainFlows.length === 0) {
-    const where = d.flowsDir ? `${d.flowsDir}/<name>.yaml` : d.flowFile;
+    const where =
+      d.testFile ??
+      (d.testsDir
+        ? `${d.testsDir}/<name>${d.testExt}`
+        : d.flowsDir
+          ? `${d.flowsDir}/<name>.yaml`
+          : d.flowFile);
     report.error(
-      `${d.label}: no E2E flow found`,
-      `Changed: ${files.join(', ')}\n    Create ${where} (see apps/mobile/e2e/README.md).`,
+      `${d.label}: no ${kindOfTest} found`,
+      `Changed: ${files.join(', ')}\n    Create ${where} (see docs/TESTING.md).`,
     );
     continue;
   }
@@ -235,7 +297,7 @@ for (const { descriptor: d, files, behaviour } of domains.values()) {
   // Rule 3: behaviour change needs a flow change in the same changeset
   if (mode === 'all' || behaviour.length === 0) {
     report.info(
-      `${d.label}: ${files.length} file(s), covered by ${domainFlows.length} flow(s)${behaviour.length === 0 && mode !== 'all' ? ' · no behaviour change detected' : ''}`,
+      `${d.label}: ${files.length} file(s), covered by ${domainFlows.length} ${kindOfTest}(s)${behaviour.length === 0 && mode !== 'all' ? ' · no behaviour change detected' : ''}`,
     );
     continue;
   }
@@ -243,7 +305,7 @@ for (const { descriptor: d, files, behaviour } of domains.values()) {
   const skip = skipByDomain.get(d.key) ?? skipByDomain.get('*');
   const detail = behaviour.map((b) => `${b.file} (${b.hits} behavioural line(s))`).join(', ');
   if (touchedFlow) {
-    report.info(`${d.label}: behaviour changed and flows updated ✓`);
+    report.info(`${d.label}: behaviour changed and ${kindOfTest}s updated ✓`);
   } else if (skip) {
     report.warn(
       `${d.label}: behaviour changed without flow change — skipped by trailer: ${skip}`,
@@ -251,8 +313,8 @@ for (const { descriptor: d, files, behaviour } of domains.values()) {
     );
   } else if (d.strict) {
     report.error(
-      `${d.label}: behaviour changed but no flow in ${d.flowsDir ?? d.flowFile} was added or updated`,
-      `${detail}\n    Add/adjust a flow, or justify with a commit trailer:  E2E-Skip: <reason>`,
+      `${d.label}: behaviour changed but no ${kindOfTest} in ${d.testFile ?? d.testsDir ?? d.flowsDir ?? d.flowFile} was added or updated`,
+      `${detail}\n    Add/adjust a ${kindOfTest}, or justify with a commit trailer:  E2E-Skip: <reason>`,
     );
   } else {
     report.warn(`${d.label}: behaviour changed without a flow change (non-strict domain)`, detail);
@@ -263,7 +325,9 @@ for (const { descriptor: d, files, behaviour } of domains.values()) {
 // Rule 2: every static testID declared in changed files is used by some flow
 // ---------------------------------------------------------------------------
 for (const f of changedSources) {
-  if (!domainOf(f.path)) continue;
+  const d = domainOf(f.path);
+  // Deleted in the working tree after being committed on the branch: nothing left to declare.
+  if (!d || d.backend || !exists(f.path)) continue;
   const ids = extractTestIds(f.path);
   const unused = [...ids.static].filter((id) => !isUsed(id));
   if (unused.length) {
@@ -287,6 +351,20 @@ if (mode === 'all') {
   for (const name of dsComponents) {
     const file = `${PATHS.flows}/design-system/${kebab(name)}.yaml`;
     if (!exists(file)) report.error(`design-system component "${name}" has no flow at ${file}`);
+  }
+  for (const file of walk('packages/api/src/domains', { ext: ['.ts'] })) {
+    const name = file.split('/').pop().replace(/\.ts$/, '');
+    if (!exists(`packages/api/tests/${name}.test.ts`)) {
+      report.error(
+        `api domain "${name}" has no integration test at packages/api/tests/${name}.test.ts`,
+      );
+    }
+  }
+  if (
+    walk('supabase/migrations', { ext: ['.sql'] }).length &&
+    !walk('supabase/tests/database', { ext: ['.test.sql'] }).length
+  ) {
+    report.error('database migrations exist but supabase/tests/database has no pgTAP tests');
   }
   const all = collectAllTestIds();
   report.info(

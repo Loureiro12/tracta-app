@@ -46,6 +46,8 @@ export default {
         'docs',
         'repo',
         'deps',
+        'api',
+        'db',
         ...features,
       ],
     ],
