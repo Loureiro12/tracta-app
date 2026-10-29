@@ -23,10 +23,13 @@ import { useTranslation } from '@/shared/i18n';
 import { DayCard } from '../components/DayCard';
 import { EvolutionCard } from '../components/EvolutionCard';
 import { MonthCalendar } from '../components/MonthCalendar';
+import { QueryState } from '../components/QueryState';
 import { StatTile } from '../components/StatTile';
 import { historyIds as ids } from '../history.testids';
+import { useMonthModel } from '../hooks/useMonthModel';
+import { decimal } from '../lib/format';
+import { defaultSelection, parseDateKey } from '../lib/month';
 import { historyHrefs } from '../lib/routes';
-import { MONTH_RUN_KM, MONTH_VOLUME, MONTH_WORKOUTS_BASE } from '../model/history.mock';
 import { useHistoryStore } from '../model/history.store';
 
 import type { ViewStyle } from 'react-native';
@@ -38,10 +41,11 @@ export function HistoryScreen() {
   const { t } = useTranslation('history');
   const router = useRouter();
   const theme = useTheme();
-  const selectedDay = useHistoryStore((s) => s.selectedDay);
-  const selectDay = useHistoryStore((s) => s.selectDay);
-  const deleted = useHistoryStore((s) => s.deletedSessionIds);
-  const monthCount = MONTH_WORKOUTS_BASE - deleted.length;
+  const picked = useHistoryStore((s) => s.selectedDate);
+  const selectDate = useHistoryStore((s) => s.selectDate);
+  const { query, view, grid, todayKey, byDay, activity, itemsOf } = useMonthModel();
+  const selectedDate = picked ?? defaultSelection(byDay, todayKey);
+  const selected = parseDateKey(selectedDate) ?? new Date();
 
   const reportStyle = useMemo<ViewStyle>(
     () => ({
@@ -124,24 +128,50 @@ export function HistoryScreen() {
         </HStack>
       </Card>
 
-      <MonthCalendar selectedDay={selectedDay} deletedSessionIds={deleted} onSelect={selectDay} />
+      {view ? (
+        <>
+          <MonthCalendar
+            grid={grid}
+            activity={activity}
+            selectedDate={selectedDate}
+            todayKey={todayKey}
+            onSelect={selectDate}
+          />
 
-      <DayCard
-        day={selectedDay}
-        deletedSessionIds={deleted}
-        onOpenSession={(id) => router.push(historyHrefs.session(id))}
-        onStartPlanned={() => router.push(historyHrefs.startSession)}
-      />
+          <DayCard
+            date={selected}
+            dateKey={selectedDate}
+            todayKey={todayKey}
+            items={itemsOf(selectedDate)}
+            onOpenSession={(id) => router.push(historyHrefs.session(id))}
+            onStartPlanned={() => router.push(historyHrefs.startSession)}
+          />
 
-      <HStack gap="sm" align="stretch">
-        <StatTile
-          testID={ids.statWorkouts}
-          label={t('stats.workouts')}
-          value={String(monthCount)}
+          <HStack gap="sm" align="stretch">
+            <StatTile
+              testID={ids.statWorkouts}
+              label={t('stats.workouts')}
+              value={String(view.totals.workouts)}
+            />
+            <StatTile
+              testID={ids.statRun}
+              label={t('stats.run')}
+              value={`${decimal(view.totals.runKm)} km`}
+            />
+            <StatTile
+              testID={ids.statVolume}
+              label={t('stats.volume')}
+              value={`${decimal(view.totals.volumeKg / 1000)} t`}
+            />
+          </HStack>
+        </>
+      ) : (
+        <QueryState
+          testID={ids.calendar}
+          error={query.isError}
+          onRetry={() => void query.refetch()}
         />
-        <StatTile testID={ids.statRun} label={t('stats.run')} value={MONTH_RUN_KM} />
-        <StatTile testID={ids.statVolume} label={t('stats.volume')} value={MONTH_VOLUME} />
-      </HStack>
+      )}
 
       <Card px="xl" py="lg" gap="md">
         <HStack justify="space-between" align="baseline" gap="sm">

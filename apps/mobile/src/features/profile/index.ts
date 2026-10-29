@@ -8,7 +8,8 @@ export { PrivacyScreen } from './screens/PrivacyScreen';
 export { GoalsSheetScreen } from './screens/GoalsSheetScreen';
 export { profileIds } from './profile.testids';
 export { profileTranslations } from './i18n';
-export { useProfileStore, selectIsPro } from './model/profile.store';
+export { useProfileStore } from './model/profile.store';
+export { useProStatus } from './hooks/useProStatus';
 export { profileRoutes } from './model/profile.routes';
 export type {
   PaywallContext,

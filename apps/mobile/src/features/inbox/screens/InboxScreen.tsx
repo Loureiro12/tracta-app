@@ -11,32 +11,57 @@ import {
   VStack,
 } from '@tracta/design-system';
 
-import { useTranslation } from '@/shared/i18n';
+import { today, toDateKey } from '@/shared/clock';
+import { useFeedbackStore } from '@/shared/feedback';
+import { formatDate, useTranslation } from '@/shared/i18n';
 
+import {
+  useMarkAllRead,
+  useMarkRead,
+  useNotifications,
+  useRemoveNotification,
+} from '../api/useNotifications';
 import { InboxItemRow } from '../components/InboxItemRow';
 import { inboxIds } from '../inbox.testids';
-import { inboxGroups, inboxItems } from '../model/inbox.mock';
+import { groupOf, inboxGroups } from '../model/inbox.presentation';
 import { useInboxStore } from '../model/inbox.store';
 
-import type { InboxItem } from '../model/inbox.mock';
+import type { notifications } from '@tracta/api';
+import type { Href } from 'expo-router';
+
+const TIME_FMT = { hour: '2-digit', minute: '2-digit' } as const;
+const DAY_TIME_FMT = { weekday: 'short', hour: '2-digit', minute: '2-digit' } as const;
+const DATE_FMT = { day: 'numeric', month: 'short' } as const;
 
 /** Notification center overlay: grouped list, mark-as-read, remove and the empty state. */
 export function InboxScreen() {
   const router = useRouter();
   const { t } = useTranslation('inbox');
-  const read = useInboxStore((s) => s.read);
-  const removed = useInboxStore((s) => s.removed);
+  const showToast = useFeedbackStore((s) => s.showToast);
   const systemOff = useInboxStore((s) => s.systemNotificationsOff);
-  const markRead = useInboxStore((s) => s.markRead);
-  const markAllRead = useInboxStore((s) => s.markAllRead);
-  const remove = useInboxStore((s) => s.remove);
+  const query = useNotifications();
+  const markRead = useMarkRead();
+  const markAllRead = useMarkAllRead();
+  const remove = useRemoveNotification();
 
-  const live = inboxItems.filter((item) => !removed.includes(item.id));
-  const hasUnread = live.some((item) => !read.includes(item.id));
+  const live = query.data ?? [];
+  const hasUnread = live.some((item) => item.readAt === null);
+  const todayKey = today();
+  const onError = () => showToast(t('actionError'));
 
-  const open = (item: InboxItem) => {
-    markRead(item.id);
-    router.push(item.href);
+  const grouped = live.map((item) => {
+    const created = new Date(item.createdAt);
+    const group = groupOf(created, todayKey, toDateKey);
+    const time = formatDate(
+      created,
+      group === 'today' ? TIME_FMT : group === 'week' ? DAY_TIME_FMT : DATE_FMT,
+    );
+    return { item, group, time };
+  });
+
+  const open = (item: notifications.Notification) => {
+    if (item.readAt === null) markRead.mutate(item.id, { onError });
+    if (item.href) router.push(item.href as Href);
   };
 
   return (
@@ -54,7 +79,7 @@ export function InboxScreen() {
                 label={t('readAll')}
                 variant="ghost"
                 size="sm"
-                onPress={markAllRead}
+                onPress={() => markAllRead.mutate(undefined, { onError })}
               />
             ) : null
           }
@@ -84,7 +109,26 @@ export function InboxScreen() {
         </Card>
       ) : null}
 
-      {live.length === 0 ? (
+      {query.isError ? (
+        <Card testID={`${inboxIds.items}.error`} variant="warn" radius="xl" px="lg" py="ml">
+          <HStack gap="md" justify="space-between">
+            <VStack flex={1}>
+              <Text variant="secondary" color="warnText">
+                {t('loadError.text')}
+              </Text>
+            </VStack>
+            <Button
+              testID={`${inboxIds.items}.error.retry`}
+              label={t('loadError.retry')}
+              variant="surface"
+              size="xs"
+              onPress={() => void query.refetch()}
+            />
+          </HStack>
+        </Card>
+      ) : null}
+
+      {query.isSuccess && live.length === 0 ? (
         <VStack testID={inboxIds.empty} align="center" gap="xs" py="5xl" px="screen">
           <Text testID={`${inboxIds.empty}.title`} variant="subtitle" align="center">
             {t('empty.title')}
@@ -97,7 +141,7 @@ export function InboxScreen() {
 
       <VStack testID={inboxIds.items} gap="md">
         {inboxGroups.map((group) => {
-          const items = live.filter((item) => item.group === group);
+          const items = grouped.filter((row) => row.group === group);
           if (items.length === 0) return null;
           return (
             <VStack key={group} gap="sm" pt="xs">
@@ -105,14 +149,15 @@ export function InboxScreen() {
                 {t(`groups.${group}`)}
               </SectionLabel>
               <Card testID={`${inboxIds.items}.${group}`} padding="none" py="xxs" gap="none">
-                {items.map((item, i) => (
+                {items.map(({ item, time }, i) => (
                   <InboxItemRow
                     key={item.id}
                     item={item}
-                    read={read.includes(item.id)}
+                    time={time}
+                    read={item.readAt !== null}
                     last={i === items.length - 1}
                     onOpen={() => open(item)}
-                    onRemove={() => remove(item.id)}
+                    onRemove={() => remove.mutate(item.id, { onError })}
                   />
                 ))}
               </Card>

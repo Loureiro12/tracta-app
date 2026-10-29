@@ -15,14 +15,16 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
+import { now } from '@/shared/clock';
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
+import { useSaveActivity } from '../api/useSaveActivity';
 import { RouteMap } from '../components/RouteMap';
 import { RunStat } from '../components/RunStat';
 import { SplitRow } from '../components/SplitRow';
 import { useRunLabels } from '../hooks/useRunLabels';
-import { EM_DASH, clock, kmh as paceToKmh, splitsFor } from '../model/run.logic';
+import { EM_DASH, clock, kmh as paceToKmh, splitsFor, toActivityInput } from '../model/run.logic';
 import { POOL_LENGTH_M, modalities } from '../model/run.mock';
 import { useRunStore } from '../model/run.store';
 import { runIds } from '../run.testids';
@@ -38,6 +40,8 @@ export function RunSummaryScreen() {
   const { t: tc } = useTranslation('common');
   const { t, km, kmh, modality, splitLabel, splitPace } = useRunLabels();
   const summary = useRunStore((s) => s.summary);
+  const run = useRunStore((s) => s.run);
+  const saveActivity = useSaveActivity();
   const notes = useRunStore((s) => s.notes);
   const saving = useRunStore((s) => s.saving);
   const setNotes = useRunStore((s) => s.setNotes);
@@ -71,11 +75,19 @@ export function RunSummaryScreen() {
   );
 
   const onSave = useCallback(() => {
-    if (saving !== 0) return;
+    if (saving !== 0 || !summary) return;
     setSaving(1);
-    timers.current.push(setTimeout(() => setSaving(2), 900));
-    timers.current.push(setTimeout(() => finish(t('summary.toastSaved')), 2000));
-  }, [saving, setSaving, finish, t]);
+    saveActivity.mutate(toActivityInput(summary, run?.intervals ?? null, notes, now()), {
+      onSuccess: () => {
+        setSaving(2);
+        timers.current.push(setTimeout(() => finish(t('summary.toastSaved')), 900));
+      },
+      onError: () => {
+        setSaving(0);
+        showToast(t('summary.toastSaveError'));
+      },
+    });
+  }, [saving, summary, run, notes, setSaving, saveActivity, finish, showToast, t]);
 
   const onDiscard = useCallback(() => {
     if (!armed) {

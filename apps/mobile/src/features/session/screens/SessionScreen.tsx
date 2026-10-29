@@ -21,6 +21,7 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
+import { useSessionRoutine } from '../api/useSessionRoutine';
 import { ActiveSetCard } from '../components/ActiveSetCard';
 import { ExercisePills } from '../components/ExercisePills';
 import { SessionHeader } from '../components/SessionHeader';
@@ -46,7 +47,7 @@ import type { SessionExercise } from '../model/session.types';
 import type { ViewStyle } from 'react-native';
 
 type Props = {
-  /** Routine letter to start when no session is active (default A). */
+  /** Routine id (or letter) to start when no session is active (default: today's routine). */
   routine?: string | undefined;
   /** Start an empty "free session" instead of a routine. */
   free?: boolean;
@@ -84,10 +85,16 @@ export function SessionScreen({ routine, free = false }: Props) {
   const finish = useSessionStore((s) => s.finish);
 
   // Opening the screen (deep link, routine detail or the mini-player) starts or resumes the session.
+  // A routine session needs its prescription and last sets from the backend first.
+  const routineQuery = useSessionRoutine(routine, !session && !free);
+  const loadedRoutine = routineQuery.data;
   useLayoutEffect(() => {
-    startSession(free ? FREE_ROUTINE_ID : routine);
     setMiniPlayer(null);
-  }, [startSession, setMiniPlayer, free, routine]);
+  }, [setMiniPlayer]);
+  useLayoutEffect(() => {
+    if (free) startSession(null);
+    else if (loadedRoutine) startSession(loadedRoutine);
+  }, [startSession, free, loadedRoutine]);
   useSessionTicker();
 
   const footerStyle = useMemo<ViewStyle>(
@@ -115,9 +122,29 @@ export function SessionScreen({ routine, free = false }: Props) {
   );
 
   if (!session) {
+    const failed = routineQuery.isError || (routineQuery.isSuccess && !loadedRoutine);
     return (
       <Screen testID={sessionIds.screen} scroll={false}>
-        <Box />
+        {failed ? (
+          <Card testID={`${sessionIds.screen}.error`} padding="xl" gap="sm">
+            <Text variant="bodySemibold">
+              {routineQuery.isError ? t('state.errorTitle') : t('state.noRoutine')}
+            </Text>
+            <Button
+              testID={`${sessionIds.screen}.error.retry`}
+              label={routineQuery.isError ? t('state.retry') : t('state.back')}
+              variant="surface"
+              size="sm"
+              onPress={() =>
+                routineQuery.isError
+                  ? void routineQuery.refetch()
+                  : router.replace(sessionRoutes.home())
+              }
+            />
+          </Card>
+        ) : (
+          <Box />
+        )}
       </Screen>
     );
   }

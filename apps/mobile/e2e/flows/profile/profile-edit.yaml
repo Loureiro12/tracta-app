@@ -42,9 +42,10 @@ tags:
 - assertVisible:
     id: "profile.edit.new-password.error"
     text: "The new password does not meet the requirements"
+# A wrong current password is rejected by the server (the demo password is Tracta2026)
 - tapOn:
     id: "profile.edit.current-password.input"
-- inputText: "secret1"
+- inputText: "Wrong2026"
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 # The keyboard covers the next field: close it and bring the field into view before tapping it.
 # Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
@@ -57,6 +58,30 @@ tags:
     centerElement: true
 - tapOn:
     id: "profile.edit.new-password.input"
+- inputText: "Tracta2027"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+# Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
+- tapOn:
+    id: "profile.edit.email.label"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.change-password"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.edit.change-password"
+- assertVisible:
+    id: "profile.edit.current-password.error"
+    text: "Current password is incorrect"
+# The real current password changes it (launch.yaml restores Tracta2026 before every flow)
+- scrollUntilVisible:
+    element:
+      id: "profile.edit.current-password.input"
+    centerElement: true
+- tapOn:
+    id: "profile.edit.current-password.input"
+- eraseText: 20
 - inputText: "Tracta2026"
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 # Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
@@ -112,7 +137,8 @@ tags:
 - tapOn:
     id: "profile.edit.email.input"
 - eraseText: 40
-- inputText: "lucas@andrade.me"
+# Same e-mail as the account: only the name is saved (an e-mail change would need confirmation)
+- inputText: "lucas@tracta.app"
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 # Tapping a plain label inside the scroll view dismisses the keyboard (keyboardShouldPersistTaps=handled)
 - tapOn:
@@ -128,3 +154,6 @@ tags:
 - assertVisible:
     id: "profile.header.name"
     text: "Lucas A."
+- assertVisible:
+    id: "profile.header.email"
+    text: "lucas@tracta.app · backup on"

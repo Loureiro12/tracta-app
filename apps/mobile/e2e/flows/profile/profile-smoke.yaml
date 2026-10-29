@@ -14,7 +14,7 @@ tags:
     text: "Lucas Andrade"
 - assertVisible:
     id: "profile.header.email"
-    text: "lucas@andrade.me · backup on"
+    text: "lucas@tracta.app · backup on"
 - assertVisible:
     id: "profile.header.edit"
 - assertVisible:
@@ -79,7 +79,28 @@ tags:
 - assertVisible:
     id: "profile.prefs.units.value"
     text: "kg · km"
+# Units and auto rest toggle on tap (saved to the account)
+- tapOn:
+    id: "profile.prefs.units"
 - assertVisible:
+    id: "profile.prefs.units.value"
+    text: "lb · km"
+- tapOn:
+    id: "profile.prefs.units"
+- assertVisible:
+    id: "profile.prefs.units.value"
+    text: "kg · km"
+- assertVisible:
+    id: "profile.prefs.auto-rest"
+- assertVisible:
+    id: "profile.prefs.auto-rest.value"
+    text: "On"
+- tapOn:
+    id: "profile.prefs.auto-rest"
+- assertVisible:
+    id: "profile.prefs.auto-rest.value"
+    text: "Off"
+- tapOn:
     id: "profile.prefs.auto-rest"
 - assertVisible:
     id: "profile.prefs.auto-rest.value"

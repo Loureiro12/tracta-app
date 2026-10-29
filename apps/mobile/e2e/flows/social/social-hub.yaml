@@ -15,7 +15,7 @@ tags:
 - assertVisible:
     id: "social.hub.challenges"
 - assertVisible:
-    id: "social.hub.challenges.c1"
+    id: "social.hub.challenges.00000000-0000-4000-c000-000000000001"
 - scrollUntilVisible:
     element:
       id: "social.hub.today-meta"

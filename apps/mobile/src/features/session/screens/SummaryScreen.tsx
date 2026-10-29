@@ -14,10 +14,12 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
+import { now } from '@/shared/clock';
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
-import { clock } from '../model/session.logic';
+import { useSaveSession } from '../api/useSaveSession';
+import { clock, toSavePayload } from '../model/session.logic';
 import { sessionRoutes } from '../model/session.routes';
 import { useSessionStore } from '../model/session.store';
 import { sessionIds } from '../session.testids';
@@ -59,6 +61,8 @@ export function SummaryScreen() {
   const setMiniPlayer = useFeedbackStore((s) => s.setMiniPlayer);
   const summary = useSessionStore((s) => s.summary);
   const endSession = useSessionStore((s) => s.endSession);
+  const session = useSessionStore((s) => s.session);
+  const saveSession = useSaveSession();
   const [discardArmed, setDiscardArmed] = useState(false);
 
   const footerStyle = useMemo<ViewStyle>(
@@ -80,8 +84,14 @@ export function SummaryScreen() {
     router.replace(sessionRoutes.home());
   };
   const save = () => {
-    showToast(t('session:summary.saved'));
-    leaveToHome();
+    if (!session || saveSession.isPending) return;
+    saveSession.mutate(toSavePayload(session, now(), t('session:header.freeName')), {
+      onSuccess: () => {
+        showToast(t('session:summary.saved'));
+        leaveToHome();
+      },
+      onError: () => showToast(t('session:summary.saveError')),
+    });
   };
   const discard = () => {
     if (!discardArmed) {

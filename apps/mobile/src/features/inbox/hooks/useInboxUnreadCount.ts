@@ -1,9 +1,7 @@
-import { inboxItems } from '../model/inbox.mock';
-import { useInboxStore } from '../model/inbox.store';
+import { useNotifications } from '../api/useNotifications';
 
-/** Number of live (not removed) notifications still unread; drives the bell badge on Home. */
+/** Number of unread notifications; drives the bell badge on Home (shares the inbox cache). */
 export function useInboxUnreadCount(): number {
-  const read = useInboxStore((s) => s.read);
-  const removed = useInboxStore((s) => s.removed);
-  return inboxItems.filter((item) => !removed.includes(item.id) && !read.includes(item.id)).length;
+  const { data } = useNotifications();
+  return data ? data.filter((n) => n.readAt === null).length : 0;
 }

@@ -5,9 +5,12 @@ import { useRouter } from 'expo-router';
 import { Avatar, IconButton, Pressable, Screen, ScreenHeader } from '@tracta/design-system';
 
 import { useInboxUnreadCount } from '@/features/inbox';
+import { now } from '@/shared/clock';
 import { env } from '@/shared/config/env';
 import { formatDate, useTranslation } from '@/shared/i18n';
 
+import { useUserInitial } from '../api/useHomeAccount';
+import { summarize, useRecentEntries } from '../api/useHomeActivity';
 import { ChecklistCard } from '../components/ChecklistCard';
 import { DevToolsRow } from '../components/DevToolsRow';
 import { FriendsCard } from '../components/FriendsCard';
@@ -19,7 +22,6 @@ import { StatsRow } from '../components/StatsRow';
 import { SyncLine } from '../components/SyncLine';
 import { WeeklyCard } from '../components/WeeklyCard';
 import { homeIds } from '../home.testids';
-import { HOME_TODAY, USER_INITIAL } from '../model/home.mock';
 import { useHomeStore } from '../model/home.store';
 
 import type { HomeCardKey } from '../model/home.store';
@@ -34,11 +36,13 @@ function eyebrowDate(date: Date): string {
 export function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation('home');
+  const initial = useUserInitial();
   const cards = useHomeStore((s) => s.cards);
   const density = useHomeStore((s) => s.density);
   const isNewUser = useHomeStore((s) => s.isNewUser);
   const weeklySeen = useHomeStore((s) => s.weeklySeen);
-  const doneToday = useHomeStore((s) => s.doneToday);
+  const { data: entries } = useRecentEntries();
+  const { weekDone, doneToday, last } = summarize(entries ?? []);
   const unread = useInboxUnreadCount();
   const detailed = density === 'detailed';
 
@@ -49,11 +53,11 @@ export function HomeScreen() {
       case 'move':
         return <MovementCard detailed={detailed} />;
       case 'stats':
-        return <StatsRow weekDone={doneToday ? 1 : 0} />;
+        return <StatsRow weekDone={weekDone} />;
       case 'next':
         return <NextWorkoutCard doneToday={doneToday} />;
       case 'last':
-        return <LastActivityCard />;
+        return <LastActivityCard entry={last} />;
     }
   };
 
@@ -64,7 +68,7 @@ export function HomeScreen() {
       header={
         <ScreenHeader
           testID={homeIds.header}
-          eyebrow={eyebrowDate(HOME_TODAY)}
+          eyebrow={eyebrowDate(now())}
           title={t('header.title')}
           actions={
             <>
@@ -86,7 +90,7 @@ export function HomeScreen() {
                 onPress={() => router.push('/profile')}
                 accessibilityLabel={t('nav.profile')}
               >
-                <Avatar initial={USER_INITIAL} />
+                <Avatar initial={initial} />
               </Pressable>
             </>
           }

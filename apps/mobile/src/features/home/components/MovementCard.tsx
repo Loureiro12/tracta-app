@@ -7,8 +7,9 @@ import { Bars, Box, Card, HStack, ProgressBar, Text, VStack } from '@tracta/desi
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
 import { CardHeaderRow } from './CardHeaderRow';
+import { useHomeGoals } from '../api/useHomeAccount';
 import { homeIds } from '../home.testids';
-import { goals, movement } from '../model/home.mock';
+import { movement } from '../model/home.mock';
 
 import type { Bar } from '@tracta/design-system';
 
@@ -26,6 +27,7 @@ type MovementCardProps = { detailed: boolean };
 export function MovementCard({ detailed }: MovementCardProps) {
   const router = useRouter();
   const { t } = useTranslation('home');
+  const goals = useHomeGoals();
   const stats = [
     {
       key: 'distance',
@@ -57,7 +59,7 @@ export function MovementCard({ detailed }: MovementCardProps) {
         <Text testID={homeIds.moveValue} variant="heroLg">
           {formatNumber(movement.steps)}
         </Text>
-        <Text variant="secondary" color="text2" numberOfLines={1}>
+        <Text testID={homeIds.moveGoal} variant="secondary" color="text2" numberOfLines={1}>
           {t('move.goal', { goal: formatNumber(goals.steps) })}
         </Text>
       </HStack>

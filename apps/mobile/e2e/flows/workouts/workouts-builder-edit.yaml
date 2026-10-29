@@ -1,0 +1,67 @@
+appId: com.tracta.mobile
+name: workouts-builder-edit
+tags:
+  - workouts
+---
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.A"
+    centerElement: true
+- tapOn:
+    id: "workouts.routines.A"
+- assertVisible:
+    id: "workouts.detail.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.detail.edit"
+    centerElement: true
+- tapOn:
+    id: "workouts.detail.edit"
+- assertVisible:
+    id: "workouts.builder.title"
+    text: "Edit workout"
+# Seeded Treino A starts with 4 × 8 bench press; add a set and save to the backend
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.exercises.0.toggle"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.exercises.0.toggle"
+- assertVisible:
+    id: "workouts.builder.exercises.0.sets.value"
+    text: "4"
+- tapOn:
+    id: "workouts.builder.exercises.0.sets.plus"
+- assertVisible:
+    id: "workouts.builder.exercises.0.sets.value"
+    text: "5"
+- tapOn:
+    id: "workouts.builder.save"
+- assertVisible:
+    id: "app.toast"
+    text: "Workout updated"
+- assertVisible:
+    id: "workouts.detail.screen"
+# Reopening the builder reads the saved routine back
+- scrollUntilVisible:
+    element:
+      id: "workouts.detail.edit"
+    centerElement: true
+- tapOn:
+    id: "workouts.detail.edit"
+- scrollUntilVisible:
+    element:
+      id: "workouts.builder.exercises.0.toggle"
+    centerElement: true
+- tapOn:
+    id: "workouts.builder.exercises.0.toggle"
+- assertVisible:
+    id: "workouts.builder.exercises.0.sets.value"
+    text: "5"
+- tapOn:
+    id: "workouts.builder.cancel"
+- assertVisible:
+    id: "workouts.detail.screen"

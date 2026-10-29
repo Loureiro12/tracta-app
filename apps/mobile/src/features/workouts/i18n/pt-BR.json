@@ -1,7 +1,9 @@
 {
   "title": "Treinos",
   "new": "+ Novo",
-  "actions": { "close": "Fechar" },
+  "actions": {
+    "close": "Fechar"
+  },
   "days": {
     "mon": "Seg",
     "tue": "Ter",
@@ -34,16 +36,46 @@
     "intervalsDescription": "tiros e recuperação com aviso por voz"
   },
   "modality": {
-    "run": { "label": "Corrida", "description": "GPS · ritmo · parciais" },
-    "walk": { "label": "Caminhada", "description": "GPS · distância · tempo" },
-    "bike": { "label": "Ciclismo", "description": "duração, distância, velocidade e percurso" },
-    "swim": { "label": "Natação", "description": "duração, distância e voltas" },
-    "soccer": { "label": "Futebol", "description": "duração e observações" },
-    "basket": { "label": "Basquete", "description": "duração e observações" },
-    "tennis": { "label": "Tênis", "description": "duração e observações" },
-    "functional": { "label": "Treino funcional", "description": "duração e observações" },
-    "stretch": { "label": "Alongamento", "description": "duração" },
-    "yoga": { "label": "Yoga", "description": "duração" }
+    "run": {
+      "label": "Corrida",
+      "description": "GPS · ritmo · parciais"
+    },
+    "walk": {
+      "label": "Caminhada",
+      "description": "GPS · distância · tempo"
+    },
+    "bike": {
+      "label": "Ciclismo",
+      "description": "duração, distância, velocidade e percurso"
+    },
+    "swim": {
+      "label": "Natação",
+      "description": "duração, distância e voltas"
+    },
+    "soccer": {
+      "label": "Futebol",
+      "description": "duração e observações"
+    },
+    "basket": {
+      "label": "Basquete",
+      "description": "duração e observações"
+    },
+    "tennis": {
+      "label": "Tênis",
+      "description": "duração e observações"
+    },
+    "functional": {
+      "label": "Treino funcional",
+      "description": "duração e observações"
+    },
+    "stretch": {
+      "label": "Alongamento",
+      "description": "duração"
+    },
+    "yoga": {
+      "label": "Yoga",
+      "description": "duração"
+    }
   },
   "planning": {
     "title": "Planejamento",
@@ -52,7 +84,9 @@
     "today": "Hoje: {{workout}}",
     "restDay": "Hoje é dia livre neste programa",
     "programs": "Programas",
-    "programsDescription": "planos de semanas que preenchem sua rotina"
+    "programsDescription": "planos de semanas que preenchem sua rotina",
+    "fullBody": "Corpo inteiro · 40 min",
+    "run": "Corrida"
   },
   "race": {
     "title": "Minha prova",
@@ -180,9 +214,18 @@
     "equipment": "Equipamento",
     "type": "Como registrar",
     "types": {
-      "s": { "label": "Carga × reps", "sub": "peso e repetições" },
-      "b": { "label": "Só repetições", "sub": "peso corporal" },
-      "c": { "label": "Tempo", "sub": "cardio, mobilidade" }
+      "s": {
+        "label": "Carga × reps",
+        "sub": "peso e repetições"
+      },
+      "b": {
+        "label": "Só repetições",
+        "sub": "peso corporal"
+      },
+      "c": {
+        "label": "Tempo",
+        "sub": "cardio, mobilidade"
+      }
     },
     "defaults": "Valores padrão",
     "defaultsHint": "sugeridos ao adicionar a um treino",
@@ -268,6 +311,13 @@
     "programStarted": "{{name}} começou hoje",
     "programEnded": "Programa encerrado",
     "raceSaved": "Prova definida",
-    "raceRemoved": "Prova removida"
+    "raceRemoved": "Prova removida",
+    "exerciseInUse": "Este exercício está em um treino ou em uma sessão registrada",
+    "saveFailed": "Não foi possível salvar. Tente de novo."
+  },
+  "state": {
+    "loading": "Carregando…",
+    "error": "Não foi possível carregar. Verifique sua conexão.",
+    "retry": "Tentar de novo"
   }
 }

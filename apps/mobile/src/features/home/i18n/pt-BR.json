@@ -166,8 +166,15 @@
   },
   "last": {
     "title": "Última atividade · {{when}}",
-    "when": "Sábado · Corrida",
-    "history": "Histórico"
+    "history": "Histórico",
+    "kinds": {
+      "strength": "Musculação",
+      "run": "Corrida",
+      "other": "Atividade"
+    },
+    "strengthLine": "{{title}} · {{minutes}} min",
+    "distanceLine": "{{km}} km · {{time}} · {{pace}} /km",
+    "timeLine": "{{time}}"
   },
   "edit": {
     "title": "Personalizar início",

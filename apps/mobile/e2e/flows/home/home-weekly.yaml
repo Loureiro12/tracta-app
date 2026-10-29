@@ -61,10 +61,10 @@ tags:
     id: "home.nav.inbox"
 - scrollUntilVisible:
     element:
-      id: "inbox.items.n4.open"
+      id: "inbox.items.00000000-0000-4000-b000-000000000004.open"
     centerElement: true
 - tapOn:
-    id: "inbox.items.n4.open"
+    id: "inbox.items.00000000-0000-4000-b000-000000000004.open"
 - assertVisible:
     id: "home.weekly.screen"
 - scrollUntilVisible:

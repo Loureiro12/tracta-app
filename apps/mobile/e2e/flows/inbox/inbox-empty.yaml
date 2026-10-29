@@ -3,6 +3,7 @@ name: inbox-empty
 tags:
   - inbox
 ---
+# Seeded inbox (supabase/seeds/40_social.sql): …b000-000000000001..6 = n1..n6, newest first.
 - runFlow: ../../subflows/launch.yaml
 - tapOn:
     id: "home.nav.inbox"
@@ -11,22 +12,22 @@ tags:
 - assertNotVisible:
     id: "inbox.empty"
 - tapOn:
-    id: "inbox.items.n1.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001.remove"
 - tapOn:
-    id: "inbox.items.n2.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000002.remove"
 - tapOn:
-    id: "inbox.items.n3.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000003.remove"
 - assertNotVisible:
     id: "inbox.items.today.label"
 - assertVisible:
     id: "inbox.items.week.label"
     text: "This week"
 - tapOn:
-    id: "inbox.items.n4.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000004.remove"
 - tapOn:
-    id: "inbox.items.n5.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000005.remove"
 - tapOn:
-    id: "inbox.items.n6.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000006.remove"
 - assertVisible:
     id: "inbox.empty"
 - assertVisible:

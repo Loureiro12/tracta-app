@@ -67,3 +67,19 @@ tags:
 - assertVisible:
     id: "health.body.measures.waist.description"
     text: "manual · today"
+# The entry is stored on the server: it survives a cold restart (fresh cache, same account)
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 30000
+- tapOn:
+    id: "app.tab.health"
+- tapOn:
+    id: "health.segment.body"
+- extendedWaitUntil:
+    visible:
+      id: "health.body.weight"
+      text: "80.5 kg"
+    timeout: 10000

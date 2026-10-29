@@ -10,6 +10,8 @@ import { useTranslation } from '@/shared/i18n';
 
 import { InkSegmented } from './InkSegmented';
 import { PrTag } from './PrTag';
+import { QueryState } from './QueryState';
+import { useEvolution } from '../api/useHistory';
 import { historyIds as ids } from '../history.testids';
 import { formatShortDate } from '../lib/dates';
 import { clock, decimal, kg, signed, thousands } from '../lib/format';
@@ -20,7 +22,6 @@ import {
   cardioEvolution,
   strengthEvolution,
 } from '../model/history.evolution';
-import { allExercises } from '../model/history.mock';
 import { useHistoryStore } from '../model/history.store';
 
 import type {
@@ -60,11 +61,12 @@ export function EvolutionCard() {
   const { t } = useTranslation('history');
   const theme = useTheme();
   const kind = useHistoryStore((s) => s.evoKind);
-  const exerciseId = useHistoryStore((s) => s.evoExerciseId);
+  const exerciseSlug = useHistoryStore((s) => s.evoExercise);
   const metric = useHistoryStore((s) => s.evoMetric);
   const group = useHistoryStore((s) => s.cardioGroup);
   const cardioMetric = useHistoryStore((s) => s.cardioMetric);
-  const deleted = useHistoryStore((s) => s.deletedSessionIds);
+  const evolution = useEvolution();
+  const data = evolution.data;
   const setKind = useHistoryStore((s) => s.setEvoKind);
   const setExercise = useHistoryStore((s) => s.setEvoExercise);
   const setMetric = useHistoryStore((s) => s.setEvoMetric);
@@ -79,8 +81,9 @@ export function EvolutionCard() {
       .map((p) => ({ date: shortDate(p.date), value: fmt(p.value), pr: p.pr }));
 
   const vm = useMemo<ViewModel | null>(() => {
+    if (!data) return null;
     if (kind === 'strength') {
-      const evo = strengthEvolution(exerciseId, metric);
+      const evo = strengthEvolution(data.exercises, exerciseSlug, metric);
       if (!evo) return null;
       const m = evo.metric;
       const fmt = (v: number) =>
@@ -94,11 +97,11 @@ export function EvolutionCard() {
       return {
         heading: t('evo.strengthHeading'),
         count: t('evo.sessions', { count: evo.points.length }),
-        chips: allExercises.map((e) => ({
-          id: e.id,
+        chips: data.exercises.map((e) => ({
+          id: e.slug,
           label: e.name,
-          selected: e.id === evo.exerciseId,
-          onPress: () => setExercise(e.id),
+          selected: e.slug === evo.slug,
+          onPress: () => setExercise(e.slug),
         })),
         metricOptions: evo.metrics.map((k) => ({
           value: k,
@@ -127,7 +130,7 @@ export function EvolutionCard() {
         note: t('evo.noteStrength'),
       };
     }
-    const evo = cardioEvolution(group, cardioMetric, deleted);
+    const evo = cardioEvolution(data.runs, group, cardioMetric);
     const m = evo.metric;
     const fmt = (v: number) =>
       m === 'pace' ? `${clock(v)} /km` : m === 'dist' ? `${decimal(v)} km` : `${Math.round(v)} bpm`;
@@ -187,7 +190,7 @@ export function EvolutionCard() {
       note: m === 'pace' ? t('evo.notePace') : m === 'hr' ? t('evo.noteHr') : t('evo.noteDist'),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, exerciseId, metric, group, cardioMetric, deleted, t]);
+  }, [data, kind, exerciseSlug, metric, group, cardioMetric, t]);
 
   const dividerStyle = useMemo<ViewStyle>(
     () => ({
@@ -209,6 +212,15 @@ export function EvolutionCard() {
     [theme],
   );
 
+  if (!data) {
+    return (
+      <QueryState
+        testID={ids.evoCard}
+        error={evolution.isError}
+        onRetry={() => void evolution.refetch()}
+      />
+    );
+  }
   if (!vm) return null;
   const c = theme.colors;
   const kindOptions: { value: EvoKind; label: string }[] = [

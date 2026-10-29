@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StyleSheet } from 'react-native';
 
@@ -20,14 +20,21 @@ import {
 
 import { env } from '@/shared/config/env';
 import { useFeedbackStore } from '@/shared/feedback';
-import { formatDate, useTranslation } from '@/shared/i18n';
+import { useTranslation } from '@/shared/i18n';
 
+import { useChallenges } from '../api/useChallenges';
+import { useCheers, useToggleCheer } from '../api/useCheers';
+import { useFriendRequests, useRespondRequest } from '../api/useFriendRequests';
+import { useFriends } from '../api/useFriends';
+import { usePrivacy } from '../api/usePrivacy';
+import { ChallengeCard } from '../components/ChallengeCard';
 import { CheerButton } from '../components/CheerButton';
 import { FriendAvatar } from '../components/FriendAvatar';
+import { LoadError } from '../components/LoadError';
 import { PeopleCard } from '../components/PeopleCard';
 import { PersonRow } from '../components/PersonRow';
-import { emptyStateAvatars, friendById, friends as allFriends } from '../model/social.mock';
-import { challengeView } from '../model/social.ranking';
+import { avatarColor, emptyStateAvatars } from '../model/social.constants';
+import { firstName } from '../model/social.ranking';
 import { socialRoutes } from '../model/social.routes';
 import { useSocialStore } from '../model/social.store';
 import { socialIds } from '../social.testids';
@@ -43,19 +50,38 @@ export function SocialHubScreen() {
   const theme = useTheme();
   const { t } = useTranslation('social');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const friendIds = useSocialStore((s) => s.friendIds);
-  const pendingInvites = useSocialStore((s) => s.pendingInvites);
-  const challenges = useSocialStore((s) => s.challenges);
-  const cheers = useSocialStore((s) => s.cheers);
-  const privacy = useSocialStore((s) => s.privacy);
-  const toggleCheer = useSocialStore((s) => s.toggleCheer);
+  const friendsQuery = useFriends();
+  const requestsQuery = useFriendRequests();
+  const challengesQuery = useChallenges();
+  const cheersQuery = useCheers();
+  const toggleCheer = useToggleCheer();
+  const respond = useRespondRequest();
+  const privacy = usePrivacy();
+  const emailInvites = useSocialStore((s) => s.emailInvites);
+  const simulateNoFriends = useSocialStore((s) => s.simulateNoFriends);
+  const setSimulateNoFriends = useSocialStore((s) => s.setSimulateNoFriends);
   const startDraft = useSocialStore((s) => s.startDraft);
-  const clearFriends = useSocialStore((s) => s.clearFriends);
   const [devUsed, setDevUsed] = useState(false);
 
-  const friends = allFriends.filter((f) => friendIds.includes(f.id));
+  // The dev "no friends" simulation lasts while the hub is open.
+  useEffect(() => () => setSimulateNoFriends(false), [setSimulateNoFriends]);
+
+  const friends = simulateNoFriends ? [] : (friendsQuery.data ?? []);
+  const challenges = simulateNoFriends ? [] : (challengesQuery.data ?? []);
+  const incoming = simulateNoFriends ? [] : (requestsQuery.data?.incoming ?? []);
+  const outgoing = simulateNoFriends ? [] : (requestsQuery.data?.outgoing ?? []);
+  const cheers = cheersQuery.data ?? [];
   const doneCount = friends.filter((f) => f.done).length;
   const sharedCount = PRIVACY_KEYS.filter((k) => privacy[k]).length;
+  const loading = friendsQuery.isPending || challengesQuery.isPending;
+  const failed = friendsQuery.isError || challengesQuery.isError || requestsQuery.isError;
+  const pendingCount = outgoing.length + (simulateNoFriends ? 0 : emailInvites.length);
+
+  const retry = () => {
+    void friendsQuery.refetch();
+    void challengesQuery.refetch();
+    void requestsQuery.refetch();
+  };
 
   const onCreate = () => {
     if (friends.length === 0) {
@@ -63,9 +89,19 @@ export function SocialHubScreen() {
       router.push(socialRoutes.invite);
       return;
     }
-    startDraft();
+    startDraft(friends.map((f) => f.userId));
     router.push(socialRoutes.newChallenge);
   };
+
+  const onRespond = (requestId: string, name: string, accept: boolean) =>
+    respond.mutate(
+      { requestId, accept },
+      {
+        onSuccess: () =>
+          showToast(accept ? t('hub.accepted', { name: firstName(name) }) : t('hub.declined')),
+        onError: () => showToast(t('actionError')),
+      },
+    );
 
   return (
     <Screen
@@ -81,7 +117,9 @@ export function SocialHubScreen() {
         <Text color="text2">{t('hub.subtitle')}</Text>
       </VStack>
 
-      {friends.length === 0 ? (
+      {failed ? <LoadError testID={socialIds.screen} onRetry={retry} /> : null}
+
+      {!loading && !failed && friends.length === 0 ? (
         <Card testID={socialIds.empty} padding="2xl" px="screen" gap="sm">
           <HStack gap="none">
             {emptyStateAvatars.map((a, i) => (
@@ -100,52 +138,14 @@ export function SocialHubScreen() {
       {challenges.length > 0 ? (
         <VStack testID={socialIds.challenges} gap="md" pt="xs">
           <Text variant="secondarySemibold">{t('hub.challenges')}</Text>
-          {challenges.map((c) => {
-            const view = challengeView(c, friendIds, t('detail.you'), theme.colors.ink);
-            return (
-              <Card
-                key={c.id}
-                testID={`${socialIds.challenges}.${c.id}`}
-                variant="ink"
-                onPress={() => router.push(socialRoutes.challenge(c.id))}
-              >
-                <HStack justify="space-between" gap="sm">
-                  <Text variant="caption" color="text2OnInk" numberOfLines={1}>
-                    {view.started
-                      ? t('hub.challenge.whenStarted', {
-                          days: c.days,
-                          end: formatDate(view.endDate, {
-                            weekday: 'short',
-                            day: 'numeric',
-                            month: 'short',
-                          }),
-                        })
-                      : t('hub.challenge.whenTomorrow', { days: c.days })}
-                  </Text>
-                  <Text variant="caption" color="text2OnInk" numberOfLines={1}>
-                    {t('hub.challenge.count', { count: view.participants.length })}
-                  </Text>
-                </HStack>
-                <Text variant="nameTitle" color="textOnInk">
-                  {c.name}
-                </Text>
-                <Text variant="secondary" color="text2OnInk">
-                  {t(`detail.rule.${c.type}`, { min: c.min })}
-                </Text>
-                <Box bg="textOnInk" style={styles.inkHairline} />
-                <HStack justify="space-between" gap="sm">
-                  <Text variant="smallSemibold" color="textOnInk">
-                    {view.started
-                      ? t('hub.challenge.me', { pos: view.me.position, count: view.me.points })
-                      : t('hub.challenge.meTomorrow')}
-                  </Text>
-                  <Text variant="secondaryBold" color="brandOnDark">
-                    {t('hub.challenge.ranking')}
-                  </Text>
-                </HStack>
-              </Card>
-            );
-          })}
+          {challenges.map((c) => (
+            <ChallengeCard
+              key={c.id}
+              testID={`${socialIds.challenges}.${c.id}`}
+              challenge={c}
+              onPress={() => router.push(socialRoutes.challenge(c.id))}
+            />
+          ))}
         </VStack>
       ) : null}
 
@@ -167,16 +167,16 @@ export function SocialHubScreen() {
           </HStack>
           <PeopleCard testID={socialIds.friends}>
             {friends.map((f, i) => {
-              const cheered = cheers.includes(f.id);
+              const cheered = cheers.includes(f.userId);
               const status = f.done
-                ? privacy.kind && f.what
+                ? f.what
                   ? t('hub.friend.statusDone', { what: capitalize(f.what), min: f.min })
                   : t('hub.friend.statusDonePrivate')
                 : t('hub.friend.statusTodo');
               return (
                 <PersonRow
-                  key={f.id}
-                  testID={`${socialIds.friends}.${f.id}`}
+                  key={f.userId}
+                  testID={`${socialIds.friends}.${f.key}`}
                   name={f.name}
                   color={f.color}
                   subtitle={status}
@@ -185,10 +185,10 @@ export function SocialHubScreen() {
                   trailing={
                     f.done ? (
                       <CheerButton
-                        testID={`${socialIds.friends}.${f.id}.cheer`}
+                        testID={`${socialIds.friends}.${f.key}.cheer`}
                         cheered={cheered}
                         label={cheered ? t('hub.friend.cheered') : t('hub.friend.cheer')}
-                        onPress={() => toggleCheer(f.id)}
+                        onPress={() => toggleCheer.mutate({ friendId: f.userId, cheered })}
                       />
                     ) : f.streak > 0 ? (
                       <Text variant="caption" color="text3">
@@ -203,24 +203,71 @@ export function SocialHubScreen() {
         </VStack>
       ) : null}
 
-      {pendingInvites.length > 0 ? (
+      {incoming.length > 0 ? (
         <VStack gap="md" pt="xs">
-          <Text variant="secondarySemibold">{t('hub.pending')}</Text>
-          <PeopleCard testID={socialIds.pending}>
-            {pendingInvites.map((id, i) => {
-              const known = friendById(id);
+          <Text variant="secondarySemibold">{t('hub.requests')}</Text>
+          <PeopleCard testID={socialIds.requests}>
+            {incoming.map((r, i) => {
+              const key = r.person.handle ?? r.person.id;
               return (
                 <PersonRow
-                  key={id}
-                  testID={`${socialIds.pending}.${known ? known.id : id.replace(/^@/, '')}`}
-                  name={known ? known.name : id.replace(/^@/, '')}
-                  color={known ? known.color : theme.colors.text2}
-                  subtitle={known ? t('hub.pendingStatus') : t('hub.pendingStatusSignup')}
-                  minHeight={60}
-                  last={i === pendingInvites.length - 1}
+                  key={r.id}
+                  testID={`${socialIds.requests}.${key}`}
+                  name={r.person.name}
+                  color={avatarColor(r.person.id)}
+                  subtitle={t('hub.requestStatus')}
+                  minHeight={62}
+                  last={i === incoming.length - 1}
+                  trailing={
+                    <HStack gap="xs">
+                      <Button
+                        testID={`${socialIds.requests}.${key}.decline`}
+                        label={t('hub.decline')}
+                        variant="secondary"
+                        size="xs"
+                        onPress={() => onRespond(r.id, r.person.name, false)}
+                      />
+                      <Button
+                        testID={`${socialIds.requests}.${key}.accept`}
+                        label={t('hub.accept')}
+                        size="xs"
+                        onPress={() => onRespond(r.id, r.person.name, true)}
+                      />
+                    </HStack>
+                  }
                 />
               );
             })}
+          </PeopleCard>
+        </VStack>
+      ) : null}
+
+      {pendingCount > 0 ? (
+        <VStack gap="md" pt="xs">
+          <Text variant="secondarySemibold">{t('hub.pending')}</Text>
+          <PeopleCard testID={socialIds.pending}>
+            {outgoing.map((r, i) => (
+              <PersonRow
+                key={r.id}
+                testID={`${socialIds.pending}.${r.person.handle ?? r.person.id}`}
+                name={r.person.name}
+                color={avatarColor(r.person.id)}
+                subtitle={t('hub.pendingStatus')}
+                minHeight={60}
+                last={i === pendingCount - 1}
+              />
+            ))}
+            {emailInvites.map((email, i) => (
+              <PersonRow
+                key={email}
+                testID={`${socialIds.pending}.${email}`}
+                name={email}
+                color={theme.colors.text2}
+                subtitle={t('hub.pendingStatusSignup')}
+                minHeight={60}
+                last={outgoing.length + i === pendingCount - 1}
+              />
+            ))}
           </PeopleCard>
         </VStack>
       ) : null}
@@ -253,7 +300,7 @@ export function SocialHubScreen() {
             labelColor="text3"
             last
             onPress={() => {
-              clearFriends();
+              setSimulateNoFriends(true);
               setDevUsed(true);
             }}
           />
@@ -265,5 +312,4 @@ export function SocialHubScreen() {
 
 const styles = StyleSheet.create({
   overlap: { marginLeft: -10 },
-  inkHairline: { height: 1, opacity: 0.14, marginTop: 4 },
 });

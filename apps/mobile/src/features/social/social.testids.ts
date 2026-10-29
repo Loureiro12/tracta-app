@@ -15,6 +15,7 @@ export const socialIds = {
   create: testId('social', 'hub', 'create'),
   todayMeta: testId('social', 'hub', 'today-meta'),
   friends: testId('social', 'hub', 'friends'),
+  requests: testId('social', 'hub', 'requests'),
   pending: testId('social', 'hub', 'pending'),
   invite: testId('social', 'hub', 'invite'),
   privacy: testId('social', 'hub', 'privacy'),

@@ -4,27 +4,26 @@ import { StyleSheet } from 'react-native';
 
 import { Box, Card, Dot, HStack, Pressable, Text, VStack, useTheme } from '@tracta/design-system';
 
-import { useTranslation } from '@/shared/i18n';
+import { formatDate, useTranslation } from '@/shared/i18n';
 
 import { historyIds as ids } from '../history.testids';
-import {
-  CALENDAR_CELLS,
-  DAYS_IN_MONTH,
-  FIRST_DAY_OFFSET,
-  TODAY,
-  activityOf,
-} from '../model/history.mock';
+import { dateKeyOf } from '../lib/month';
 
+import type { MonthGrid } from '../lib/month';
+import type { DayActivity } from '../model/history.types';
 import type { SemanticColors } from '@tracta/design-system';
 import type { ViewStyle } from 'react-native';
 
 type Props = {
-  selectedDay: number;
-  deletedSessionIds: readonly string[];
-  onSelect: (day: number) => void;
+  grid: MonthGrid;
+  /** Marker per day key (YYYY-MM-DD). */
+  activity: ReadonlyMap<string, DayActivity>;
+  selectedDate: string;
+  todayKey: string;
+  onSelect: (date: string) => void;
 };
 
-type Cell = { day: number | null; activity: 'strength' | 'run' | null };
+type Cell = { day: number | null; key: string; activity: DayActivity | null };
 
 /** Label color and dot color of a cell: selected = ink pill, today without activity = faint green. */
 function cellColors(
@@ -46,24 +45,28 @@ function cellColors(
 }
 
 /** Monthly grid (Monday first) with one dot per activity type; today has a brand ring. */
-export function MonthCalendar({ selectedDay, deletedSessionIds, onSelect }: Props) {
+export function MonthCalendar({ grid, activity, selectedDate, todayKey, onSelect }: Props) {
   const { t } = useTranslation('history');
   const theme = useTheme();
 
   const rows = useMemo(() => {
     const cells: Cell[] = [];
-    for (let i = 0; i < CALENDAR_CELLS; i++) {
-      const day = i - FIRST_DAY_OFFSET + 1;
-      cells.push(
-        day >= 1 && day <= DAYS_IN_MONTH
-          ? { day, activity: activityOf(day, deletedSessionIds) }
-          : { day: null, activity: null },
-      );
+    for (let i = 0; i < grid.cells; i++) {
+      const day = i - grid.offset + 1;
+      if (day >= 1 && day <= grid.daysInMonth) {
+        const key = dateKeyOf(grid.year, grid.month, day);
+        cells.push({ day, key, activity: activity.get(key) ?? null });
+      } else cells.push({ day: null, key: `empty-${i}`, activity: null });
     }
     const out: Cell[][] = [];
     for (let r = 0; r < cells.length; r += 7) out.push(cells.slice(r, r + 7));
     return out;
-  }, [deletedSessionIds]);
+  }, [grid, activity]);
+  const monthName = formatDate(new Date(grid.year, grid.month, 1), { month: 'long' });
+  const monthLabel = t('calendar.month', {
+    month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
+    year: grid.year,
+  });
 
   const selectedStyle = useMemo<ViewStyle>(() => ({ backgroundColor: theme.colors.ink }), [theme]);
   const todayStyle = useMemo<ViewStyle>(
@@ -76,7 +79,7 @@ export function MonthCalendar({ selectedDay, deletedSessionIds, onSelect }: Prop
     <Card testID={ids.calendar} padding="lg" gap="md">
       <HStack justify="space-between">
         <Text testID={ids.calendarMonth} variant="cardTitleSm" numberOfLines={1}>
-          {t('calendar.month')}
+          {monthLabel}
         </Text>
         <HStack gap="md">
           <HStack gap="xs">
@@ -108,15 +111,15 @@ export function MonthCalendar({ selectedDay, deletedSessionIds, onSelect }: Prop
             {row.map((cell, c) => {
               if (cell.day === null) return <Box key={c} style={styles.cell} />;
               const day = cell.day;
-              const selected = day === selectedDay;
-              const future = day > TODAY;
-              const isToday = day === TODAY;
+              const selected = cell.key === selectedDate;
+              const future = cell.key > todayKey;
+              const isToday = cell.key === todayKey;
               const { color, dotColor } = cellColors(cell.activity, selected, future, isToday);
               return (
                 <Pressable
                   key={c}
                   testID={`${ids.calendarDays}.${day}`}
-                  onPress={() => onSelect(day)}
+                  onPress={() => onSelect(cell.key)}
                   accessibilityLabel={t('calendar.dayLabel', { day })}
                   accessibilityState={{ selected }}
                   style={[

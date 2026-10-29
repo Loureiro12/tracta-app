@@ -1,50 +1,35 @@
 import { create } from 'zustand';
 
-import { TODAY, allExercises } from './history.mock';
-
 import type { CardioGroup, CardioMetric, EvoKind, StrengthMetric } from './history.types';
 
+/** Local UI state of the History tab (server data lives in React Query, see ../api). */
 type HistoryState = {
-  /** Day of the month selected in the calendar. */
-  selectedDay: number;
-  /** Sessions removed with the 2-tap "Excluir" (mock persistence, in memory only). */
-  deletedSessionIds: string[];
-  /** Free-text notes per session id. */
-  notes: Record<string, string>;
+  /** Day picked in the calendar (YYYY-MM-DD); null = the latest day with activity. */
+  selectedDate: string | null;
   evoKind: EvoKind;
-  evoExerciseId: string;
+  /** Exercise slug of the strength chart; null = the first exercise. */
+  evoExercise: string | null;
   evoMetric: StrengthMetric;
   cardioGroup: CardioGroup;
   cardioMetric: CardioMetric;
-  selectDay: (day: number) => void;
-  deleteSession: (id: string) => void;
-  setNote: (id: string, note: string) => void;
+  selectDate: (date: string) => void;
   setEvoKind: (kind: EvoKind) => void;
-  setEvoExercise: (id: string) => void;
+  setEvoExercise: (slug: string) => void;
   setEvoMetric: (metric: StrengthMetric) => void;
   setCardioGroup: (group: CardioGroup) => void;
   setCardioMetric: (metric: CardioMetric) => void;
 };
 
 export const useHistoryStore = create<HistoryState>((set) => ({
-  selectedDay: TODAY - 2,
-  deletedSessionIds: [],
-  notes: {},
+  selectedDate: null,
   evoKind: 'strength',
-  evoExerciseId: allExercises[0]?.id ?? '',
+  evoExercise: null,
   evoMetric: 'kg',
   cardioGroup: 'all',
   cardioMetric: 'pace',
-  selectDay: (selectedDay) => set({ selectedDay }),
-  deleteSession: (id) =>
-    set((s) => ({
-      deletedSessionIds: s.deletedSessionIds.includes(id)
-        ? s.deletedSessionIds
-        : [...s.deletedSessionIds, id],
-    })),
-  setNote: (id, note) => set((s) => ({ notes: { ...s.notes, [id]: note } })),
+  selectDate: (selectedDate) => set({ selectedDate }),
   setEvoKind: (evoKind) => set({ evoKind }),
-  setEvoExercise: (evoExerciseId) => set({ evoExerciseId }),
+  setEvoExercise: (evoExercise) => set({ evoExercise }),
   setEvoMetric: (evoMetric) => set({ evoMetric }),
   setCardioGroup: (cardioGroup) => set({ cardioGroup }),
   setCardioMetric: (cardioMetric) => set({ cardioMetric }),

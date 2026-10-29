@@ -21,43 +21,50 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useDeleteEntry, useEntryDetail, useUpdateNotes } from '../api/useHistory';
 import { PrTag } from '../components/PrTag';
+import { QueryState } from '../components/QueryState';
 import { RouteMap } from '../components/RouteMap';
 import { SplitsCard } from '../components/SplitsCard';
 import { StatTile } from '../components/StatTile';
 import { historyIds as ids } from '../history.testids';
 import { useBackToHistory } from '../hooks/useBackToHistory';
 import { formatLongDate } from '../lib/dates';
+import { routeAt, splitBars } from '../lib/detail';
 import { clock, kg, km2, thousands, timeOfDay } from '../lib/format';
 import { itemId } from '../lib/ids';
 import { historyHrefs } from '../lib/routes';
-import { dateOf, sessionById } from '../model/history.mock';
-import { useHistoryStore } from '../model/history.store';
 
-import type { HistorySession, SessionExercise } from '../model/history.types';
+import type { sessions } from '@tracta/api';
+import type { ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 
 type Props = { id?: string | undefined };
 
 type Stat = { key: string; label: string; value: string };
 
-/** Session detail (/history/session/[id]): strength (sets per exercise) or run (map + splits). */
+const minutesOfDay = (iso: string) => {
+  const d = new Date(iso);
+  return d.getHours() * 60 + d.getMinutes();
+};
+
+/** Session detail (/history/session/[id]): strength (sets per exercise) or activity (map + splits). */
 export function SessionDetailScreen({ id }: Props) {
   const { t } = useTranslation('history');
   const router = useRouter();
   const theme = useTheme();
   const goBack = useBackToHistory();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const deleted = useHistoryStore((s) => s.deletedSessionIds);
-  const deleteSession = useHistoryStore((s) => s.deleteSession);
-  const notes = useHistoryStore((s) => s.notes);
-  const setNote = useHistoryStore((s) => s.setNote);
+  const query = useEntryDetail(id);
+  const deleteEntry = useDeleteEntry();
+  const updateNotes = useUpdateNotes();
   const [armed, setArmed] = useState(false);
-
-  const session = useMemo<HistorySession | null>(() => {
-    const found = sessionById(id);
-    return found && !deleted.includes(found.id) ? found : null;
-  }, [id, deleted]);
+  const entry = query.data ?? null;
+  const savedNotes =
+    entry?.kind === 'strength' ? entry.session.notes : entry ? entry.activity.notes : '';
+  // null = untouched: show what the server has.
+  const [draftNotes, setNotes] = useState<string | null>(null);
+  const notes = draftNotes ?? savedNotes;
 
   const exerciseRowStyle = useMemo<ViewStyle>(
     () => ({
@@ -69,93 +76,164 @@ export function SessionDetailScreen({ id }: Props) {
     [theme],
   );
 
+  const isActivity = entry?.kind === 'activity';
   const header = (
     <BackHeader
       testID={ids.sessionBack}
       label={t('detail.back')}
       onPress={goBack}
       trailing={
-        session ? (
+        entry ? (
           <IconButton
             testID={ids.sessionShare}
             icon="share"
             label={t('detail.share')}
-            onPress={() =>
-              router.push(historyHrefs.share(session.kind === 'run' ? 'run' : 'workout'))
-            }
+            onPress={() => router.push(historyHrefs.share(isActivity ? 'run' : 'workout'))}
           />
         ) : undefined
       }
     />
   );
 
-  if (!session) {
+  if (!entry) {
     return (
       <Screen testID={ids.sessionScreen} header={header}>
-        <Text testID={ids.sessionMissing} variant="body" color="text2">
-          {t('detail.missing')}
-        </Text>
+        {query.isSuccess || !id ? (
+          <Text testID={ids.sessionMissing} variant="body" color="text2">
+            {t('detail.missing')}
+          </Text>
+        ) : (
+          <QueryState
+            testID={ids.sessionScreen}
+            error={query.isError}
+            onRetry={() => void query.refetch()}
+          />
+        )}
       </Screen>
     );
   }
 
+  const target = {
+    id: entry.kind === 'strength' ? entry.session.id : entry.activity.id,
+    kind: entry.kind,
+  } as const;
   const confirmDelete = () => {
-    deleteSession(session.id);
-    showToast(t('detail.deletedToast'));
-    goBack();
+    if (deleteEntry.isPending) return;
+    deleteEntry.mutate(target, {
+      onSuccess: () => {
+        showToast(t('detail.deletedToast'));
+        goBack();
+      },
+      onError: () => {
+        setArmed(false);
+        showToast(t('detail.deleteError'));
+      },
+    });
+  };
+  const saveNotes = () => {
+    if (notes !== savedNotes) updateNotes.mutate({ ...target, notes });
   };
 
-  const isRun = session.kind === 'run';
-  const title = isRun ? t('detail.runTitle') : session.routine.focus;
-  const sub = isRun
-    ? t('detail.runSubGps')
-    : t('detail.strengthSub', {
-        routine: session.routine.name,
-        start: timeOfDay(session.startMinutes),
-        end: timeOfDay(session.startMinutes + session.durationMinutes),
-      });
-  const stats: Stat[] = isRun
-    ? [
-        {
-          key: 'distance',
-          label: t('detail.stat.distance'),
-          value: `${km2(session.distanceKm)} km`,
-        },
-        { key: 'duration', label: t('detail.stat.duration'), value: clock(session.seconds) },
-        { key: 'pace', label: t('detail.stat.pace'), value: `${clock(session.paceSeconds)} /km` },
-        { key: 'hr', label: t('detail.stat.hr'), value: `${session.heartRate} bpm` },
-      ]
-    : [
-        {
-          key: 'duration',
-          label: t('detail.stat.duration'),
-          value: t('detail.minutes', { minutes: session.durationMinutes }),
-        },
-        { key: 'sets', label: t('detail.stat.sets'), value: String(session.totals.sets) },
-        { key: 'reps', label: t('detail.stat.reps'), value: String(session.totals.reps) },
-        {
-          key: 'volume',
-          label: t('detail.stat.volume'),
-          value: `${thousands(session.totals.volume)} kg`,
-        },
-      ];
+  let date: Date;
+  let title: string;
+  let sub: string;
+  let stats: Stat[];
+  let body: ReactNode;
+  let gps = false;
+  let heart = false;
 
-  const setsLine = (e: SessionExercise) =>
-    e.sets.length === 0
-      ? t('detail.notDone')
-      : e.sets
-          .map((s) =>
-            e.bodyweight || s.kg == null
-              ? t('detail.setReps', { reps: s.reps })
-              : t('detail.setLoad', { kg: kg(s.kg), reps: s.reps }),
-          )
-          .join(' · ');
+  if (entry.kind === 'activity') {
+    const a = entry.activity;
+    const distanceKm = (a.distanceM ?? 0) / 1000;
+    gps = a.gps;
+    heart = a.avgHeartRate !== null;
+    date = new Date(a.startedAt);
+    title = a.kind === 'run' ? t('detail.runTitle') : t(`day.activity.${a.kind}`);
+    sub = a.gps ? t('detail.runSubGps') : t('detail.runSubManual');
+    stats = [
+      {
+        key: 'distance',
+        label: t('detail.stat.distance'),
+        value: distanceKm > 0 ? `${km2(distanceKm)} km` : '—',
+      },
+      { key: 'duration', label: t('detail.stat.duration'), value: clock(a.durationSeconds) },
+      {
+        key: 'pace',
+        label: t('detail.stat.pace'),
+        value: distanceKm > 0 ? `${clock(a.durationSeconds / distanceKm)} /km` : '—',
+      },
+      {
+        key: 'hr',
+        label: t('detail.stat.hr'),
+        value: a.avgHeartRate !== null ? `${a.avgHeartRate} bpm` : '—',
+      },
+    ];
+    body = (
+      <>
+        {a.gps ? <RouteMap route={routeAt(1)} /> : null}
+        {a.splits.length ? <SplitsCard splits={splitBars(a.splits)} /> : null}
+      </>
+    );
+  } else {
+    const s = entry.session;
+    const minutes = Math.round(s.durationSeconds / 60);
+    const start = minutesOfDay(s.startedAt);
+    date = new Date(s.startedAt);
+    title = s.focus || s.title;
+    sub = t('detail.strengthSub', {
+      routine: s.title,
+      start: timeOfDay(start),
+      end: timeOfDay((start + minutes) % (24 * 60)),
+    });
+    stats = [
+      {
+        key: 'duration',
+        label: t('detail.stat.duration'),
+        value: t('detail.minutes', { minutes }),
+      },
+      { key: 'sets', label: t('detail.stat.sets'), value: String(s.sets) },
+      { key: 'reps', label: t('detail.stat.reps'), value: String(s.reps) },
+      { key: 'volume', label: t('detail.stat.volume'), value: `${thousands(s.volumeKg)} kg` },
+    ];
+    const setsLine = (e: sessions.SessionExercise) => {
+      const working = e.sets.filter((x) => !x.isWarmup);
+      return working.length === 0
+        ? t('detail.notDone')
+        : working
+            .map((x) =>
+              e.bodyweight || x.kg == null
+                ? t('detail.setReps', { reps: x.reps })
+                : t('detail.setLoad', { kg: kg(x.kg), reps: x.reps }),
+            )
+            .join(' · ');
+    };
+    body = (
+      <Card testID={ids.sessionExercises} px="xl" py="xs" gap="none">
+        {s.exercises.map((e) => {
+          const rowId = itemId(ids.sessionExercises, e.slug);
+          return (
+            <Box key={`${e.position}-${e.exerciseId}`} testID={rowId} style={exerciseRowStyle}>
+              <HStack gap="sm">
+                <Text testID={`${rowId}.name`} variant="bodySemibold">
+                  {e.name}
+                </Text>
+                {e.pr ? <PrTag testID={`${rowId}.pr`} /> : null}
+              </HStack>
+              <Text testID={`${rowId}.line`} variant="secondary" color="text2" tabular>
+                {setsLine(e)}
+              </Text>
+            </Box>
+          );
+        })}
+      </Card>
+    );
+  }
 
   return (
     <Screen testID={ids.sessionScreen} header={header}>
       <VStack gap="xs">
         <Text testID={ids.sessionDate} variant="secondary" color="text2">
-          {formatLongDate(dateOf(session.day))}
+          {formatLongDate(date)}
         </Text>
         <Text testID={ids.sessionTitle} variant="overlayTitle">
           {title}
@@ -168,12 +246,12 @@ export function SessionDetailScreen({ id }: Props) {
       <VStack testID={ids.sessionStats} gap="sm">
         {[stats.slice(0, 2), stats.slice(2, 4)].map((row, i) => (
           <HStack key={i} gap="sm" align="stretch">
-            {row.map((s) => (
+            {row.map((stat) => (
               <StatTile
-                key={s.key}
-                testID={`${ids.sessionStats}.${s.key}`}
-                label={s.label}
-                value={s.value}
+                key={stat.key}
+                testID={`${ids.sessionStats}.${stat.key}`}
+                label={stat.label}
+                value={stat.value}
                 size="md"
               />
             ))}
@@ -181,39 +259,16 @@ export function SessionDetailScreen({ id }: Props) {
         ))}
       </VStack>
 
-      {session.kind === 'run' ? (
-        <>
-          <RouteMap route={session.route} />
-          <SplitsCard splits={session.splits} />
-        </>
-      ) : (
-        <Card testID={ids.sessionExercises} px="xl" py="xs" gap="none">
-          {session.exercises.map((e) => {
-            const rowId = itemId(ids.sessionExercises, e.id);
-            return (
-              <Box key={e.id} testID={rowId} style={exerciseRowStyle}>
-                <HStack gap="sm">
-                  <Text testID={`${rowId}.name`} variant="bodySemibold">
-                    {e.name}
-                  </Text>
-                  {e.pr ? <PrTag testID={`${rowId}.pr`} /> : null}
-                </HStack>
-                <Text testID={`${rowId}.line`} variant="secondary" color="text2" tabular>
-                  {setsLine(e)}
-                </Text>
-              </Box>
-            );
-          })}
-        </Card>
-      )}
+      {body}
 
       <VStack gap="sm">
         <Text variant="secondarySemibold">{t('detail.notes')}</Text>
         <TextField
           testID={ids.sessionNotes}
           placeholder={t('detail.notesPlaceholder')}
-          value={notes[session.id] ?? ''}
-          onChangeText={(text) => setNote(session.id, text)}
+          value={notes}
+          onChangeText={setNotes}
+          onEndEditing={saveNotes}
           multiline
         />
       </VStack>
@@ -222,19 +277,19 @@ export function SessionDetailScreen({ id }: Props) {
         <ListRow
           testID={`${ids.sessionSource}.origin`}
           label={t('detail.source.origin')}
-          value={isRun ? t('detail.source.originGps') : t('detail.source.originTracta')}
+          value={gps ? t('detail.source.originGps') : t('detail.source.originTracta')}
           valueColor="text2"
         />
         <ListRow
           testID={`${ids.sessionSource}.health`}
           label={t('detail.source.health')}
-          value={isRun ? t('detail.source.healthRun') : t('detail.source.healthSummary')}
+          value={isActivity ? t('detail.source.healthRun') : t('detail.source.healthSummary')}
           valueColor="text2"
         />
         <ListRow
           testID={`${ids.sessionSource}.heart`}
-          label={isRun ? t('detail.source.heart') : t('detail.source.hrCalories')}
-          value={isRun ? t('detail.source.heartBand') : t('detail.source.unavailable')}
+          label={isActivity ? t('detail.source.heart') : t('detail.source.hrCalories')}
+          value={heart ? t('detail.source.heartBand') : t('detail.source.unavailable')}
           valueColor="text2"
           last
         />

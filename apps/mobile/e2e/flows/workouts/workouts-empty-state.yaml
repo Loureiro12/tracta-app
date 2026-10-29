@@ -4,7 +4,7 @@ tags:
   - workouts
 ---
 - runFlow: ../../subflows/launch.yaml
-# `scenario=new` hides the seeded routines (prototype "usuário novo" demo state)
+# `scenario=new` previews the tab as a brand-new user (no routines), the prototype demo state
 - openLink: "tracta://workouts?scenario=new&locale=en"
 - runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:

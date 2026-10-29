@@ -9,7 +9,7 @@
     },
     "challenges": "Challenges",
     "challenge": {
-      "whenStarted": "Day 1 of {{days}} · ends {{end}}",
+      "whenStarted": "Day {{day}} of {{days}} · ends {{end}}",
       "whenTomorrow": "Starts tomorrow · {{days}} days",
       "count_one": "{{count}} participant",
       "count_other": "{{count}} participants",
@@ -34,6 +34,12 @@
     "pending": "Invites sent",
     "pendingStatus": "Invite sent · waiting",
     "pendingStatusSignup": "Invite sent · waiting for sign-up",
+    "requests": "Invites received",
+    "requestStatus": "Wants to train with you",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "You and {{name}} are now friends",
+    "declined": "Invite declined",
     "invite": "Invite friends",
     "privacy": "What your friends see",
     "privacyLine_one": "{{count}} item shared · never health",
@@ -44,7 +50,7 @@
   },
   "detail": {
     "back": "Friends",
-    "eyebrowStarted": "Challenge · day 1 of {{days}}",
+    "eyebrowStarted": "Challenge · day {{day}} of {{days}}",
     "eyebrowTomorrow": "Challenge · starts tomorrow",
     "rule": {
       "day": "1 point per day with a {{min}}+ min workout",
@@ -70,7 +76,7 @@
       "train": "Train now"
     },
     "grid": {
-      "week": "Week 1",
+      "week": "Week {{n}}",
       "days": "Challenge days",
       "ends": "ends {{end}}",
       "range": "from {{start}} to {{end}}",
@@ -79,10 +85,11 @@
       "legendNext": "upcoming"
     },
     "activity": "Activity",
-    "feedLine": "<b>{{first}}</b> {{what}}",
+    "feedLine": "<b>{{first}}</b> · {{what}}",
     "feedWhat": "{{what}} · {{min}} min",
     "feedWhatPrivate": "worked out today",
     "feedWhen": "today, {{at}}",
+    "feedWhenToday": "today",
     "rules": {
       "title": "Rules",
       "first": "· {{rule}}.",
@@ -113,6 +120,7 @@
     "placeholder": "@username or email@example.com",
     "send": "Send",
     "error": "Use @username or a valid email",
+    "notFound": "No one uses this username yet",
     "sent": "Invite sent",
     "sentTo": "Invite sent to {{name}}",
     "contacts": "Contacts using Tracta",
@@ -180,13 +188,33 @@
     "close": "Close",
     "intro": "Choose what the people you invited can see. Applies to every challenge.",
     "rows": {
-      "done": { "label": "Completed workouts", "desc": "required to score in challenges" },
-      "kind": { "label": "Type and duration", "desc": "e.g. \"Leg day · 52 min\"" },
-      "streak": { "label": "Day streak", "desc": "how many days in a row you've trained" },
-      "loads": { "label": "Loads and sets", "desc": "strength training details" },
-      "prs": { "label": "Personal records", "desc": "when you set a record" }
+      "done": {
+        "label": "Completed workouts",
+        "desc": "required to score in challenges"
+      },
+      "kind": {
+        "label": "Type and duration",
+        "desc": "e.g. \"Leg day · 52 min\""
+      },
+      "streak": {
+        "label": "Day streak",
+        "desc": "how many days in a row you've trained"
+      },
+      "loads": {
+        "label": "Loads and sets",
+        "desc": "strength training details"
+      },
+      "prs": {
+        "label": "Personal records",
+        "desc": "when you set a record"
+      }
     },
     "locked": "Required to take part in challenges",
     "note": "Sleep, heart rate and other health metrics are never shared. Steps only appear as \"goal reached: yes/no\" in step challenges."
-  }
+  },
+  "loadError": {
+    "text": "Couldn't load this right now.",
+    "retry": "Try again"
+  },
+  "actionError": "Something went wrong. Try again."
 }

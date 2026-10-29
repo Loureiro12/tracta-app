@@ -122,7 +122,8 @@
     "save": "Salvar treino",
     "saveNote": "Salvo no aparelho primeiro; funciona sem internet.",
     "saved": "Treino salvo",
-    "discarded": "Sessão descartada"
+    "discarded": "Sessão descartada",
+    "saveError": "Não foi possível salvar o treino. Verifique a conexão e tente de novo."
   },
   "plates": {
     "title": "Calculadora de anilhas",
@@ -153,5 +154,11 @@
     "discard": "Descartar",
     "confirm": "Toque para confirmar",
     "discarded": "Sessão descartada"
+  },
+  "state": {
+    "errorTitle": "Não foi possível carregar sua rotina.",
+    "retry": "Tentar de novo",
+    "noRoutine": "Nenhuma rotina para treinar ainda — crie uma em Treinos.",
+    "back": "Voltar ao início"
   }
 }

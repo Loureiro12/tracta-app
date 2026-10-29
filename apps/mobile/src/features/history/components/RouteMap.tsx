@@ -8,13 +8,13 @@ import { useTranslation } from '@/shared/i18n';
 
 import { historyIds as ids } from '../history.testids';
 
-import type { RunSession } from '../model/history.types';
+import type { RouteGeometry } from '../model/history.types';
 
 const VIEW_W = 358;
 const VIEW_H = 230;
 
 /** Illustrative GPS route on a grid (the real app renders MapKit / Google Maps here). */
-export function RouteMap({ route }: { route: RunSession['route'] }) {
+export function RouteMap({ route }: { route: RouteGeometry }) {
   const { t } = useTranslation('history');
   const theme = useTheme();
   const c = theme.colors;

@@ -9,7 +9,7 @@
     },
     "challenges": "Desafios",
     "challenge": {
-      "whenStarted": "Dia 1 de {{days}} · termina {{end}}",
+      "whenStarted": "Dia {{day}} de {{days}} · termina {{end}}",
       "whenTomorrow": "Começa amanhã · {{days}} dias",
       "count_one": "{{count}} participante",
       "count_other": "{{count}} participantes",
@@ -34,6 +34,12 @@
     "pending": "Convites enviados",
     "pendingStatus": "Convite enviado · aguardando",
     "pendingStatusSignup": "Convite enviado · aguardando cadastro",
+    "requests": "Convites recebidos",
+    "requestStatus": "Quer treinar com você",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "accepted": "Agora você e {{name}} são amigos",
+    "declined": "Convite recusado",
     "invite": "Convidar amigos",
     "privacy": "O que seus amigos veem",
     "privacyLine_one": "{{count}} item compartilhado · saúde nunca",
@@ -44,7 +50,7 @@
   },
   "detail": {
     "back": "Amigos",
-    "eyebrowStarted": "Desafio · dia 1 de {{days}}",
+    "eyebrowStarted": "Desafio · dia {{day}} de {{days}}",
     "eyebrowTomorrow": "Desafio · começa amanhã",
     "rule": {
       "day": "1 ponto por dia com treino de {{min}}+ min",
@@ -70,7 +76,7 @@
       "train": "Treinar agora"
     },
     "grid": {
-      "week": "Semana 1",
+      "week": "Semana {{n}}",
       "days": "Dias do desafio",
       "ends": "termina {{end}}",
       "range": "de {{start}} a {{end}}",
@@ -79,10 +85,11 @@
       "legendNext": "a seguir"
     },
     "activity": "Atividade",
-    "feedLine": "<b>{{first}}</b> {{what}}",
+    "feedLine": "<b>{{first}}</b> · {{what}}",
     "feedWhat": "{{what}} · {{min}} min",
     "feedWhatPrivate": "treinou hoje",
     "feedWhen": "hoje, {{at}}",
+    "feedWhenToday": "hoje",
     "rules": {
       "title": "Regras",
       "first": "· {{rule}}.",
@@ -113,6 +120,7 @@
     "placeholder": "@usuario ou email@exemplo.com",
     "send": "Enviar",
     "error": "Use @usuario ou um e-mail válido",
+    "notFound": "Ninguém usa esse usuário ainda",
     "sent": "Convite enviado",
     "sentTo": "Convite enviado para {{name}}",
     "contacts": "Contatos que usam o Tracta",
@@ -180,13 +188,33 @@
     "close": "Fechar",
     "intro": "Escolha o que aparece para quem você convidou. Vale para todos os desafios.",
     "rows": {
-      "done": { "label": "Treinos concluídos", "desc": "necessário para pontuar em desafios" },
-      "kind": { "label": "Tipo e duração", "desc": "ex.: \"Treino de pernas · 52 min\"" },
-      "streak": { "label": "Sequência de dias", "desc": "quantos dias seguidos você treinou" },
-      "loads": { "label": "Cargas e séries", "desc": "detalhes de musculação" },
-      "prs": { "label": "Recordes pessoais", "desc": "quando você bater um recorde" }
+      "done": {
+        "label": "Treinos concluídos",
+        "desc": "necessário para pontuar em desafios"
+      },
+      "kind": {
+        "label": "Tipo e duração",
+        "desc": "ex.: \"Treino de pernas · 52 min\""
+      },
+      "streak": {
+        "label": "Sequência de dias",
+        "desc": "quantos dias seguidos você treinou"
+      },
+      "loads": {
+        "label": "Cargas e séries",
+        "desc": "detalhes de musculação"
+      },
+      "prs": {
+        "label": "Recordes pessoais",
+        "desc": "quando você bater um recorde"
+      }
     },
     "locked": "Necessário para participar de desafios",
     "note": "Sono, frequência cardíaca e outras métricas de saúde nunca são compartilhadas. Passos só entram como \"meta atingida: sim/não\" em desafios de passos."
-  }
+  },
+  "loadError": {
+    "text": "Não foi possível carregar agora.",
+    "retry": "Tentar de novo"
+  },
+  "actionError": "Algo deu errado. Tente de novo."
 }

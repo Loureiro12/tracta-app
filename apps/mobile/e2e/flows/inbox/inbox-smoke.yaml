@@ -4,6 +4,8 @@ tags:
   - smoke
   - inbox
 ---
+# Seeded inbox (supabase/seeds/40_social.sql): …b000-000000000001..6 = n1..n6, newest first.
+# Server-written titles are Portuguese (the database writes them), whatever the app locale.
 - runFlow: ../../subflows/launch.yaml
 - assertVisible:
     id: "home.nav.inbox.badge"
@@ -27,24 +29,24 @@ tags:
 - assertVisible:
     id: "inbox.items.today"
 - assertVisible:
-    id: "inbox.items.n1"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001"
 - assertVisible:
-    id: "inbox.items.n1.title"
-    text: "Today is Workout A day"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001.title"
+    text: "Hoje é dia de Treino A"
 - assertVisible:
-    id: "inbox.items.n1.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001.unread"
 # Remove one notification
 - tapOn:
-    id: "inbox.items.n1.remove"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001.remove"
 - assertNotVisible:
-    id: "inbox.items.n1"
+    id: "inbox.items.00000000-0000-4000-b000-000000000001"
 - assertVisible:
-    id: "inbox.items.n2.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000002.unread"
 # Mark everything as read: dots and the header action disappear, the badge on Home too
 - tapOn:
     id: "inbox.read-all"
 - assertNotVisible:
-    id: "inbox.items.n2.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000002.unread"
 - assertNotVisible:
     id: "inbox.read-all"
 - tapOn:

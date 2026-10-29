@@ -14,7 +14,7 @@
     "sub": "3 recordes e 1 conquista em outubro"
   },
   "calendar": {
-    "month": "Outubro 2026",
+    "month": "{{month}} {{year}}",
     "legendStrength": "Musculação",
     "legendRun": "Corrida",
     "weekdays": "S,T,Q,Q,S,S,D",
@@ -26,7 +26,8 @@
     "tag": {
       "strength": "Musculação",
       "run": "Corrida",
-      "planned": "Planejado"
+      "planned": "Planejado",
+      "activity": "Atividade"
     },
     "strengthTitle": "{{routine}} · {{focus}}",
     "strengthLine": "{{minutes}} min · {{sets}} séries",
@@ -35,7 +36,19 @@
     "restTitle": "Dia de descanso",
     "restLine": "Nenhuma atividade registrada.",
     "futureTitle": "Sem registros",
-    "futureLine": "Os dados aparecem depois do dia."
+    "futureLine": "Os dados aparecem depois do dia.",
+    "activity": {
+      "run": "Corrida ao ar livre",
+      "walk": "Caminhada",
+      "bike": "Pedal",
+      "swim": "Natação",
+      "soccer": "Futebol",
+      "basket": "Basquete",
+      "tennis": "Tênis",
+      "functional": "Treino funcional",
+      "stretch": "Alongamento",
+      "yoga": "Yoga"
+    }
   },
   "stats": {
     "workouts": "Treinos",
@@ -137,7 +150,9 @@
     "delete": "Excluir sessão",
     "deleteConfirm": "Toque de novo para excluir",
     "deletedToast": "Sessão excluída",
-    "missing": "Sessão não encontrada"
+    "missing": "Sessão não encontrada",
+    "runSubManual": "Registrado sem GPS",
+    "deleteError": "Não foi possível excluir a sessão. Tente de novo."
   },
   "recap": {
     "brand": "Tracta · Outubro 2026",
@@ -149,45 +164,90 @@
         "kicker": "Em outubro você treinou",
         "title": "vezes — 4 a mais que em setembro.",
         "rows": {
-          "0": { "label": "Musculação", "value": "11 sessões" },
-          "1": { "label": "Corrida", "value": "5 corridas" },
-          "2": { "label": "Dia favorito", "value": "segunda" }
+          "0": {
+            "label": "Musculação",
+            "value": "11 sessões"
+          },
+          "1": {
+            "label": "Corrida",
+            "value": "5 corridas"
+          },
+          "2": {
+            "label": "Dia favorito",
+            "value": "segunda"
+          }
         }
       },
       "1": {
         "kicker": "Você correu",
         "title": "em 5 corridas, cada vez mais rápido.",
         "rows": {
-          "0": { "label": "Ritmo médio", "value": "5:36 /km" },
-          "1": { "label": "Mais longa", "value": "12,4 km" },
-          "2": { "label": "Melhor 5 km", "value": "27:41" }
+          "0": {
+            "label": "Ritmo médio",
+            "value": "5:36 /km"
+          },
+          "1": {
+            "label": "Mais longa",
+            "value": "12,4 km"
+          },
+          "2": {
+            "label": "Melhor 5 km",
+            "value": "27:41"
+          }
         }
       },
       "2": {
         "kicker": "Você levantou",
         "title": "de volume total, com supino no topo.",
         "rows": {
-          "0": { "label": "Mais treinado", "value": "Peito & Tríceps" },
-          "1": { "label": "Séries", "value": "238" },
-          "2": { "label": "Duração média", "value": "54 min" }
+          "0": {
+            "label": "Mais treinado",
+            "value": "Peito & Tríceps"
+          },
+          "1": {
+            "label": "Séries",
+            "value": "238"
+          },
+          "2": {
+            "label": "Duração média",
+            "value": "54 min"
+          }
         }
       },
       "3": {
         "kicker": "Recordes novos",
         "title": "marcas pessoais quebradas este mês.",
         "rows": {
-          "0": { "label": "Supino reto", "value": "82,5 kg × 6" },
-          "1": { "label": "Agachamento", "value": "100 kg × 5" },
-          "2": { "label": "5 km", "value": "27:41" }
+          "0": {
+            "label": "Supino reto",
+            "value": "82,5 kg × 6"
+          },
+          "1": {
+            "label": "Agachamento",
+            "value": "100 kg × 5"
+          },
+          "2": {
+            "label": "5 km",
+            "value": "27:41"
+          }
         }
       },
       "4": {
         "kicker": "E descansou",
         "title": "de sono por noite, em média — 18 min a mais.",
         "rows": {
-          "0": { "label": "Noites na meta", "value": "19 de 31" },
-          "1": { "label": "Horário médio", "value": "23:41" },
-          "2": { "label": "Sequência atual", "value": "12 dias" }
+          "0": {
+            "label": "Noites na meta",
+            "value": "19 de 31"
+          },
+          "1": {
+            "label": "Horário médio",
+            "value": "23:41"
+          },
+          "2": {
+            "label": "Sequência atual",
+            "value": "12 dias"
+          }
         }
       }
     }
@@ -205,14 +265,30 @@
       "run": "Corrida"
     },
     "records": {
-      "bench": { "name": "Supino reto com barra", "detail": "6 reps · 23 out", "delta": "+2,5 kg" },
-      "squat": { "name": "Agachamento livre", "detail": "5 reps · 21 out", "delta": "+5 kg" },
-      "deadlift": { "name": "Levantamento terra", "detail": "3 reps · 9 out", "delta": "novo" },
-      "pullup": { "name": "Barra fixa", "detail": "peso corporal · 17 out", "delta": "+2 reps" },
-      "5k": { "name": "5 km", "detail": "18 out", "delta": "−0:48" },
-      "10k": { "name": "10 km", "detail": "4 out", "delta": "−1:05" },
-      "longest": { "name": "Mais longa", "detail": "25 out", "delta": "+1,8 km" },
-      "best1k": { "name": "Melhor 1 km", "detail": "22 out · intervalado", "delta": "" }
+      "bench": {
+        "name": "Supino reto com barra"
+      },
+      "squat": {
+        "name": "Agachamento livre"
+      },
+      "5k": {
+        "name": "5 km"
+      },
+      "10k": {
+        "name": "10 km"
+      },
+      "longest": {
+        "name": "Mais longa"
+      },
+      "best1k": {
+        "name": "Melhor 1 km"
+      },
+      "stiff": {
+        "name": "Stiff"
+      },
+      "dip": {
+        "name": "Mergulho nas paralelas"
+      }
     },
     "recordsNote": "Tempos de corrida usam o melhor trecho contínuo de cada distância, inclusive dentro de corridas mais longas.",
     "count": "{{earned}} de {{total}} conquistadas",
@@ -222,9 +298,18 @@
         "name": "Sequência de 12 dias",
         "description": "treinou ou caminhou 12 dias seguidos"
       },
-      "workouts50": { "name": "50 treinos", "description": "desde que você começou no Tracta" },
-      "first5k": { "name": "Primeiro 5 km", "description": "correu 5 km sem parar" },
-      "oneTon": { "name": "Uma tonelada", "description": "1.000 kg de volume em um treino" },
+      "workouts50": {
+        "name": "50 treinos",
+        "description": "desde que você começou no Tracta"
+      },
+      "first5k": {
+        "name": "Primeiro 5 km",
+        "description": "correu 5 km sem parar"
+      },
+      "oneTon": {
+        "name": "Uma tonelada",
+        "description": "1.000 kg de volume em um treino"
+      },
       "perfectMonth": {
         "name": "Mês perfeito",
         "description": "bateu a meta semanal em todas as semanas",
@@ -245,6 +330,19 @@
         "description": "continue no ritmo",
         "progress": "64 de 100"
       }
-    }
+    },
+    "recordDetail": {
+      "reps": "{{reps}} reps · {{date}}",
+      "bodyweight": "peso corporal · {{date}}",
+      "date": "{{date}}",
+      "none": "sem recorde ainda"
+    },
+    "recordNew": "novo"
+  },
+  "state": {
+    "loading": "Carregando…",
+    "errorTitle": "Não foi possível carregar seu histórico.",
+    "errorLine": "Verifique sua conexão e tente de novo.",
+    "retry": "Tentar de novo"
   }
 }

@@ -5,20 +5,25 @@ import { useRouter } from 'expo-router';
 import { BackHeader, ListGroup, ListRow, Screen, Text } from '@tracta/design-system';
 
 import { useFeedbackStore } from '@/shared/feedback';
-import { useTranslation } from '@/shared/i18n';
+import { formatDate, useTranslation } from '@/shared/i18n';
 
 import { ActionButton } from '../components/ActionButton';
-import { useProfileStore } from '../model/profile.store';
+import { useProStatus } from '../hooks/useProStatus';
 import { profileIds as ids } from '../profile.testids';
 
 export function ManageScreen() {
   const router = useRouter();
   const { t } = useTranslation('profile');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const pro = useProfileStore((s) => s.pro);
-  const switchPlan = useProfileStore((s) => s.switchPlan);
-  const cancelPro = useProfileStore((s) => s.cancelPro);
-  const reactivatePro = useProfileStore((s) => s.reactivatePro);
+  // Server status, with plan switches / cancellation SIMULATED locally (see useProStatus).
+  const {
+    pro,
+    trialEndsAt,
+    periodEnd,
+    switchPlan,
+    cancel: cancelPro,
+    reactivate: reactivatePro,
+  } = useProStatus();
   const [cancelArmed, setCancelArmed] = useState(false);
 
   const planName = pro.plan === 'year' ? t('paywall.yearName') : t('paywall.monthName');
@@ -48,10 +53,16 @@ export function ManageScreen() {
               ? t('manage.firstCharge')
               : t('manage.renewal'),
           value: pro.cancelled
-            ? t('manage.accessUntilValue')
+            ? periodEnd
+              ? formatDate(periodEnd)
+              : t('manage.accessUntilValue')
             : pro.trial
-              ? t('manage.firstChargeValue')
-              : t('manage.renewalValue'),
+              ? trialEndsAt
+                ? formatDate(trialEndsAt)
+                : t('manage.firstChargeValue')
+              : periodEnd
+                ? formatDate(periodEnd)
+                : t('manage.renewalValue'),
         },
         { key: 'payment', label: t('manage.payment'), value: t('manage.paymentValue') },
       ]

@@ -274,3 +274,19 @@ tags:
     id: "home.screen"
 - assertNotVisible:
     id: "app.mini-player"
+# The saved session shows up in History today (frozen to Oct 26) and in the month count.
+- tapOn:
+    id: "app.tab.history"
+- tapOn:
+    id: "history.calendar.days.26"
+- assertVisible:
+    id: "history.day.sessions.strength-26.title"
+    text: "Treino A · Peito & Tríceps"
+- scrollUntilVisible:
+    element:
+      id: "history.stats.workouts"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.stats.workouts.value"
+    text: "15"

@@ -15,32 +15,38 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import {
+  useDeleteExercise,
+  useExercise,
+  useExerciseHistory,
+  useExerciseNotesAutosave,
+  useToggleFavorite,
+} from '../api/useExercises';
 import { OverlayHeader } from '../components/OverlayHeader';
-import { useWorkoutsData } from '../hooks/useWorkoutsData';
-import { findPrev, formatClock, formatKg } from '../model/workouts.helpers';
-import { groupInstructions, routines } from '../model/workouts.mock';
+import { QueryState } from '../components/QueryState';
+import { formatClock, formatKg } from '../model/workouts.helpers';
+import { groupInstructions } from '../model/workouts.mock';
 import { workoutsRoutes } from '../model/workouts.routes';
-import { useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
-/** Mock number of logged sessions for seeded exercises (the prototype's evolution series). */
-const SEEDED_SESSIONS = 8;
-
-/** Exercise detail overlay: cues, defaults, personal history, notes, favorite and custom actions. */
+/** Exercise detail overlay (`id` is the exercise uuid): cues, defaults, history, notes, favorite. */
 export function ExerciseDetailScreen({ id }: { id: string }) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const notes = useWorkoutsStore((s) => s.exerciseNotes[id] ?? '');
-  const setExerciseNote = useWorkoutsStore((s) => s.setExerciseNote);
-  const toggleFavorite = useWorkoutsStore((s) => s.toggleFavorite);
-  const removeUserExercise = useWorkoutsStore((s) => s.removeUserExercise);
-  const { library } = useWorkoutsData();
+  const query = useExercise(id);
+  const historyQuery = useExerciseHistory(id);
+  const toggleFavorite = useToggleFavorite();
+  const deleteExercise = useDeleteExercise();
   const [armed, setArmed] = useState(false);
-  const exercise = library.find((l) => l.id === id);
+  // Edited notes (null until the user types); saved in the background.
+  const [notesDraft, setNotesDraft] = useState<string | null>(null);
+  useExerciseNotesAutosave(id, notesDraft);
+  const exercise = query.data;
 
   const header = (
     <OverlayHeader
@@ -52,10 +58,17 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
   if (!exercise) {
     return (
       <Screen testID={ids.exerciseScreen} header={header}>
-        <Text color="text2">{t('exercise.notFound')}</Text>
+        <QueryState
+          testID={ids.exerciseScreen}
+          loading={query.isLoading}
+          error={query.error}
+          onRetry={() => void query.refetch()}
+        />
+        {query.isSuccess ? <Text color="text2">{t('exercise.notFound')}</Text> : null}
       </Screen>
     );
   }
+  const notes = notesDraft ?? exercise.personalNotes;
 
   const typeLabel = t(`form.types.${exercise.type}.label`);
   const tags = [exercise.group, ...exercise.secondary, exercise.equipment, typeLabel];
@@ -75,33 +88,48 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
             rest: formatClock(exercise.rest),
           });
 
-  const prev = findPrev(routines, exercise.id);
-  const bodyweight = prev[0]?.[0] == null;
-  const history = prev.length
-    ? [
-        {
-          key: 'last',
-          label: t('exercise.last'),
-          value: bodyweight
-            ? t('copy.reps', { count: prev[0]?.[1] ?? 0 })
-            : t('copy.kg', { kg: formatKg(prev[0]?.[0] ?? 0) }),
-        },
-        {
-          key: 'best',
-          label: t('exercise.best'),
-          value: bodyweight
-            ? t('copy.reps', { count: Math.max(...prev.map((p) => p[1])) })
-            : t('copy.kg', { kg: formatKg(Math.max(...prev.map((p) => p[0] ?? 0))) }),
-        },
-        { key: 'sessions', label: t('exercise.sessions'), value: String(SEEDED_SESSIONS) },
-      ]
-    : [];
+  const logged = historyQuery.data;
+  const last = logged?.lastSets[0];
+  const best = logged?.best ?? last;
+  const bodyweight = last?.kg == null;
+  const history =
+    logged && last && best
+      ? [
+          {
+            key: 'last',
+            label: t('exercise.last'),
+            value: bodyweight
+              ? t('copy.reps', { count: last.reps })
+              : t('copy.kg', { kg: formatKg(last.kg ?? 0) }),
+          },
+          {
+            key: 'best',
+            label: t('exercise.best'),
+            value: bodyweight
+              ? t('copy.reps', { count: best.reps })
+              : t('copy.kg', { kg: formatKg(best.kg ?? 0) }),
+          },
+          { key: 'sessions', label: t('exercise.sessions'), value: String(logged.sessions) },
+        ]
+      : [];
 
   const remove = () => {
     if (!armed) return setArmed(true);
-    removeUserExercise(exercise.id);
-    showToast(t('toast.exerciseDeleted'));
-    router.back();
+    if (deleteExercise.isPending) return;
+    deleteExercise.mutate(exercise.id, {
+      onSuccess: () => {
+        showToast(t('toast.exerciseDeleted'));
+        router.back();
+      },
+      onError: (error) => {
+        setArmed(false);
+        showToast(
+          error instanceof ApiError && error.code === 'conflict'
+            ? t('toast.exerciseInUse')
+            : t('toast.saveFailed'),
+        );
+      },
+    });
   };
 
   return (
@@ -140,7 +168,14 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
       </Card>
       <Card testID={ids.exerciseHistory} padding="lg" px="xl" radius="pill" gap="sm">
         <Text variant="bodySemibold">{t('exercise.history')}</Text>
-        {history.length ? (
+        {historyQuery.isLoading || historyQuery.error ? (
+          <QueryState
+            testID={ids.exerciseHistory}
+            loading={historyQuery.isLoading}
+            error={historyQuery.error}
+            onRetry={() => void historyQuery.refetch()}
+          />
+        ) : history.length ? (
           <VStack gap="sm">
             <HStack gap="sm" align="flex-start">
               {history.map((h) => (
@@ -174,7 +209,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
           testID={ids.exerciseNotes}
           placeholder={t('exercise.notesPlaceholder')}
           value={notes}
-          onChangeText={(v) => setExerciseNote(exercise.id, v)}
+          onChangeText={setNotesDraft}
           multiline
         />
       </VStack>
@@ -184,7 +219,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
           <Switch
             testID={ids.exerciseFavorite}
             value={exercise.favorite}
-            onValueChange={() => toggleFavorite(exercise.id)}
+            onValueChange={(favorite) => toggleFavorite.mutate({ id: exercise.id, favorite })}
             accessibilityLabel={t('exercise.favorite')}
           />
         </HStack>

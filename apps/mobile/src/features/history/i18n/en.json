@@ -14,7 +14,7 @@
     "sub": "3 records and 1 achievement in October"
   },
   "calendar": {
-    "month": "October 2026",
+    "month": "{{month}} {{year}}",
     "legendStrength": "Strength",
     "legendRun": "Run",
     "weekdays": "M,T,W,T,F,S,S",
@@ -26,7 +26,8 @@
     "tag": {
       "strength": "Strength",
       "run": "Run",
-      "planned": "Planned"
+      "planned": "Planned",
+      "activity": "Activity"
     },
     "strengthTitle": "{{routine}} · {{focus}}",
     "strengthLine": "{{minutes}} min · {{sets}} sets",
@@ -35,7 +36,19 @@
     "restTitle": "Rest day",
     "restLine": "No activity recorded.",
     "futureTitle": "No records",
-    "futureLine": "Data shows up after the day."
+    "futureLine": "Data shows up after the day.",
+    "activity": {
+      "run": "Outdoor run",
+      "walk": "Walk",
+      "bike": "Ride",
+      "swim": "Swim",
+      "soccer": "Soccer",
+      "basket": "Basketball",
+      "tennis": "Tennis",
+      "functional": "Functional training",
+      "stretch": "Stretching",
+      "yoga": "Yoga"
+    }
   },
   "stats": {
     "workouts": "Workouts",
@@ -137,7 +150,9 @@
     "delete": "Delete session",
     "deleteConfirm": "Tap again to delete",
     "deletedToast": "Session deleted",
-    "missing": "Session not found"
+    "missing": "Session not found",
+    "runSubManual": "Logged without GPS",
+    "deleteError": "Couldn't delete the session. Try again."
   },
   "recap": {
     "brand": "Tracta · October 2026",
@@ -149,45 +164,90 @@
         "kicker": "In October you trained",
         "title": "times — 4 more than in September.",
         "rows": {
-          "0": { "label": "Strength", "value": "11 sessions" },
-          "1": { "label": "Running", "value": "5 runs" },
-          "2": { "label": "Favorite day", "value": "Monday" }
+          "0": {
+            "label": "Strength",
+            "value": "11 sessions"
+          },
+          "1": {
+            "label": "Running",
+            "value": "5 runs"
+          },
+          "2": {
+            "label": "Favorite day",
+            "value": "Monday"
+          }
         }
       },
       "1": {
         "kicker": "You ran",
         "title": "across 5 runs, faster every time.",
         "rows": {
-          "0": { "label": "Average pace", "value": "5:36 /km" },
-          "1": { "label": "Longest", "value": "12,4 km" },
-          "2": { "label": "Best 5 km", "value": "27:41" }
+          "0": {
+            "label": "Average pace",
+            "value": "5:36 /km"
+          },
+          "1": {
+            "label": "Longest",
+            "value": "12,4 km"
+          },
+          "2": {
+            "label": "Best 5 km",
+            "value": "27:41"
+          }
         }
       },
       "2": {
         "kicker": "You lifted",
         "title": "of total volume, with bench press on top.",
         "rows": {
-          "0": { "label": "Most trained", "value": "Chest & Triceps" },
-          "1": { "label": "Sets", "value": "238" },
-          "2": { "label": "Average duration", "value": "54 min" }
+          "0": {
+            "label": "Most trained",
+            "value": "Chest & Triceps"
+          },
+          "1": {
+            "label": "Sets",
+            "value": "238"
+          },
+          "2": {
+            "label": "Average duration",
+            "value": "54 min"
+          }
         }
       },
       "3": {
         "kicker": "New records",
         "title": "personal bests broken this month.",
         "rows": {
-          "0": { "label": "Bench press", "value": "82,5 kg × 6" },
-          "1": { "label": "Squat", "value": "100 kg × 5" },
-          "2": { "label": "5 km", "value": "27:41" }
+          "0": {
+            "label": "Bench press",
+            "value": "82,5 kg × 6"
+          },
+          "1": {
+            "label": "Squat",
+            "value": "100 kg × 5"
+          },
+          "2": {
+            "label": "5 km",
+            "value": "27:41"
+          }
         }
       },
       "4": {
         "kicker": "And you rested",
         "title": "of sleep per night on average — 18 min more.",
         "rows": {
-          "0": { "label": "Nights on target", "value": "19 of 31" },
-          "1": { "label": "Average bedtime", "value": "23:41" },
-          "2": { "label": "Current streak", "value": "12 days" }
+          "0": {
+            "label": "Nights on target",
+            "value": "19 of 31"
+          },
+          "1": {
+            "label": "Average bedtime",
+            "value": "23:41"
+          },
+          "2": {
+            "label": "Current streak",
+            "value": "12 days"
+          }
         }
       }
     }
@@ -205,23 +265,51 @@
       "run": "Running"
     },
     "records": {
-      "bench": { "name": "Barbell bench press", "detail": "6 reps · Oct 23", "delta": "+2,5 kg" },
-      "squat": { "name": "Back squat", "detail": "5 reps · Oct 21", "delta": "+5 kg" },
-      "deadlift": { "name": "Deadlift", "detail": "3 reps · Oct 9", "delta": "new" },
-      "pullup": { "name": "Pull-up", "detail": "bodyweight · Oct 17", "delta": "+2 reps" },
-      "5k": { "name": "5 km", "detail": "Oct 18", "delta": "−0:48" },
-      "10k": { "name": "10 km", "detail": "Oct 4", "delta": "−1:05" },
-      "longest": { "name": "Longest", "detail": "Oct 25", "delta": "+1,8 km" },
-      "best1k": { "name": "Best 1 km", "detail": "Oct 22 · intervals", "delta": "" }
+      "bench": {
+        "name": "Barbell bench press"
+      },
+      "squat": {
+        "name": "Back squat"
+      },
+      "stiff": {
+        "name": "Stiff-leg deadlift"
+      },
+      "dip": {
+        "name": "Dips"
+      },
+      "5k": {
+        "name": "5 km"
+      },
+      "10k": {
+        "name": "10 km"
+      },
+      "longest": {
+        "name": "Longest"
+      },
+      "best1k": {
+        "name": "Best 1 km"
+      }
     },
     "recordsNote": "Run times use the best continuous stretch of each distance, including within longer runs.",
     "count": "{{earned}} of {{total}} earned",
     "earnedOn": "Earned on {{date}}",
     "badges": {
-      "streak12": { "name": "12-day streak", "description": "trained or walked 12 days in a row" },
-      "workouts50": { "name": "50 workouts", "description": "since you started on Tracta" },
-      "first5k": { "name": "First 5 km", "description": "ran 5 km without stopping" },
-      "oneTon": { "name": "One ton", "description": "1,000 kg of volume in one workout" },
+      "streak12": {
+        "name": "12-day streak",
+        "description": "trained or walked 12 days in a row"
+      },
+      "workouts50": {
+        "name": "50 workouts",
+        "description": "since you started on Tracta"
+      },
+      "first5k": {
+        "name": "First 5 km",
+        "description": "ran 5 km without stopping"
+      },
+      "oneTon": {
+        "name": "One ton",
+        "description": "1,000 kg of volume in one workout"
+      },
       "perfectMonth": {
         "name": "Perfect month",
         "description": "hit the weekly goal every week",
@@ -242,6 +330,19 @@
         "description": "keep the pace",
         "progress": "64 of 100"
       }
-    }
+    },
+    "recordDetail": {
+      "reps": "{{reps}} reps · {{date}}",
+      "bodyweight": "bodyweight · {{date}}",
+      "date": "{{date}}",
+      "none": "no record yet"
+    },
+    "recordNew": "new"
+  },
+  "state": {
+    "loading": "Loading…",
+    "errorTitle": "Couldn't load your history.",
+    "errorLine": "Check your connection and try again.",
+    "retry": "Try again"
   }
 }

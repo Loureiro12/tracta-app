@@ -205,15 +205,13 @@ export function series30(base: number, amp: number, k: number): number[] {
 
 export const METRIC_KEYS: readonly MetricKey[] = ['steps', 'hr', 'cal', 'dist', 'sleep', 'weight'];
 
-/** Body: 30-day weight base series (kg) and the days with a scale reading. */
+/** Weight metric detail (Health): 30-day base series in kg. The Body segment reads the backend. */
 export const WEIGHT_BASE: readonly number[] = Array.from(
   { length: 30 },
   (_, i) =>
     Math.round((79.6 - i * 0.04 + 0.35 * Math.sin(i * 1.7) + (((i * 37) % 7) - 3) * 0.06) * 10) /
     10,
 );
-export const WEIGHT_DAYS: readonly number[] = [1, 4, 8, 11, 15, 18, 22, 25, 29];
-export const DEFAULT_MEASURES = { waist: 86, hip: 98, arm: 35.5 } as const;
 export const TODAY_DAY = 26;
 
 /** History kinds per October day (A/B/C strength, R run) and run distances — feed the report. */

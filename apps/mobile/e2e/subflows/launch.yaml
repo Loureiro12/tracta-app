@@ -1,6 +1,6 @@
-# Cold start with a clean state, then the locale pinned to English so text assertions are stable
-# regardless of the simulator language. The app must be interactive BEFORE the deep link is sent:
-# a link delivered while the JS bundle is still loading is lost (no Linking listener yet).
+# Cold start, then sign in as the seeded demo account through the E2E-only route, which also
+# restores the demo data (public.e2e_reset_demo). Every flow therefore starts on Home, signed in,
+# with identical data and the locale pinned to English.
 appId: com.tracta.mobile
 ---
 - launchApp:
@@ -10,12 +10,17 @@ appId: com.tracta.mobile
 - runFlow: ./dismiss-system-dialogs.yaml
 - extendedWaitUntil:
     visible:
-      id: "home.screen"
+      id: "auth.screen"
     timeout: 60000
-- runFlow: ./dismiss-system-dialogs.yaml
-- openLink: "tracta://?locale=en"
+- openLink: "tracta://e2e-sign-in?locale=en"
 - runFlow: ./accept-deep-link-prompt.yaml
+# The preparing screen is visible only while sign-in + reset run (~1 s), so it is optional.
+- extendedWaitUntil:
+    visible:
+      id: "auth.e2e.screen"
+    timeout: 3000
+    optional: true
 - extendedWaitUntil:
     visible:
       id: "home.screen"
-    timeout: 15000
+    timeout: 20000

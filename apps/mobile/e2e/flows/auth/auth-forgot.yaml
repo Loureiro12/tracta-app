@@ -3,9 +3,7 @@ name: auth-forgot
 tags:
   - auth
 ---
-- runFlow: ../../subflows/launch.yaml
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- runFlow: ../../subflows/launch-signed-out.yaml
 - tapOn:
     id: "auth.welcome.login"
 - tapOn:

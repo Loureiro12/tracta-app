@@ -3,6 +3,7 @@ name: inbox-open-item
 tags:
   - inbox
 ---
+# Seeded inbox (supabase/seeds/40_social.sql): …b000-000000000001..6 = n1..n6, newest first.
 - runFlow: ../../subflows/launch.yaml
 - tapOn:
     id: "home.nav.inbox"
@@ -10,13 +11,13 @@ tags:
     id: "inbox.screen"
 # Opening a notification marks it as read and navigates to its target
 - assertVisible:
-    id: "inbox.items.n4.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000004.unread"
 - scrollUntilVisible:
     element:
-      id: "inbox.items.n4.open"
+      id: "inbox.items.00000000-0000-4000-b000-000000000004.open"
     centerElement: true
 - tapOn:
-    id: "inbox.items.n4.open"
+    id: "inbox.items.00000000-0000-4000-b000-000000000004.open"
 - assertVisible:
     id: "home.weekly.screen"
 - tapOn:
@@ -24,9 +25,9 @@ tags:
 - assertVisible:
     id: "inbox.screen"
 - assertNotVisible:
-    id: "inbox.items.n4.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000004.unread"
 - assertVisible:
-    id: "inbox.items.n5.unread"
+    id: "inbox.items.00000000-0000-4000-b000-000000000005.unread"
 # The system-notifications warning leads to the notification preferences
 - scrollUntilVisible:
     element:

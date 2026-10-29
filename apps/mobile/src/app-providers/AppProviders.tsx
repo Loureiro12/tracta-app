@@ -1,9 +1,13 @@
 import { LogBox } from 'react-native';
 
+import { QueryClientProvider } from '@tanstack/react-query';
+
 import { ThemeProvider } from '@tracta/design-system';
 
 import { useSettingsStore } from '@/features/settings';
+import { queryClient } from '@/shared/api';
 import { env } from '@/shared/config/env';
+import { SessionProvider } from '@/shared/session';
 
 import { I18nProvider } from './i18n/I18nProvider';
 
@@ -16,8 +20,12 @@ if (env.isE2E) LogBox.ignoreAllLogs(true);
 export function AppProviders({ children }: PropsWithChildren) {
   const themePreference = useSettingsStore((s) => s.themePreference);
   return (
-    <I18nProvider>
-      <ThemeProvider preference={themePreference}>{children}</ThemeProvider>
-    </I18nProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <I18nProvider>
+          <ThemeProvider preference={themePreference}>{children}</ThemeProvider>
+        </I18nProvider>
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }

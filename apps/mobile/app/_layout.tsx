@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import { AppChrome } from '@/app-providers/AppChrome';
 import { AppProviders } from '@/app-providers/AppProviders';
+import { SessionGate } from '@/shared/session';
 
 /**
  * Single root navigator. Route groups are path organisation only (no nested navigators), so
@@ -12,6 +13,7 @@ import { AppProviders } from '@/app-providers/AppProviders';
  *  (auth)      welcome / login / signup / connections (fade)
  *  (overlays)  full-screen overlays that slide in from the right ("‹ Voltar")
  *  (sheets)    bottom sheets: transparent modal over the previous screen
+ * SessionGate keeps signed-out users on (auth) and signed-in users out of it.
  */
 export const unstable_settings = {
   // Deep links into an overlay or sheet get the tabs underneath, so "back" always has a target.
@@ -50,6 +52,7 @@ export default function RootLayout() {
       >
         <Stack.Screen name="(tabs)" />
       </Stack>
+      <SessionGate />
       <AppChrome />
     </AppProviders>
   );

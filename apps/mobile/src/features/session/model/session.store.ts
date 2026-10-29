@@ -1,15 +1,12 @@
 import { create } from 'zustand';
 
 import {
-  DEFAULT_ROUTINE_ID,
-  FREE_ROUTINE_ID,
   PLATES_STEP,
   activeSetIndex,
   allSetsDone,
   buildFreeSession,
   buildSession,
   buildSummary,
-  findRoutine,
   suggestionFor,
   warmupSets,
 } from './session.logic';
@@ -21,6 +18,7 @@ import type {
   SessionExercise,
   SessionSummary,
 } from './session.types';
+import type { routines } from '@tracta/api';
 
 /** What happened after completing a set: the screen decides where to navigate. */
 export type CompleteResult = 'rest' | 'continue' | 'all-done' | 'finished' | 'none';
@@ -32,9 +30,10 @@ type SessionState = {
   platesKg: number;
   platesBar: PlateBar;
 
-  startSession: (routineId?: string) => void;
+  /** Starts a routine session from its plan, or a free session with `null`. No-op if one is active. */
+  startSession: (routine: routines.Routine | null) => void;
   /** Seeds a paused, partially done session for the "recovered session" sheet when nothing is active. */
-  seedRecoveredSession: () => void;
+  seedRecoveredSession: (routine: routines.Routine) => void;
   endSession: () => void;
   tick: () => void;
   togglePause: () => void;
@@ -99,18 +98,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   platesKg: 60,
   platesBar: 20,
 
-  startSession: (routineId = DEFAULT_ROUTINE_ID) => {
+  startSession: (plan) => {
     if (get().session) return;
-    const session =
-      routineId === FREE_ROUTINE_ID
-        ? buildFreeSession(Date.now())
-        : buildSession(findRoutine(routineId), Date.now());
+    const session = plan ? buildSession(plan, Date.now()) : buildFreeSession(Date.now());
     set({ session, rest: null, summary: null });
   },
 
-  seedRecoveredSession: () => {
+  seedRecoveredSession: (plan) => {
     if (get().session) return;
-    const session = buildSession(findRoutine(DEFAULT_ROUTINE_ID), Date.now() - 14 * 60 * 1000);
+    const session = buildSession(plan, Date.now() - 14 * 60 * 1000);
     session.elapsedSec = 14 * 60 + 12;
     session.paused = true;
     session.exerciseIndex = 1;

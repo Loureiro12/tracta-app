@@ -1,0 +1,17 @@
+# Cold start without a session: lands on the welcome screen (locale pinned to English).
+appId: com.tracta.mobile
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow: ./dismiss-system-dialogs.yaml
+- extendedWaitUntil:
+    visible:
+      id: "auth.screen"
+    timeout: 60000
+- openLink: "tracta://welcome?locale=en"
+- runFlow: ./accept-deep-link-prompt.yaml
+- extendedWaitUntil:
+    visible:
+      id: "auth.screen"
+    timeout: 15000

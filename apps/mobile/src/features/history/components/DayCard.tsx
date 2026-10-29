@@ -8,15 +8,17 @@ import { historyIds as ids } from '../history.testids';
 import { formatLongDate } from '../lib/dates';
 import { hoursMinutes } from '../lib/format';
 import { itemId } from '../lib/ids';
-import { TODAY, dateOf, dayHealth, dayItems } from '../model/history.mock';
+import { dayHealth } from '../model/history.mock';
 
 import type { DayItem } from '../model/history.types';
 import type { SemanticColors } from '@tracta/design-system';
 import type { ViewStyle } from 'react-native';
 
 type Props = {
-  day: number;
-  deletedSessionIds: readonly string[];
+  date: Date;
+  dateKey: string;
+  todayKey: string;
+  items: readonly DayItem[];
   onOpenSession: (id: string) => void;
   onStartPlanned: () => void;
   /** Hide the date header (the overlay shows it as its title). */
@@ -26,21 +28,24 @@ type Props = {
 const TAG_COLOR: Record<DayItem['kind'], keyof SemanticColors> = {
   strength: 'brandText',
   run: 'run',
+  activity: 'run',
   planned: 'text2',
 };
 
 /** Day detail under the calendar: steps/sleep line and the sessions of the day (or an empty state). */
 export function DayCard({
-  day,
-  deletedSessionIds,
+  date,
+  dateKey,
+  todayKey,
+  items,
   onOpenSession,
   onStartPlanned,
   hideDate,
 }: Props) {
   const { t } = useTranslation('history');
   const theme = useTheme();
-  const items = useMemo(() => dayItems(day, deletedSessionIds), [day, deletedSessionIds]);
-  const health = dayHealth(day);
+  const health = dayHealth(dateKey, todayKey);
+  const future = dateKey > todayKey;
   const rowStyle = useMemo<ViewStyle>(
     () => ({
       borderTopWidth: 1,
@@ -62,6 +67,8 @@ export function DayCard({
         };
       case 'run':
         return { title: t('day.runTitle'), line: item.summary };
+      case 'activity':
+        return { title: t(`day.activity.${item.activity}`), line: item.summary };
       case 'planned':
         return {
           title: t('day.strengthTitle', { routine: item.routineName, focus: item.focus }),
@@ -77,7 +84,7 @@ export function DayCard({
           <Box flex={1} />
         ) : (
           <Text testID={ids.dayDate} variant="cardTitleSm" numberOfLines={1}>
-            {formatLongDate(dateOf(day))}
+            {formatLongDate(date)}
           </Text>
         )}
         <Text testID={ids.dayMeta} variant="caption" color="text2" numberOfLines={1}>
@@ -92,10 +99,10 @@ export function DayCard({
       <Box testID={ids.daySessions}>
         {items.map((item) => {
           const { title, line } = describe(item);
-          const rowId = itemId(ids.daySessions, item.id);
+          const rowId = itemId(ids.daySessions, item.key);
           return (
             <Pressable
-              key={item.id}
+              key={item.key}
               testID={rowId}
               onPress={() => (item.kind === 'planned' ? onStartPlanned() : onOpenSession(item.id))}
               accessibilityLabel={title}
@@ -126,10 +133,10 @@ export function DayCard({
         <Box style={rowStyle}>
           <VStack gap="xxs">
             <Text testID={ids.dayEmpty} variant="cardTitleSm">
-              {day > TODAY ? t('day.futureTitle') : t('day.restTitle')}
+              {future ? t('day.futureTitle') : t('day.restTitle')}
             </Text>
             <Text testID={ids.dayEmptyLine} variant="secondary" color="text2">
-              {day > TODAY ? t('day.futureLine') : t('day.restLine')}
+              {future ? t('day.futureLine') : t('day.restLine')}
             </Text>
           </VStack>
         </Box>

@@ -18,7 +18,8 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatDate, useTranslation } from '@/shared/i18n';
 
-import { clock, countSets } from '../model/session.logic';
+import { useSessionRoutine } from '../api/useSessionRoutine';
+import { DEFAULT_ROUTINE_ID, clock, countSets } from '../model/session.logic';
 import { sessionRoutes } from '../model/session.routes';
 import { useSessionStore } from '../model/session.store';
 import { sessionIds } from '../session.testids';
@@ -37,11 +38,13 @@ export function RecoverSheetScreen() {
   const endSession = useSessionStore((s) => s.endSession);
   const [discardArmed, setDiscardArmed] = useState(false);
 
-  // A recovered session is always paused; with nothing active (deep link / QA) a mock one is seeded.
+  // A recovered session is always paused; with nothing active (deep link / QA) routine A is seeded
+  // half-done from its real prescription.
+  const fallback = useSessionRoutine(DEFAULT_ROUTINE_ID, !session).data;
   useLayoutEffect(() => {
-    seedRecoveredSession();
+    if (fallback) seedRecoveredSession(fallback);
     pause();
-  }, [seedRecoveredSession, pause]);
+  }, [seedRecoveredSession, pause, fallback]);
 
   const counts = session ? countSets(session) : { done: 0, total: 0 };
   const close = () => router.back();

@@ -4,13 +4,16 @@ import { useRouter } from 'expo-router';
 
 import { Box, Button, Card, HStack, Screen, Text, TextField, VStack } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
+import { useAccount } from '@/shared/session';
 
+import { useSendInvite, useSuggestions } from '../api/useInvite';
 import { PeopleCard } from '../components/PeopleCard';
 import { PersonRow } from '../components/PersonRow';
 import { SheetHeader } from '../components/SheetHeader';
-import { friends as allFriends, inviteLink, shareTargets } from '../model/social.mock';
+import { INVITE_LINK_BASE, avatarColor, shareTargets } from '../model/social.constants';
 import { firstName } from '../model/social.ranking';
 import { useSocialStore } from '../model/social.store';
 import { socialIds } from '../social.testids';
@@ -18,21 +21,22 @@ import { socialIds } from '../social.testids';
 const HANDLE_RE = /^@[\w.]{3,}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Invite friends: shareable link, invite by handle/e-mail and contacts already on Tracta. */
+/** Invite friends: shareable link, invite by handle/e-mail and friends of friends on Tracta. */
 export function InviteScreen() {
   const router = useRouter();
   const { t } = useTranslation('social');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const friendIds = useSocialStore((s) => s.friendIds);
-  const pendingInvites = useSocialStore((s) => s.pendingInvites);
-  const linkCopied = useSocialStore((s) => s.linkCopied);
-  const copyLink = useSocialStore((s) => s.copyLink);
-  const invite = useSocialStore((s) => s.invite);
+  const account = useAccount();
+  const suggestions = useSuggestions();
+  const sendInvite = useSendInvite();
+  const inviteEmail = useSocialStore((s) => s.inviteEmail);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [query, setQuery] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const contacts = allFriends.filter((f) => !friendIds.includes(f.id));
-  const allInvited = contacts.every((c) => pendingInvites.includes(c.id));
+  const inviteLink = `${INVITE_LINK_BASE}${account.data?.profile.handle ?? ''}`;
+  const contacts = (suggestions.data ?? []).filter((c) => c.handle);
+  const allInvited = suggestions.isSuccess && contacts.every((c) => c.invited);
 
   const onSend = () => {
     const q = query.trim();
@@ -40,11 +44,25 @@ export function InviteScreen() {
       setError(t('invite.error'));
       return;
     }
-    const known = allFriends.find((f) => f.handle === q.toLowerCase());
-    invite(known ? known.id : q);
-    setQuery('');
-    setError(undefined);
-    showToast(t('invite.sent'));
+    if (!q.startsWith('@')) {
+      inviteEmail(q);
+      setQuery('');
+      setError(undefined);
+      showToast(t('invite.sent'));
+      return;
+    }
+    sendInvite.mutate(q, {
+      onSuccess: () => {
+        setQuery('');
+        setError(undefined);
+        showToast(t('invite.sent'));
+      },
+      onError: (e) => {
+        if (e instanceof ApiError && (e.code === 'not_found' || e.code === 'validation'))
+          setError(t('invite.notFound'));
+        else showToast(t('actionError'));
+      },
+    });
   };
 
   return (
@@ -74,7 +92,7 @@ export function InviteScreen() {
             label={linkCopied ? t('invite.copied') : t('invite.copy')}
             size="xs"
             onPress={() => {
-              copyLink();
+              setLinkCopied(true);
               showToast(t('invite.linkCopied'));
             }}
           />
@@ -123,26 +141,29 @@ export function InviteScreen() {
       <Text variant="secondarySemibold">{t('invite.contacts')}</Text>
       <PeopleCard testID={socialIds.contacts}>
         {contacts.map((c, i) => {
-          const sent = pendingInvites.includes(c.id);
+          const sent = c.invited;
+          const key = c.handle ?? c.id;
           return (
             <PersonRow
               key={c.id}
-              testID={`${socialIds.contacts}.${c.id}`}
+              testID={`${socialIds.contacts}.${key}`}
               name={c.name}
-              color={c.color}
-              subtitle={c.handle}
+              color={avatarColor(c.id)}
+              subtitle={`@${c.handle ?? ''}`}
               minHeight={62}
               last={i === contacts.length - 1 && !allInvited}
               trailing={
                 <Button
-                  testID={`${socialIds.contacts}.${c.id}.button`}
+                  testID={`${socialIds.contacts}.${key}.button`}
                   label={sent ? t('invite.contactSent') : t('invite.contactInvite')}
                   variant={sent ? 'secondary' : 'primary'}
                   size="xs"
                   onPress={() => {
-                    if (sent) return;
-                    invite(c.id);
-                    showToast(t('invite.sentTo', { name: firstName(c.name) }));
+                    if (sent || !c.handle) return;
+                    sendInvite.mutate(c.handle, {
+                      onSuccess: () => showToast(t('invite.sentTo', { name: firstName(c.name) })),
+                      onError: () => showToast(t('actionError')),
+                    });
                   }}
                 />
               }

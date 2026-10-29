@@ -5,11 +5,14 @@ import { Box, Dot, Icon, Pressable, Text, VStack } from '@tracta/design-system';
 import { useTranslation } from '@/shared/i18n';
 
 import { inboxIds } from '../inbox.testids';
+import { kindStyles, letterFor } from '../model/inbox.presentation';
 
-import type { InboxItem } from '../model/inbox.mock';
+import type { notifications } from '@tracta/api';
 
 type InboxItemRowProps = {
-  item: InboxItem;
+  item: notifications.Notification;
+  /** Formatted creation time ("08:00", "Sun, 20:00"). */
+  time: string;
   read: boolean;
   last: boolean;
   onOpen: () => void;
@@ -17,8 +20,9 @@ type InboxItemRowProps = {
 };
 
 /** Notification row: letter icon, tappable body (title/description/time), unread dot and remove. */
-export function InboxItemRow({ item, read, last, onOpen, onRemove }: InboxItemRowProps) {
+export function InboxItemRow({ item, time, read, last, onOpen, onRemove }: InboxItemRowProps) {
   const { t } = useTranslation('inbox');
+  const style = kindStyles[item.kind];
   return (
     <Box
       testID={`${inboxIds.items}.${item.id}`}
@@ -30,15 +34,15 @@ export function InboxItemRow({ item, read, last, onOpen, onRemove }: InboxItemRo
       borderColor="divider"
       style={last ? styles.rowLast : styles.row}
     >
-      <Box bg={item.iconBg} radius="sm" align="center" justify="center" style={styles.icon}>
-        <Text variant="secondaryBold" color={item.iconColor}>
-          {item.letter}
+      <Box bg={style.iconBg} radius="sm" align="center" justify="center" style={styles.icon}>
+        <Text variant="secondaryBold" color={style.iconColor}>
+          {letterFor(item)}
         </Text>
       </Box>
       <Pressable
         testID={`${inboxIds.items}.${item.id}.open`}
         onPress={onOpen}
-        accessibilityLabel={t(`items.${item.id}.title`)}
+        accessibilityLabel={item.title}
         style={styles.body}
       >
         <VStack gap="xxs">
@@ -46,13 +50,13 @@ export function InboxItemRow({ item, read, last, onOpen, onRemove }: InboxItemRo
             testID={`${inboxIds.items}.${item.id}.title`}
             variant={read ? 'bodyMedium' : 'bodyBold'}
           >
-            {t(`items.${item.id}.title`)}
+            {item.title}
           </Text>
           <Text variant="secondary" color="text2">
-            {t(`items.${item.id}.description`)}
+            {item.body}
           </Text>
           <Text variant="caption" color="text3">
-            {t(`items.${item.id}.time`)}
+            {time}
           </Text>
         </VStack>
       </Pressable>

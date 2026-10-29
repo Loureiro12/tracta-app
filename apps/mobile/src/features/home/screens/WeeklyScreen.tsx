@@ -18,8 +18,9 @@ import {
 
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
+import { useHomeGoals } from '../api/useHomeAccount';
 import { homeIds } from '../home.testids';
-import { goals, weekly } from '../model/home.mock';
+import { weekly } from '../model/home.mock';
 import { useHomeStore } from '../model/home.store';
 
 import type { SemanticColors } from '@tracta/design-system';
@@ -37,6 +38,7 @@ const DAY_COLORS: Record<
 export function WeeklyScreen() {
   const router = useRouter();
   const { t } = useTranslation('home');
+  const goals = useHomeGoals();
   const markWeeklySeen = useHomeStore((s) => s.markWeeklySeen);
   const sleepGoal = t('sleep.duration', {
     hours: Math.floor(goals.sleepMinutes / 60),

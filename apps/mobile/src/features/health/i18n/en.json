@@ -158,8 +158,8 @@
     }
   },
   "body": {
-    "sourceScale": "Scale via Apple Health · Oct 25",
-    "sourceManual": "Manual entry · today",
+    "sourceScale": "Scale via Apple Health · {{date}}",
+    "sourceManual": "Manual entry · {{date}}",
     "unit": " kg",
     "delta": "{{sign}}{{value}} kg in 30 days",
     "month": "Last 30 days",
@@ -172,10 +172,17 @@
       "arm": "Arm",
       "cm": "{{value}} cm",
       "manualToday": "manual · today",
-      "manualOld": "manual · Oct 1"
+      "manualOld": "manual · {{date}}"
     },
     "register": "Log weight and measurements",
-    "footnote": "Scale weigh-ins come from Apple Health; manual entries are marked as \"manual\"."
+    "footnote": "Scale weigh-ins come from Apple Health; manual entries are marked as \"manual\".",
+    "today": "today",
+    "empty": "No weigh-ins in the last 30 days yet.",
+    "state": {
+      "errorTitle": "Couldn't load your body data.",
+      "retry": "Try again",
+      "loading": "Loading…"
+    }
   },
   "metric": {
     "period": {
@@ -451,6 +458,7 @@
     "increment": "Increase",
     "save": "Save entry",
     "note": "Marked as a manual entry. We also write the weight to Apple Health, if authorized.",
-    "saved": "Entry saved"
+    "saved": "Entry saved",
+    "saveError": "Couldn't save the entry. Try again."
   }
 }

@@ -19,6 +19,7 @@ import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
 import { PlanOption } from '../components/PlanOption';
+import { useProStatus } from '../hooks/useProStatus';
 import { PAYWALL_ROWS } from '../model/profile.mock';
 import { useProfileStore } from '../model/profile.store';
 import { profileIds as ids } from '../profile.testids';
@@ -38,8 +39,8 @@ export function PaywallScreen({ context }: PaywallScreenProps) {
   const showToast = useFeedbackStore((s) => s.showToast);
   const selectedPlan = useProfileStore((s) => s.selectedPlan);
   const selectPlan = useProfileStore((s) => s.selectPlan);
-  const subscribe = useProfileStore((s) => s.subscribe);
-  const restorePurchase = useProfileStore((s) => s.restorePurchase);
+  // Purchases are SIMULATED locally (no store integration yet): see useProStatus.
+  const { subscribe, restore: restorePurchase } = useProStatus();
 
   const ctx = CONTEXTS.find((c) => c === context);
   const isYear = selectedPlan === 'year';

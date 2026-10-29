@@ -1,17 +1,11 @@
-import { routines } from '@/features/workouts';
-
 /**
  * Mock data for the Home tab, ported from the prototype (`homeVals`, `dailyVals`, `sleepVals`,
  * `stateVals` and the NIGHTS / HOURS consts). Numbers only; labels live in i18n.
  */
 
 /** Monday, 26 October 2026 — the day every prototype screen shows. */
-export const HOME_TODAY = new Date(2026, 9, 26);
 
-export const USER_INITIAL = 'L';
 export const HEALTH_SYNC_TIME = '16:12';
-
-export const goals = { steps: 10000, sleepMinutes: 450, workouts: 4, runKm: 15 } as const;
 
 export const sleep = {
   minutes: 410,
@@ -45,32 +39,6 @@ export const checklistSteps: readonly { id: HomeChecklistStepId; done: boolean }
   { id: 'workout', done: false },
   { id: 'friend', done: false },
 ];
-
-/** Today's planned routine: the one scheduled for Monday in the workouts mock (Treino A). */
-const plannedRoutine = routines.find((r) => r.id === 'A') ?? routines[0];
-export const nextWorkout = {
-  id: plannedRoutine?.id ?? 'A',
-  name: plannedRoutine?.name ?? 'Treino A',
-  focus: plannedRoutine?.focus ?? 'Peito & Tríceps',
-  exercises: plannedRoutine?.exercises.length ?? 5,
-  minutes: plannedRoutine?.estMinutes ?? 55,
-} as const;
-
-export const lastActivity = {
-  /** "8,2 km · 45:41 · 5:34 /km" — a run summary as stored, not UI copy. */
-  details: '8,2 km · 45:41 · 5:34 /km',
-} as const;
-
-export type HomeChallengeRow = { id: string; initials: string; name: string; points: number };
-
-/**
- * Friends card. `challenge` is null by default (the prototype's "empty" state); with a value the
- * card shows the top 3 of the running challenge instead.
- */
-export const friends = {
-  count: 0,
-  challenge: null as null | { name: string; day: number; days: number; top: HomeChallengeRow[] },
-};
 
 export const weekly = {
   workouts: 5,

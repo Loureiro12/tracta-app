@@ -8,8 +8,8 @@ import Svg, { Defs, Mask, Rect } from 'react-native-svg';
 
 import { Box, Button, HStack, TabBar, Text, useTheme, VStack } from '@tracta/design-system';
 
-import { useAuthStore } from '@/features/auth';
 import { useTranslation } from '@/shared/i18n';
+import { useAccount } from '@/shared/session';
 
 import { SPOT_STEPS, TOUR_STEPS, TOUR_TABS, WELCOME_ITEMS, WELCOME_STEP } from '../model/tour.mock';
 import { tourIds } from '../tour.testids';
@@ -42,7 +42,7 @@ export function TourScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation(['tour', 'common']);
-  const firstName = useAuthStore((s) => s.account?.name.split(' ')[0] ?? '');
+  const firstName = useAccount().data?.profile.name.split(' ')[0] ?? '';
 
   const [index, setIndex] = useState(0);
   const [size, setSize] = useState({ width: 0, height: 0 });

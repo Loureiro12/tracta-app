@@ -1,6 +1,5 @@
 import {
   CAL_WEEK,
-  DEFAULT_MEASURES,
   DIST_WEEK,
   GOALS,
   HOURS,
@@ -17,11 +16,10 @@ import {
   TODAY_DAY,
   WEEK,
   WEIGHT_BASE,
-  WEIGHT_DAYS,
   series30,
 } from '../model/health.mock';
 
-import type { BodyLogEntry, MetricKey, MetricPeriod, SleepStage } from '../model/health.types';
+import type { MetricKey, MetricPeriod, SleepStage } from '../model/health.types';
 
 // ---------------------------------------------------------------------------
 // Sleep
@@ -51,26 +49,9 @@ export function sleep30() {
 
 export type WeightPoint = { day: number; weight: number; manual: boolean };
 
-/** Weighings of the last 30 days, with manual entries appended on the last day. */
-export function weightPoints(bodyLogs: readonly BodyLogEntry[]): WeightPoint[] {
-  const pts: WeightPoint[] = WEIGHT_DAYS.map((i) => ({
-    day: i,
-    weight: WEIGHT_BASE[i] ?? 0,
-    manual: false,
-  }));
-  for (const log of bodyLogs) pts.push({ day: 29, weight: log.weight, manual: true });
-  return pts.sort((a, b) => a.day - b.day);
-}
-
-export function latestMeasures(bodyLogs: readonly BodyLogEntry[]) {
-  const last = bodyLogs[bodyLogs.length - 1];
-  return last
-    ? { waist: last.waist, hip: last.hip, arm: last.arm, manualToday: true }
-    : { ...DEFAULT_MEASURES, manualToday: false };
-}
-
 /** SVG paths for the weight chart (viewBox 0 0 310 120), ported from the prototype. */
 export function weightChart(points: readonly WeightPoint[]) {
+  if (points.length === 0) return { line: '', trend: '', cx: -20, cy: -20 };
   const ws = points.map((p) => p.weight);
   const mn = Math.min(...ws) - 0.3;
   const mx = Math.max(...ws) + 0.3;

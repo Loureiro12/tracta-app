@@ -27,7 +27,7 @@ type RunState = {
 
 const initial = { run: null, summary: null, notes: '', saving: 0 as SavingState };
 
-/** In-memory state of the current GPS activity. No persistence yet (layout only). */
+/** In-memory state of the activity in progress; the summary saves it through `useSaveActivity`. */
 export const useRunStore = create<RunState>((set, get) => ({
   ...initial,
   startRun: (type, gps, intervals = null) => {

@@ -7,8 +7,9 @@ import { Box, Card, HStack, Text, VStack } from '@tracta/design-system';
 import { useTranslation } from '@/shared/i18n';
 
 import { CardHeaderRow } from './CardHeaderRow';
+import { useHomeGoals } from '../api/useHomeAccount';
 import { homeIds } from '../home.testids';
-import { goals, restingHr } from '../model/home.mock';
+import { restingHr } from '../model/home.mock';
 
 type StatsRowProps = { weekDone: number };
 
@@ -16,6 +17,7 @@ type StatsRowProps = { weekDone: number };
 export function StatsRow({ weekDone }: StatsRowProps) {
   const router = useRouter();
   const { t } = useTranslation('home');
+  const goals = useHomeGoals();
   const segments = Array.from({ length: goals.workouts }, (_, i) => i < weekDone);
 
   return (
@@ -51,7 +53,7 @@ export function StatsRow({ weekDone }: StatsRowProps) {
             <Text testID={homeIds.weekValue} variant="heroSm">
               {String(weekDone)}
             </Text>
-            <Text variant="smallSemibold" color="text2">
+            <Text testID={homeIds.weekGoal} variant="smallSemibold" color="text2">
               {t('week.of', { goal: goals.workouts })}
             </Text>
           </HStack>

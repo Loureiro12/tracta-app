@@ -158,8 +158,8 @@
     }
   },
   "body": {
-    "sourceScale": "Balança via Apple Health · 25 out",
-    "sourceManual": "Registro manual · hoje",
+    "sourceScale": "Balança via Apple Health · {{date}}",
+    "sourceManual": "Registro manual · {{date}}",
     "unit": " kg",
     "delta": "{{sign}}{{value}} kg em 30 dias",
     "month": "Últimos 30 dias",
@@ -172,10 +172,17 @@
       "arm": "Braço",
       "cm": "{{value}} cm",
       "manualToday": "manual · hoje",
-      "manualOld": "manual · 1 out"
+      "manualOld": "manual · {{date}}"
     },
     "register": "Registrar peso e medidas",
-    "footnote": "Pesagens da balança vêm do Apple Health; registros manuais ficam marcados como \"manual\"."
+    "footnote": "Pesagens da balança vêm do Apple Health; registros manuais ficam marcados como \"manual\".",
+    "today": "hoje",
+    "empty": "Nenhuma pesagem nos últimos 30 dias.",
+    "state": {
+      "errorTitle": "Não foi possível carregar seus dados de corpo.",
+      "retry": "Tentar de novo",
+      "loading": "Carregando…"
+    }
   },
   "metric": {
     "period": {
@@ -451,6 +458,7 @@
     "increment": "Aumentar",
     "save": "Salvar registro",
     "note": "Fica marcado como registro manual. Também gravamos o peso no Apple Health, se autorizado.",
-    "saved": "Registro salvo"
+    "saved": "Registro salvo",
+    "saveError": "Não foi possível salvar o registro. Tente de novo."
   }
 }

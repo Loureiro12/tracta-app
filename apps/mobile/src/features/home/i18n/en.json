@@ -166,8 +166,15 @@
   },
   "last": {
     "title": "Last activity · {{when}}",
-    "when": "Saturday · Run",
-    "history": "History"
+    "history": "History",
+    "kinds": {
+      "strength": "Strength",
+      "run": "Run",
+      "other": "Activity"
+    },
+    "strengthLine": "{{title}} · {{minutes}} min",
+    "distanceLine": "{{km}} km · {{time}} · {{pace}} /km",
+    "timeLine": "{{time}}"
   },
   "edit": {
     "title": "Customize home",

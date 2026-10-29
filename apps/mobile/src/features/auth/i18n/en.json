@@ -56,7 +56,8 @@
       "name": "Enter your name",
       "email": "Enter a valid email",
       "password": "Password doesn't meet the requirements",
-      "terms": "Accept the terms to continue"
+      "terms": "Accept the terms to continue",
+      "emailTaken": "This e-mail already has an account. Sign in instead."
     }
   },
   "forgot": {
@@ -82,7 +83,8 @@
     "backToLogin": "Back to sign in"
   },
   "social": {
-    "connectedToast": "Signed in with {{provider}}"
+    "connectedToast": "Signed in with {{provider}}",
+    "unavailableToast": "{{provider}} sign-in is coming soon"
   },
   "connect": {
     "eyebrow": "Last step",
@@ -100,10 +102,22 @@
       "importing": "Importing the last 30 days…",
       "review": "Review permissions",
       "found": {
-        "sleep": { "name": "Sleep with stages", "source": "Mi Band 8" },
-        "steps": { "name": "Steps and distance", "source": "iPhone, Mi Band 8" },
-        "heart": { "name": "Heart rate", "source": "Mi Band 8" },
-        "workouts": { "name": "Workouts", "source": "12 in 30 days" }
+        "sleep": {
+          "name": "Sleep with stages",
+          "source": "Mi Band 8"
+        },
+        "steps": {
+          "name": "Steps and distance",
+          "source": "iPhone, Mi Band 8"
+        },
+        "heart": {
+          "name": "Heart rate",
+          "source": "Mi Band 8"
+        },
+        "workouts": {
+          "name": "Workouts",
+          "source": "12 in 30 days"
+        }
       }
     },
     "google": {
@@ -138,22 +152,56 @@
     "disableAll": "Turn all off",
     "note": "Sets, loads and reps stay only in Tracta. Read permission does not grant write permission.",
     "read": {
-      "steps": { "name": "Steps", "why": "daily summary and trends" },
-      "distance": { "name": "Distance", "why": "walking and running" },
-      "active": { "name": "Active energy", "why": "movement calories" },
-      "resting": { "name": "Resting energy", "why": "total calories for the day" },
-      "heart": { "name": "Heart rate", "why": "during workouts and at rest" },
-      "sleep": { "name": "Sleep", "why": "duration, times and stages" },
-      "workouts": { "name": "Workouts", "why": "activities from other apps" }
+      "steps": {
+        "name": "Steps",
+        "why": "daily summary and trends"
+      },
+      "distance": {
+        "name": "Distance",
+        "why": "walking and running"
+      },
+      "active": {
+        "name": "Active energy",
+        "why": "movement calories"
+      },
+      "resting": {
+        "name": "Resting energy",
+        "why": "total calories for the day"
+      },
+      "heart": {
+        "name": "Heart rate",
+        "why": "during workouts and at rest"
+      },
+      "sleep": {
+        "name": "Sleep",
+        "why": "duration, times and stages"
+      },
+      "workouts": {
+        "name": "Workouts",
+        "why": "activities from other apps"
+      }
     },
     "write": {
-      "workouts": { "name": "Workouts", "why": "type, duration and calories of sessions" },
-      "distance": { "name": "Distance", "why": "route of recorded runs" }
+      "workouts": {
+        "name": "Workouts",
+        "why": "type, duration and calories of sessions"
+      },
+      "distance": {
+        "name": "Distance",
+        "why": "route of recorded runs"
+      }
     },
     "allow_one": "Allow {{count}} data type",
     "allow_other": "Allow {{count}} data types",
     "allowNone": "Select at least one",
     "allowNoneToast": "Turn on at least one data type",
     "connectedToast": "Apple Health connected"
+  },
+  "errors": {
+    "network": "No connection. Check your internet and try again.",
+    "generic": "Something went wrong. Try again."
+  },
+  "e2e": {
+    "preparing": "Preparing the demo account…"
   }
 }

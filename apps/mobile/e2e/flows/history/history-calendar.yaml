@@ -100,7 +100,7 @@ tags:
     id: "history.stats.volume"
 - assertVisible:
     id: "history.stats.volume.value"
-    text: "42,2 t"
+    text: "58,9 t"
 - scrollUntilVisible:
     element:
       id: "history.reports.custom"

@@ -1,11 +1,12 @@
-import { exerciseLibrary, programs, routines } from './workouts.mock';
+import { now } from '@/shared/clock';
+
+import { exerciseLibrary, routines } from './workouts.mock';
 
 import type {
   BuilderDraft,
   DraftExercise,
   IntervalsConfig,
   LibraryExercise,
-  Program,
   Race,
   Routine,
   RoutineExercise,
@@ -35,13 +36,6 @@ export function formatKg(kg: number): string {
 export function mergeRoutines(custom: Routine[]): Routine[] {
   const base = routines.map((r) => custom.find((c) => c.id === r.id) ?? r);
   return base.concat(custom.filter((c) => !routines.some((r) => r.id === c.id)));
-}
-
-/** Next free routine letter after the seeded A/B/C. */
-export function nextRoutineId(all: Routine[]): string {
-  const used = new Set(all.map((r) => r.id));
-  for (const letter of 'DEFGHIJKLMNOPQRSTUVWXYZ') if (!used.has(letter)) return letter;
-  return 'X';
 }
 
 /** Library with user exercises first, favorites on top (prototype `lib()`). */
@@ -76,18 +70,22 @@ export function findPrev(all: Routine[], exerciseId: string): RoutineExercise['p
   return [];
 }
 
-/** Builds a draft exercise from a library entry (prototype `fromLib`). */
+/**
+ * Builds a draft exercise from a library entry (prototype `fromLib`): sets and load follow the
+ * last session, then the prescription of a routine that already has the exercise, then defaults.
+ */
 export function draftFromLibrary(lib: LibraryExercise, all: Routine[]): DraftExercise {
   const prev = findPrev(all, lib.id);
+  const planned = all.flatMap((r) => r.exercises).find((e) => e.exerciseId === lib.id);
   const cardio = lib.type === 'c';
   return {
     exerciseId: lib.id,
     name: lib.name,
     group: lib.group,
     equipment: lib.equipment,
-    sets: cardio ? 1 : prev.length || 3,
+    sets: cardio ? 1 : prev.length || planned?.sets || 3,
     reps: lib.reps,
-    kg: lib.type === 's' ? (prev[0]?.[0] ?? lib.kg) : null,
+    kg: lib.type === 's' ? (prev[0]?.[0] ?? planned?.kg ?? lib.kg) : null,
     rest: lib.rest,
     superset: null,
     cardio,
@@ -147,12 +145,19 @@ export type RaceView = {
   diff: number;
 };
 
-/** Race countdown and pace math (prototype `raceView`). Today is 26 Oct 2026 in the mock. */
+/** Days from today until the race. */
+export function raceDays(race: Race): number {
+  return Math.round(race.weeks * 7);
+}
+
+/** Race countdown and pace math (prototype `raceView`), relative to the app clock's today. */
 export function raceView(race: Race, recentPace: number): RaceView {
-  const date = new Date(2026, 9, 26 + race.weeks * 7);
+  const today = now();
+  const days = raceDays(race);
+  const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
   const estimate = recentPace * race.km * (1 + (race.km > 10 ? 0.04 : 0));
   const requiredPace = race.goal / race.km;
-  return { date, days: race.weeks * 7, estimate, requiredPace, diff: estimate - race.goal };
+  return { date, days, estimate, requiredPace, diff: estimate - race.goal };
 }
 
 export const RACE_DISTANCES: { distance: Race['distance']; km: number }[] = [
@@ -167,14 +172,10 @@ export function defaultGoal(km: number): number {
   return Math.round((km * 330) / 60) * 60;
 }
 
-export function findProgram(id: string | null | undefined): Program | null {
-  return programs.find((p) => p.id === id) ?? null;
-}
-
 /** 7-day plan strip: routine letters on their days, runs on Tue/Sat, or the active program pattern. */
-export function weekPlan(all: Routine[], program: Program | null): string[] {
+export function weekPlan(all: Routine[], program: { pattern: string[] } | null): string[] {
   const plan = ['—', '⟶', '—', '—', '—', '⟶', '—'];
-  for (const r of all) if (r.day != null) plan[r.day] = r.id;
+  for (const r of all) if (r.day != null) plan[r.day] = r.label;
   if (program) program.pattern.forEach((p, i) => (plan[i] = p));
   return plan;
 }

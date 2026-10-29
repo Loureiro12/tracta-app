@@ -119,6 +119,7 @@
     "saving": "Saving…",
     "savedCta": "Activity saved",
     "toastSaved": "Activity saved",
-    "toastDiscarded": "Activity discarded"
+    "toastDiscarded": "Activity discarded",
+    "toastSaveError": "Couldn't save the activity. Try again."
   }
 }

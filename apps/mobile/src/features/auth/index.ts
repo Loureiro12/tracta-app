@@ -9,3 +9,4 @@ export { HealthTypesScreen } from './screens/HealthTypesScreen';
 export { useAuthStore } from './model/auth.store';
 export { authIds } from './auth.testids';
 export { authTranslations } from './i18n';
+export { E2eSignInScreen } from './screens/E2eSignInScreen';

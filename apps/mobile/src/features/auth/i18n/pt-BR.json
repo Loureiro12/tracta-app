@@ -56,7 +56,8 @@
       "name": "Informe seu nome",
       "email": "Informe um e-mail válido",
       "password": "A senha não atende aos requisitos",
-      "terms": "Aceite os termos para continuar"
+      "terms": "Aceite os termos para continuar",
+      "emailTaken": "Este e-mail já tem conta. Entre com ele."
     }
   },
   "forgot": {
@@ -82,7 +83,8 @@
     "backToLogin": "Voltar para entrar"
   },
   "social": {
-    "connectedToast": "Conectado com {{provider}}"
+    "connectedToast": "Conectado com {{provider}}",
+    "unavailableToast": "Entrar com {{provider}} chega em breve"
   },
   "connect": {
     "eyebrow": "Último passo",
@@ -100,10 +102,22 @@
       "importing": "Importando os últimos 30 dias…",
       "review": "Revisar permissões",
       "found": {
-        "sleep": { "name": "Sono com estágios", "source": "Mi Band 8" },
-        "steps": { "name": "Passos e distância", "source": "iPhone, Mi Band 8" },
-        "heart": { "name": "Frequência cardíaca", "source": "Mi Band 8" },
-        "workouts": { "name": "Treinos", "source": "12 em 30 dias" }
+        "sleep": {
+          "name": "Sono com estágios",
+          "source": "Mi Band 8"
+        },
+        "steps": {
+          "name": "Passos e distância",
+          "source": "iPhone, Mi Band 8"
+        },
+        "heart": {
+          "name": "Frequência cardíaca",
+          "source": "Mi Band 8"
+        },
+        "workouts": {
+          "name": "Treinos",
+          "source": "12 em 30 dias"
+        }
       }
     },
     "google": {
@@ -138,22 +152,56 @@
     "disableAll": "Desativar tudo",
     "note": "Séries, cargas e repetições ficam só no Tracta. Permissão de leitura não dá permissão de gravação.",
     "read": {
-      "steps": { "name": "Passos", "why": "resumo diário e tendências" },
-      "distance": { "name": "Distância", "why": "caminhada e corrida" },
-      "active": { "name": "Energia ativa", "why": "calorias de movimento" },
-      "resting": { "name": "Energia de repouso", "why": "calorias totais do dia" },
-      "heart": { "name": "Frequência cardíaca", "why": "em treinos e em repouso" },
-      "sleep": { "name": "Sono", "why": "duração, horários e estágios" },
-      "workouts": { "name": "Treinos", "why": "atividades de outros apps" }
+      "steps": {
+        "name": "Passos",
+        "why": "resumo diário e tendências"
+      },
+      "distance": {
+        "name": "Distância",
+        "why": "caminhada e corrida"
+      },
+      "active": {
+        "name": "Energia ativa",
+        "why": "calorias de movimento"
+      },
+      "resting": {
+        "name": "Energia de repouso",
+        "why": "calorias totais do dia"
+      },
+      "heart": {
+        "name": "Frequência cardíaca",
+        "why": "em treinos e em repouso"
+      },
+      "sleep": {
+        "name": "Sono",
+        "why": "duração, horários e estágios"
+      },
+      "workouts": {
+        "name": "Treinos",
+        "why": "atividades de outros apps"
+      }
     },
     "write": {
-      "workouts": { "name": "Treinos", "why": "tipo, duração e calorias das sessões" },
-      "distance": { "name": "Distância", "why": "percurso das corridas registradas" }
+      "workouts": {
+        "name": "Treinos",
+        "why": "tipo, duração e calorias das sessões"
+      },
+      "distance": {
+        "name": "Distância",
+        "why": "percurso das corridas registradas"
+      }
     },
     "allow_one": "Permitir {{count}} tipo de dado",
     "allow_other": "Permitir {{count}} tipos de dados",
     "allowNone": "Selecione ao menos um",
     "allowNoneToast": "Ative pelo menos um tipo de dado",
     "connectedToast": "Apple Health conectado"
+  },
+  "errors": {
+    "network": "Sem conexão. Verifique a internet e tente de novo.",
+    "generic": "Algo deu errado. Tente de novo."
+  },
+  "e2e": {
+    "preparing": "Preparando a conta de demonstração…"
   }
 }

@@ -1,9 +1,13 @@
-import type { PrevSet } from '@/features/workouts';
+/** Previous set: [kg | null (bodyweight), reps]. */
+export type PrevSet = readonly [number | null, number];
 
 export type SessionSet = { kg: number | null; reps: number; done: boolean };
 
 export type SessionExercise = {
+  /** Unique inside the session (position-based). */
   id: string;
+  /** Exercise id in the backend library. */
+  exerciseId: string;
   name: string;
   group: string;
   equipment: string;
@@ -22,6 +26,7 @@ export type SessionExercise = {
 };
 
 export type ActiveSession = {
+  /** Backend routine id, or FREE_ROUTINE_ID for a free session. */
   routineId: string;
   name: string;
   focus: string;

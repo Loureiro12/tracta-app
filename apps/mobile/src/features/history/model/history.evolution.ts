@@ -1,6 +1,4 @@
-/** Pure evolution math (prototype `evoValsRaw` / `cardioEvo`). Formatting happens in the components. */
-import { allExercises, evoSeries, runPoints } from './history.mock';
-
+/** Pure evolution math over the backend series (prototype `evoValsRaw` / `cardioEvo`). */
 import type {
   CardioGroup,
   CardioMetric,
@@ -8,6 +6,10 @@ import type {
   ChartPoint,
   StrengthMetric,
 } from './history.types';
+import type { history } from '@tracta/api';
+
+/** Comparison window of the evolution card. */
+export const EVOLUTION_WEEKS = 12;
 
 export const CHART_WIDTH = 310;
 export const CHART_HEIGHT = 120;
@@ -36,6 +38,7 @@ export function chartGeometry(values: readonly number[], invert = false): ChartG
 
 export type StrengthEvolution = {
   exerciseId: string;
+  slug: string;
   bodyweight: boolean;
   metrics: readonly StrengthMetric[];
   metric: StrengthMetric;
@@ -47,40 +50,54 @@ export type StrengthEvolution = {
   geometry: ChartGeometry;
 };
 
+/**
+ * Series of one exercise (by slug; falls back to the first one). Metrics: max load, volume
+ * (Σ kg × reps, or total reps for bodyweight) and reps (total, or the best set for bodyweight).
+ */
 export function strengthEvolution(
-  exerciseId: string,
+  exercises: readonly history.ExerciseEvolution[],
+  slug: string | null,
   requestedMetric: StrengthMetric,
 ): StrengthEvolution | null {
-  const exercise = allExercises.find((e) => e.id === exerciseId) ?? allExercises[0];
-  if (!exercise) return null;
-  const bodyweight = exercise.prev[0]?.[0] == null;
+  const exercise = exercises.find((e) => e.slug === slug) ?? exercises[0];
+  if (!exercise || exercise.points.length === 0) return null;
+  const { bodyweight } = exercise;
   const metrics: readonly StrengthMetric[] = bodyweight ? ['reps', 'vol'] : ['kg', 'vol', 'reps'];
   const metric = metrics.includes(requestedMetric) ? requestedMetric : metrics[0]!;
-  const series = evoSeries(exercise.id);
-  if (series.length === 0) return null;
-  const key = (p: { kg: number | null; reps: number }) => (bodyweight ? p.reps : (p.kg ?? 0));
+  const series = exercise.points;
+  const key = (p: history.StrengthPoint) => (bodyweight ? p.maxReps : (p.topKg ?? 0));
   const values = series.map((p) =>
-    metric === 'kg' ? (p.kg ?? 0) : metric === 'vol' ? p.vol : p.reps,
+    metric === 'kg'
+      ? (p.topKg ?? 0)
+      : metric === 'vol'
+        ? bodyweight
+          ? p.totalReps
+          : p.volumeKg
+        : bodyweight
+          ? p.maxReps
+          : p.totalReps,
   );
   const points: ChartPoint[] = series.map((p, i) => ({
-    date: p.date,
+    date: new Date(p.startedAt),
     value: values[i]!,
     pr: i > 0 && key(p) > Math.max(...series.slice(0, i).map(key)),
   }));
-  const bestIndex = Math.max(
-    0,
-    series.findIndex((p) => key(p) === Math.max(...series.map(key))),
-  );
-  const best = series[bestIndex]!;
+  const top = Math.max(...series.map(key));
+  const best = series.find((p) => key(p) === top) ?? series[0]!;
   const first = values[0]!;
   const delta = values[values.length - 1]! - first;
   return {
-    exerciseId: exercise.id,
+    exerciseId: exercise.exerciseId,
+    slug: exercise.slug,
     bodyweight,
     metrics,
     metric,
     points,
-    best: { date: best.date, kg: best.kg, reps: best.reps },
+    best: {
+      date: new Date(best.startedAt),
+      kg: best.topKg,
+      reps: bodyweight ? best.maxReps : best.topReps,
+    },
     delta,
     deltaPct: first ? Math.round((delta / first) * 100) : 0,
     geometry: chartGeometry(values),
@@ -99,18 +116,29 @@ export type CardioEvolution = {
 };
 
 export function cardioEvolution(
+  runs: readonly history.RunPoint[],
   group: CardioGroup,
   metric: CardioMetric,
-  deleted: readonly string[],
 ): CardioEvolution {
-  const list = runPoints(deleted).filter((r) =>
-    group === 'all' ? true : group === '5k' ? r.dist >= 4.5 && r.dist <= 5.5 : r.dist >= 7,
-  );
-  const values = list.map((r) => r[metric]);
+  const list = runs
+    .filter((r) =>
+      group === 'all'
+        ? true
+        : group === '5k'
+          ? r.distanceKm >= 4.5 && r.distanceKm <= 5.5
+          : r.distanceKm >= 7,
+    )
+    .filter((r) => (metric === 'hr' ? r.avgHeartRate !== null : metric === 'dist' ? r.gps : true));
+  const valueOf = (r: history.RunPoint) =>
+    metric === 'pace' ? r.paceSeconds : metric === 'dist' ? r.distanceKm : (r.avgHeartRate ?? 0);
+  const values = list.map(valueOf);
   const points: ChartPoint[] = list.map((r, i) => ({
-    date: r.date,
+    date: new Date(r.startedAt),
     value: values[i]!,
-    pr: metric === 'pace' && i > 0 && r.pace < Math.min(...list.slice(0, i).map((q) => q.pace)),
+    pr:
+      metric === 'pace' &&
+      i > 0 &&
+      r.paceSeconds < Math.min(...list.slice(0, i).map((q) => q.paceSeconds)),
   }));
   if (list.length < 2) {
     return {

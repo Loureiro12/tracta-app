@@ -16,25 +16,30 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
+import { today } from '@/shared/clock';
 import { useFeedbackStore } from '@/shared/feedback';
 import { Trans, formatDate, useTranslation } from '@/shared/i18n';
+import { useSession } from '@/shared/session';
 
+import { useChallengeBoard, useLeaveChallenge } from '../api/useChallenges';
+import { useCheers, useToggleCheer } from '../api/useCheers';
 import { ChallengeGrid } from '../components/ChallengeGrid';
 import { CheerButton } from '../components/CheerButton';
+import { LoadError } from '../components/LoadError';
 import { PeopleCard } from '../components/PeopleCard';
 import { PersonRow } from '../components/PersonRow';
-import { challengeView, firstName, pointsFor } from '../model/social.ranking';
+import { challengeView, firstName } from '../model/social.ranking';
 import { socialRoutes } from '../model/social.routes';
-import { useSocialStore } from '../model/social.store';
 import { socialIds } from '../social.testids';
 
-import type { GridCell, GridRow } from '../components/ChallengeGrid';
+import type { GridRow } from '../components/ChallengeGrid';
 import type { RankRow } from '../model/social.ranking';
 
 type Props = { id: string };
 
 const DAY_FMT = { weekday: 'short', day: 'numeric', month: 'short' } as const;
 const SHORT_FMT = { day: 'numeric', month: 'short' } as const;
+const TIME_FMT = { hour: '2-digit', minute: '2-digit' } as const;
 
 /** Challenge detail: daily ranking, your status, day grid, activity feed and rules. */
 export function ChallengeDetailScreen({ id }: Props) {
@@ -42,12 +47,11 @@ export function ChallengeDetailScreen({ id }: Props) {
   const theme = useTheme();
   const { t } = useTranslation('social');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const challenge = useSocialStore((s) => s.challenges.find((c) => c.id === id));
-  const friendIds = useSocialStore((s) => s.friendIds);
-  const cheers = useSocialStore((s) => s.cheers);
-  const privacy = useSocialStore((s) => s.privacy);
-  const toggleCheer = useSocialStore((s) => s.toggleCheer);
-  const leaveChallenge = useSocialStore((s) => s.leaveChallenge);
+  const { user } = useSession();
+  const board = useChallengeBoard(id);
+  const cheers = useCheers().data ?? [];
+  const toggleCheer = useToggleCheer();
+  const leave = useLeaveChallenge();
   const [leaveArmed, setLeaveArmed] = useState(false);
 
   const header = (
@@ -58,49 +62,58 @@ export function ChallengeDetailScreen({ id }: Props) {
     />
   );
 
-  if (!challenge) {
+  if (!board.data) {
     return (
       <Screen testID={socialIds.challengeScreen} header={header}>
-        <Box />
+        {board.isError && !leave.isSuccess ? (
+          <LoadError testID={socialIds.challengeScreen} onRetry={() => void board.refetch()} />
+        ) : (
+          <Box />
+        )}
       </Screen>
     );
   }
 
-  const view = challengeView(challenge, friendIds, t('detail.you'), theme.colors.ink);
-  const { started, me } = view;
-  const meDone = started && me.points > 0;
-  const cols = Math.min(7, challenge.days);
-  const rule = t(`detail.rule.${challenge.type}`, { min: challenge.min });
+  const todayKey = today();
+  const view = challengeView(
+    board.data,
+    user?.id ?? '',
+    t('detail.you'),
+    theme.colors.ink,
+    todayKey,
+  );
+  const { challenge, started, me } = view;
+  const meToday = view.todayPoints.me ?? 0;
+  const meDone = started && meToday > 0;
+  const rule = t(`detail.rule.${challenge.kind}`, { min: challenge.minValue });
 
   const rankStatus = (row: RankRow): string => {
     const p = row.participant;
     if (!started) return t('detail.rank.waiting');
-    if (p.done && challenge.type === 'day' && p.min < challenge.min)
+    if (p.done && challenge.kind === 'day' && p.min < challenge.minValue)
       return t('detail.rank.below', { min: p.min });
-    if (challenge.type === 'steps')
-      return row.points > 0 ? t('detail.rank.stepsOk') : t('detail.rank.stepsNo');
+    if (challenge.kind === 'steps')
+      return (view.todayPoints[p.id] ?? 0) > 0
+        ? t('detail.rank.stepsOk')
+        : t('detail.rank.stepsNo');
     return p.done ? t('detail.rank.done', { min: p.min }) : t('detail.rank.todo');
   };
 
   const meLine = !started
     ? t('detail.me.tomorrow')
-    : me.points > 0
+    : meToday > 0
       ? t('detail.me.done')
-      : me.participant.done && challenge.type === 'day'
+      : me.participant.done && challenge.kind === 'day'
         ? t('detail.me.partial', {
             min: me.participant.min,
-            left: challenge.min - me.participant.min,
+            left: challenge.minValue - me.participant.min,
           })
         : t('detail.me.auto');
 
   const gridRows: GridRow[] = view.participants.map((p) => ({
     id: p.id,
     name: p.id === 'me' ? p.name : firstName(p.name),
-    cells: Array.from({ length: 7 }, (_, i): GridCell => {
-      const live = started && i === 0;
-      if (live) return pointsFor(challenge, p) > 0 ? 'point' : 'none';
-      return i < cols ? 'next' : 'off';
-    }),
+    cells: view.cells[p.id] ?? [],
   }));
 
   const feed = view.participants.filter((p) => p.id !== 'me' && p.done);
@@ -110,7 +123,7 @@ export function ChallengeDetailScreen({ id }: Props) {
       setLeaveArmed(true);
       return;
     }
-    leaveChallenge(challenge.id);
+    leave.mutate(challenge.id, { onError: () => showToast(t('actionError')) });
     showToast(t('detail.left'));
     router.back();
   };
@@ -120,7 +133,7 @@ export function ChallengeDetailScreen({ id }: Props) {
       <VStack gap="xs">
         <Text testID={socialIds.challengeEyebrow} variant="captionBold" color="challenge" uppercase>
           {started
-            ? t('detail.eyebrowStarted', { days: challenge.days })
+            ? t('detail.eyebrowStarted', { day: view.dayNumber, days: challenge.days })
             : t('detail.eyebrowTomorrow')}
         </Text>
         <Text testID={socialIds.challengeTitle} variant="heroMd">
@@ -140,7 +153,9 @@ export function ChallengeDetailScreen({ id }: Props) {
             color={row.participant.color}
             titleVariant={row.participant.id === 'me' ? 'bodyBold' : 'bodySemibold'}
             subtitle={rankStatus(row)}
-            subtitleColor={started && row.points > 0 ? 'brand' : 'text2'}
+            subtitleColor={
+              started && (view.todayPoints[row.participant.id] ?? 0) > 0 ? 'brand' : 'text2'
+            }
             minHeight={64}
             last={i === view.rows.length - 1}
             leading={
@@ -188,7 +203,9 @@ export function ChallengeDetailScreen({ id }: Props) {
 
       <ChallengeGrid
         testID={socialIds.grid}
-        title={cols < challenge.days ? t('detail.grid.week') : t('detail.grid.days')}
+        title={
+          challenge.days > 7 ? t('detail.grid.week', { n: view.week + 1 }) : t('detail.grid.days')
+        }
         meta={
           started
             ? t('detail.grid.ends', { end: formatDate(view.endDate, DAY_FMT) })
@@ -210,11 +227,10 @@ export function ChallengeDetailScreen({ id }: Props) {
           <Text variant="secondarySemibold">{t('detail.activity')}</Text>
           <PeopleCard testID={socialIds.feed}>
             {feed.map((p, i) => {
-              const cheered = cheers.includes(p.id);
-              const what =
-                privacy.kind && p.what
-                  ? t('detail.feedWhat', { what: p.what, min: p.min })
-                  : t('detail.feedWhatPrivate');
+              const cheered = cheers.includes(p.userId);
+              const what = p.what
+                ? t('detail.feedWhat', { what: p.what, min: p.min })
+                : t('detail.feedWhatPrivate');
               return (
                 <PersonRow
                   key={p.id}
@@ -231,14 +247,18 @@ export function ChallengeDetailScreen({ id }: Props) {
                       />
                     </Text>
                   }
-                  subtitle={t('detail.feedWhen', { at: p.at ?? '' })}
+                  subtitle={
+                    p.at
+                      ? t('detail.feedWhen', { at: formatDate(new Date(p.at), TIME_FMT) })
+                      : t('detail.feedWhenToday')
+                  }
                   last={i === feed.length - 1}
                   trailing={
                     <CheerButton
                       testID={`${socialIds.feed}.${p.id}.cheer`}
                       cheered={cheered}
                       label={cheered ? t('hub.friend.cheered') : t('hub.friend.cheer')}
-                      onPress={() => toggleCheer(p.id)}
+                      onPress={() => toggleCheer.mutate({ friendId: p.userId, cheered })}
                     />
                   }
                 />
@@ -257,7 +277,7 @@ export function ChallengeDetailScreen({ id }: Props) {
           {t('detail.rules.any')}
         </Text>
         <Text variant="secondary" color="text2">
-          {challenge.type === 'minutes' ? t('detail.rules.maxMinutes') : t('detail.rules.max')}
+          {challenge.kind === 'minutes' ? t('detail.rules.maxMinutes') : t('detail.rules.max')}
         </Text>
         <Text variant="secondary" color="text2">
           {t('detail.rules.ties')}

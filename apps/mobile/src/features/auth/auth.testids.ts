@@ -2,6 +2,7 @@ import { testId } from '@tracta/design-system';
 
 /** Single source of truth for auth test IDs. Flows live in e2e/flows/auth. */
 export const authIds = {
+  e2eScreen: testId('auth', 'e2e', 'screen'),
   screen: testId('auth', 'screen'),
   welcomeWordmark: testId('auth', 'welcome', 'wordmark'),
   welcomeTagline: testId('auth', 'welcome', 'tagline'),

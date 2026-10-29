@@ -122,7 +122,8 @@
     "save": "Save workout",
     "saveNote": "Saved on this device first; works offline.",
     "saved": "Workout saved",
-    "discarded": "Session discarded"
+    "discarded": "Session discarded",
+    "saveError": "Couldn't save the workout. Check your connection and try again."
   },
   "plates": {
     "title": "Plate calculator",
@@ -153,5 +154,11 @@
     "discard": "Discard",
     "confirm": "Tap to confirm",
     "discarded": "Session discarded"
+  },
+  "state": {
+    "errorTitle": "Couldn't load your routine.",
+    "retry": "Try again",
+    "noRoutine": "No routine to train yet — create one in Workouts.",
+    "back": "Back to Home"
   }
 }

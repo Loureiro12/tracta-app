@@ -119,3 +119,11 @@ tags:
     timeout: 8000
 - assertVisible:
     id: "home.screen"
+# The saved run shows up in History today (frozen to Oct 26).
+- tapOn:
+    id: "app.tab.history"
+- tapOn:
+    id: "history.calendar.days.26"
+- assertVisible:
+    id: "history.day.sessions.run-26.title"
+    text: "Outdoor run"

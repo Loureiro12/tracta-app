@@ -1,7 +1,9 @@
 {
   "title": "Workouts",
   "new": "+ New",
-  "actions": { "close": "Close" },
+  "actions": {
+    "close": "Close"
+  },
   "days": {
     "mon": "Mon",
     "tue": "Tue",
@@ -34,16 +36,46 @@
     "intervalsDescription": "intervals and recovery with voice cues"
   },
   "modality": {
-    "run": { "label": "Run", "description": "GPS · pace · splits" },
-    "walk": { "label": "Walk", "description": "GPS · distance · time" },
-    "bike": { "label": "Cycling", "description": "duration, distance, speed and route" },
-    "swim": { "label": "Swimming", "description": "duration, distance and laps" },
-    "soccer": { "label": "Soccer", "description": "duration and notes" },
-    "basket": { "label": "Basketball", "description": "duration and notes" },
-    "tennis": { "label": "Tennis", "description": "duration and notes" },
-    "functional": { "label": "Functional training", "description": "duration and notes" },
-    "stretch": { "label": "Stretching", "description": "duration" },
-    "yoga": { "label": "Yoga", "description": "duration" }
+    "run": {
+      "label": "Run",
+      "description": "GPS · pace · splits"
+    },
+    "walk": {
+      "label": "Walk",
+      "description": "GPS · distance · time"
+    },
+    "bike": {
+      "label": "Cycling",
+      "description": "duration, distance, speed and route"
+    },
+    "swim": {
+      "label": "Swimming",
+      "description": "duration, distance and laps"
+    },
+    "soccer": {
+      "label": "Soccer",
+      "description": "duration and notes"
+    },
+    "basket": {
+      "label": "Basketball",
+      "description": "duration and notes"
+    },
+    "tennis": {
+      "label": "Tennis",
+      "description": "duration and notes"
+    },
+    "functional": {
+      "label": "Functional training",
+      "description": "duration and notes"
+    },
+    "stretch": {
+      "label": "Stretching",
+      "description": "duration"
+    },
+    "yoga": {
+      "label": "Yoga",
+      "description": "duration"
+    }
   },
   "planning": {
     "title": "Planning",
@@ -52,7 +84,9 @@
     "today": "Today: {{workout}}",
     "restDay": "Today is a free day in this program",
     "programs": "Programs",
-    "programsDescription": "week plans that fill in your routine"
+    "programsDescription": "week plans that fill in your routine",
+    "fullBody": "Full body · 40 min",
+    "run": "Run"
   },
   "race": {
     "title": "My race",
@@ -180,9 +214,18 @@
     "equipment": "Equipment",
     "type": "How to log",
     "types": {
-      "s": { "label": "Load × reps", "sub": "weight and repetitions" },
-      "b": { "label": "Reps only", "sub": "bodyweight" },
-      "c": { "label": "Time", "sub": "cardio, mobility" }
+      "s": {
+        "label": "Load × reps",
+        "sub": "weight and repetitions"
+      },
+      "b": {
+        "label": "Reps only",
+        "sub": "bodyweight"
+      },
+      "c": {
+        "label": "Time",
+        "sub": "cardio, mobility"
+      }
     },
     "defaults": "Default values",
     "defaultsHint": "suggested when added to a workout",
@@ -268,6 +311,13 @@
     "programStarted": "{{name}} started today",
     "programEnded": "Program ended",
     "raceSaved": "Race set",
-    "raceRemoved": "Race removed"
+    "raceRemoved": "Race removed",
+    "exerciseInUse": "This exercise is used by a workout or a logged session",
+    "saveFailed": "Couldn't save. Try again."
+  },
+  "state": {
+    "loading": "Loading…",
+    "error": "Couldn't load this. Check your connection.",
+    "retry": "Try again"
   }
 }

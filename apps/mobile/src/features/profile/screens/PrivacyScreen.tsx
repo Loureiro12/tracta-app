@@ -7,6 +7,7 @@ import { BackHeader, Button, Card, ListGroup, ListRow, Screen, Text } from '@tra
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useDeleteAccount, useDeleteHistory } from '../api/useAccountActions';
 import { profileRoutes } from '../model/profile.routes';
 import { useProfileStore } from '../model/profile.store';
 import { profileIds as ids } from '../profile.testids';
@@ -19,11 +20,15 @@ export function PrivacyScreen() {
   const showToast = useFeedbackStore((s) => s.showToast);
   const healthConnected = useProfileStore((s) => s.healthConnected);
   const disconnectHealth = useProfileStore((s) => s.disconnectHealth);
+  const deleteHistory = useDeleteHistory();
+  const deleteAccount = useDeleteAccount();
   const [armed, setArmed] = useState<PrivacyAction | null>(null);
+  const onError = () => showToast(t('state.saveFailed'));
 
   const run = (action: PrivacyAction) => {
     switch (action) {
       case 'export':
+        // No export backend yet: the file is not generated.
         showToast(t('privacy.exportToast'));
         return;
       case 'health':
@@ -31,11 +36,17 @@ export function PrivacyScreen() {
         showToast(t('privacy.disconnectHealthToast'));
         return;
       case 'history':
-        showToast(t('privacy.deleteHistoryToast'));
+        deleteHistory.mutate(undefined, {
+          onSuccess: () => showToast(t('privacy.deleteHistoryToast')),
+          onError,
+        });
         return;
       case 'account':
-        showToast(t('privacy.deleteAccountToast'));
-        router.replace(profileRoutes.welcome);
+        // mutateAsync: the sign-out unmounts this screen, which would drop mutate callbacks.
+        deleteAccount.mutateAsync().then(() => {
+          showToast(t('privacy.deleteAccountToast'));
+          router.replace(profileRoutes.welcome);
+        }, onError);
         return;
     }
   };

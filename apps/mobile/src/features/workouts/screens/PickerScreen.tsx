@@ -21,8 +21,10 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
-import { useWorkoutsData } from '../hooks/useWorkoutsData';
-import { normalize } from '../model/workouts.helpers';
+import { useExerciseLibrary } from '../api/useExercises';
+import { useRoutines } from '../api/useRoutines';
+import { QueryState } from '../components/QueryState';
+import { draftFromLibrary, normalize } from '../model/workouts.helpers';
 import { exerciseCategories, exerciseIdFromName } from '../model/workouts.mock';
 import { workoutsRoutes } from '../model/workouts.routes';
 import { useWorkoutsStore } from '../model/workouts.store';
@@ -39,7 +41,9 @@ export function PickerScreen({ mode }: { mode: 'add' | 'lib' }) {
   const toggle = useWorkoutsStore((s) => s.togglePickerSelection);
   const addExercisesToDraft = useWorkoutsStore((s) => s.addExercisesToDraft);
   const draft = useWorkoutsStore((s) => s.draft);
-  const { library } = useWorkoutsData();
+  const libraryQuery = useExerciseLibrary();
+  const library = libraryQuery.data ?? [];
+  const allRoutines = useRoutines().data ?? [];
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<Category>('all');
   const libMode = mode === 'lib';
@@ -62,7 +66,12 @@ export function PickerScreen({ mode }: { mode: 'add' | 'lib' }) {
   const add = () => {
     if (!selection.length) return showToast(t('toast.selectExercise'));
     const count = selection.length;
-    addExercisesToDraft(selection);
+    addExercisesToDraft(
+      selection
+        .map((id) => library.find((e) => e.id === id))
+        .filter((e) => e !== undefined)
+        .map((e) => draftFromLibrary(e, allRoutines)),
+    );
     showToast(t('toast.added', { count }));
     router.back();
   };
@@ -167,7 +176,7 @@ export function PickerScreen({ mode }: { mode: 'add' | 'lib' }) {
           <VStack testID={ids.pickerItems} gap="none">
             {list.map((l) => {
               const on = selection.includes(l.id);
-              const rowId = `${ids.pickerItems}.${l.id}`;
+              const rowId = `${ids.pickerItems}.${l.slug}`;
               return (
                 <Pressable
                   key={l.id}
@@ -189,7 +198,7 @@ export function PickerScreen({ mode }: { mode: 'add' | 'lib' }) {
                       <Icon name="chevron-right" size={16} color="text3" />
                     ) : (
                       <CheckCircle
-                        testID={`${ids.pickerItems}.${l.id}.check`}
+                        testID={`${ids.pickerItems}.${l.slug}.check`}
                         checked={on}
                         color="ink"
                         size={28}
@@ -200,7 +209,13 @@ export function PickerScreen({ mode }: { mode: 'add' | 'lib' }) {
               );
             })}
           </VStack>
-          {list.length === 0 ? (
+          <QueryState
+            testID={ids.pickerItems}
+            loading={libraryQuery.isLoading}
+            error={libraryQuery.error}
+            onRetry={() => void libraryQuery.refetch()}
+          />
+          {libraryQuery.isSuccess && list.length === 0 ? (
             <Box py="2xl">
               <Text testID={ids.pickerEmpty} variant="small" color="text2" align="center">
                 {t('picker.empty')}

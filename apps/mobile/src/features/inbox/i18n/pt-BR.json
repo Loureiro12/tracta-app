@@ -12,39 +12,13 @@
   },
   "groups": {
     "today": "Hoje",
-    "week": "Esta semana"
+    "week": "Esta semana",
+    "earlier": "Antes"
   },
   "remove": "Remover",
-  "items": {
-    "n1": {
-      "title": "Hoje é dia de Treino A",
-      "description": "Peito & Tríceps · ~55 min. Você costuma treinar às 18:30.",
-      "time": "08:00"
-    },
-    "n2": {
-      "title": "Marina aceitou seu desafio",
-      "description": "Desafio de 7 dias começou. Ela está 1 treino à frente.",
-      "time": "07:12"
-    },
-    "n3": {
-      "title": "Sono importado parcialmente",
-      "description": "A Mi Band não enviou os estágios das 03:10 às 04:00.",
-      "time": "07:01"
-    },
-    "n4": {
-      "title": "Resumo semanal pronto",
-      "description": "4 de 4 treinos e 32 km de corrida entre 19 e 25 out.",
-      "time": "dom, 20:00"
-    },
-    "n5": {
-      "title": "Novo recorde: Supino reto",
-      "description": "82,5 kg × 6 — 2,5 kg acima do anterior.",
-      "time": "sex, 19:44"
-    },
-    "n6": {
-      "title": "Meta de passos atingida",
-      "description": "10.000 passos em 5 dos últimos 7 dias.",
-      "time": "qui, 21:00"
-    }
-  }
+  "loadError": {
+    "text": "Não foi possível carregar suas notificações.",
+    "retry": "Tentar de novo"
+  },
+  "actionError": "Algo deu errado. Tente de novo."
 }

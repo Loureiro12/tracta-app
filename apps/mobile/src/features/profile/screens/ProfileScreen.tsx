@@ -15,17 +15,23 @@ import {
 } from '@tracta/design-system';
 
 import { useFeedbackStore } from '@/shared/feedback';
-import { useTranslation } from '@/shared/i18n';
+import { formatDate, useTranslation } from '@/shared/i18n';
+import { useAccount } from '@/shared/session';
 
+import { useSignOut, useUpdateSettings } from '../api/useAccountActions';
+import { AccountGate } from '../components/AccountGate';
 import { ActionButton } from '../components/ActionButton';
 import { ProfileHeader } from '../components/ProfileHeader';
-import { useGoalLabels } from '../hooks/useGoalLabels';
+import { toGoalValues, useGoalLabels } from '../hooks/useGoalLabels';
+import { useProStatus } from '../hooks/useProStatus';
 import { GOAL_KEYS, NOTIFICATION_COUNTED } from '../model/profile.mock';
 import { profileRoutes } from '../model/profile.routes';
-import { useProfileStore } from '../model/profile.store';
 import { profileIds as ids } from '../profile.testids';
 
 import type { Visibility } from '../model/profile.types';
+import type { Account } from '@/shared/api';
+
+const VISIBILITY_ORDER: readonly Visibility[] = ['friends', 'me', 'all'];
 
 const VISIBILITY_COPY: Record<
   Visibility,
@@ -45,60 +51,98 @@ const VISIBILITY_COPY: Record<
 export function ProfileScreen() {
   const router = useRouter();
   const { t } = useTranslation('profile');
-  const showToast = useFeedbackStore((s) => s.showToast);
-  const account = useProfileStore((s) => s.account);
-  const pro = useProfileStore((s) => s.pro);
-  const visibility = useProfileStore((s) => s.visibility);
-  const cycleVisibility = useProfileStore((s) => s.cycleVisibility);
-  const notifications = useProfileStore((s) => s.notifications);
-  const goalLabels = useGoalLabels();
-
-  const isPro = pro.active;
-  const planPrice = pro.plan === 'year' ? t('paywall.yearPrice') : t('paywall.monthPrice');
-  const proDescription = !isPro
-    ? t('pro.freeDescription')
-    : pro.cancelled
-      ? t('pro.cancelledDescription')
-      : pro.trial
-        ? t('pro.trialDescription', {
-            price: planPrice + (pro.plan === 'year' ? t('pro.perYear') : t('pro.perMonth')),
-          })
-        : t('pro.activeDescription', {
-            plan: (pro.plan === 'year'
-              ? t('paywall.yearName')
-              : t('paywall.monthName')
-            ).toLowerCase(),
-          });
-  const openPro = () => router.push(isPro ? profileRoutes.manage : profileRoutes.paywall());
-
-  const notificationsOn = NOTIFICATION_COUNTED.filter((k) => notifications[k]).length;
-  const notificationsSummary = notificationsOn
-    ? t('prefs.notificationsCount', { count: notificationsOn })
-    : t('prefs.notificationsOff');
-
-  const onCycleVisibility = () => {
-    const next = cycleVisibility();
-    showToast(t('prefs.visibilityToast', { value: t(VISIBILITY_COPY[next].label) }));
-  };
-
-  const logout = () => {
-    showToast(t('actions.loggedOut'));
-    router.replace(profileRoutes.welcome);
-  };
+  const { data } = useAccount();
 
   return (
     <Screen
       testID={ids.screen}
       bottomInset="tab"
       header={
-        <ProfileHeader
-          name={account.name}
-          subtitle={t('header.subtitle', { email: account.email })}
-          editLabel={t('header.edit')}
-          onEdit={() => router.push(profileRoutes.edit)}
-        />
+        data ? (
+          <ProfileHeader
+            name={data.profile.name}
+            subtitle={t('header.subtitle', { email: data.profile.email })}
+            editLabel={t('header.edit')}
+            onEdit={() => router.push(profileRoutes.edit)}
+          />
+        ) : undefined
       }
     >
+      <AccountGate testID={ids.screen}>
+        {(account) => <ProfileBody account={account} />}
+      </AccountGate>
+    </Screen>
+  );
+}
+
+function ProfileBody({ account }: { account: Account }) {
+  const router = useRouter();
+  const { t } = useTranslation('profile');
+  const showToast = useFeedbackStore((s) => s.showToast);
+  const { pro, isPro, fromServer, trialEndsAt, periodEnd } = useProStatus();
+  const updateSettings = useUpdateSettings();
+  const signOut = useSignOut();
+  const { settings } = account;
+  const goalLabels = useGoalLabels(toGoalValues(account.goals));
+
+  const shortDate = (d: Date) => formatDate(d, { day: 'numeric', month: 'short' });
+  const planPrice = pro.plan === 'year' ? t('paywall.yearPrice') : t('paywall.monthPrice');
+  const planName = (
+    pro.plan === 'year' ? t('paywall.yearName') : t('paywall.monthName')
+  ).toLowerCase();
+  const price = planPrice + (pro.plan === 'year' ? t('pro.perYear') : t('pro.perMonth'));
+  // Server subscriptions show their real dates; the local simulation keeps the handoff copy.
+  const proDescription = !isPro
+    ? t('pro.freeDescription')
+    : pro.cancelled
+      ? fromServer && periodEnd
+        ? t('pro.cancelledDescriptionOn', { date: shortDate(periodEnd) })
+        : t('pro.cancelledDescription')
+      : pro.trial
+        ? fromServer && trialEndsAt
+          ? t('pro.trialDescriptionOn', { date: shortDate(trialEndsAt), price })
+          : t('pro.trialDescription', { price })
+        : fromServer && periodEnd
+          ? t('pro.activeDescriptionOn', { plan: planName, date: formatDate(periodEnd) })
+          : t('pro.activeDescription', { plan: planName });
+  const openPro = () => router.push(isPro ? profileRoutes.manage : profileRoutes.paywall());
+
+  const notificationsOn = NOTIFICATION_COUNTED.filter((k) => settings.notifications[k]).length;
+  const notificationsSummary = notificationsOn
+    ? t('prefs.notificationsCount', { count: notificationsOn })
+    : t('prefs.notificationsOff');
+
+  const save = (patch: Parameters<typeof updateSettings.mutate>[0], toast?: string) =>
+    updateSettings.mutate(patch, {
+      onSuccess: () => {
+        if (toast) showToast(toast);
+      },
+      onError: () => showToast(t('state.saveFailed')),
+    });
+
+  const onCycleVisibility = () => {
+    const current = settings.visibility;
+    const next =
+      VISIBILITY_ORDER[(VISIBILITY_ORDER.indexOf(current) + 1) % VISIBILITY_ORDER.length] ??
+      current;
+    save({ visibility: next });
+    showToast(t('prefs.visibilityToast', { value: t(VISIBILITY_COPY[next].label) }));
+  };
+
+  // mutateAsync: signing out unmounts this screen (session gate), which would drop mutate callbacks.
+  const logout = async () => {
+    try {
+      await signOut.mutateAsync();
+    } catch {
+      showToast(t('state.saveFailed'));
+      return;
+    }
+    showToast(t('actions.loggedOut'));
+    router.replace(profileRoutes.welcome);
+  };
+
+  return (
+    <>
       <Card
         testID={ids.proCard}
         variant={isPro ? 'ink' : 'surface'}
@@ -218,11 +262,17 @@ export function ProfileScreen() {
 
       <SectionLabel>{t('prefs.section')}</SectionLabel>
       <ListGroup>
-        <ListRow testID={ids.prefUnits} label={t('prefs.units')} value={t('prefs.unitsValue')} />
+        <ListRow
+          testID={ids.prefUnits}
+          label={t('prefs.units')}
+          value={settings.units === 'kg' ? t('prefs.unitsValue') : t('prefs.unitsValueLb')}
+          onPress={() => save({ units: settings.units === 'kg' ? 'lb' : 'kg' })}
+        />
         <ListRow
           testID={ids.prefAutoRest}
           label={t('prefs.autoRest')}
-          value={t('prefs.autoRestOn')}
+          value={settings.autoRest ? t('prefs.autoRestOn') : t('prefs.autoRestOff')}
+          onPress={() => save({ autoRest: !settings.autoRest })}
         />
         <ListRow
           testID={ids.prefNotifications}
@@ -234,8 +284,8 @@ export function ProfileScreen() {
         <ListRow
           testID={ids.prefVisibility}
           label={t('prefs.visibility')}
-          description={t(VISIBILITY_COPY[visibility].description)}
-          value={t(VISIBILITY_COPY[visibility].label)}
+          description={t(VISIBILITY_COPY[settings.visibility].description)}
+          value={t(VISIBILITY_COPY[settings.visibility].label)}
           chevron
           onPress={onCycleVisibility}
         />
@@ -261,8 +311,8 @@ export function ProfileScreen() {
         testID={ids.logout}
         label={t('actions.logout')}
         tone="danger"
-        onPress={logout}
+        onPress={() => void logout()}
       />
-    </Screen>
+    </>
   );
 }

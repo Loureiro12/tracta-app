@@ -5,8 +5,9 @@ import { Bars, Card, HStack, ProgressBar, Text } from '@tracta/design-system';
 import { useTranslation } from '@/shared/i18n';
 
 import { CardHeaderRow } from './CardHeaderRow';
+import { useHomeGoals } from '../api/useHomeAccount';
 import { homeIds } from '../home.testids';
-import { goals, sleep } from '../model/home.mock';
+import { sleep } from '../model/home.mock';
 
 import type { Bar } from '@tracta/design-system';
 
@@ -24,6 +25,7 @@ type SleepCardProps = { detailed: boolean };
 export function SleepCard({ detailed }: SleepCardProps) {
   const router = useRouter();
   const { t } = useTranslation('home');
+  const goals = useHomeGoals();
   const duration = (minutes: number) =>
     t('sleep.duration', {
       hours: Math.floor(minutes / 60),

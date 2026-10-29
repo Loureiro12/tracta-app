@@ -31,6 +31,7 @@ export const homeIds = {
 
   moveCard: testId('home', 'move', 'card'),
   moveValue: testId('home', 'move', 'value'),
+  moveGoal: testId('home', 'move', 'goal'),
   moveBars: testId('home', 'move', 'bars'),
   moveStats: testId('home', 'move', 'stats'),
 
@@ -38,6 +39,7 @@ export const homeIds = {
   hrValue: testId('home', 'hr', 'value'),
   weekCard: testId('home', 'week', 'card'),
   weekValue: testId('home', 'week', 'value'),
+  weekGoal: testId('home', 'week', 'goal'),
 
   nextCard: testId('home', 'next', 'card'),
   nextTitle: testId('home', 'next', 'title'),
@@ -50,6 +52,7 @@ export const homeIds = {
   friendsRanking: testId('home', 'friends', 'ranking'),
 
   lastCard: testId('home', 'last', 'card'),
+  lastDetails: testId('home', 'last', 'details'),
   lastHistory: testId('home', 'last', 'history'),
 
   // "Personalizar início" sheet

@@ -5,7 +5,7 @@ import { ListGroup, ListRow, Sheet, Switch, Text } from '@tracta/design-system';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
-import { useSocialStore } from '../model/social.store';
+import { usePrivacy, useSetPrivacy } from '../api/usePrivacy';
 import { socialIds } from '../social.testids';
 
 import type { PrivacyKey } from '../model/social.types';
@@ -17,8 +17,10 @@ export function SocialPrivacySheet() {
   const router = useRouter();
   const { t } = useTranslation('social');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const privacy = useSocialStore((s) => s.privacy);
-  const setPrivacy = useSocialStore((s) => s.setPrivacy);
+  const privacy = usePrivacy();
+  const update = useSetPrivacy();
+  const setPrivacy = (key: PrivacyKey, value: boolean) =>
+    update.mutate({ key, value }, { onError: () => showToast(t('actionError')) });
 
   return (
     <Sheet

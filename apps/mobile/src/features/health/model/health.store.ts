@@ -1,12 +1,6 @@
 import { create } from 'zustand';
 
-import type {
-  BodyLogEntry,
-  HealthSegment,
-  MetricPeriod,
-  ReportPeriod,
-  SleepRange,
-} from './health.types';
+import type { HealthSegment, MetricPeriod, ReportPeriod, SleepRange } from './health.types';
 
 type HealthState = {
   /** Selected segment of the Saúde tab (Sono / Atividade / Corpo). */
@@ -23,9 +17,6 @@ type HealthState = {
   reportTo: number;
   adjustReportFrom: (delta: number) => void;
   adjustReportTo: (delta: number) => void;
-  /** Manual weight/measurement entries (in-memory mock). */
-  bodyLogs: BodyLogEntry[];
-  addBodyLog: (entry: BodyLogEntry) => void;
 };
 
 const REPORT_MIN_DAY = 1;
@@ -50,7 +41,4 @@ export const useHealthStore = create<HealthState>((set) => ({
     set((s) => ({
       reportTo: Math.max(s.reportFrom, Math.min(REPORT_MAX_DAY, s.reportTo + delta)),
     })),
-  bodyLogs: [],
-  addBodyLog: (entry) =>
-    set((s) => ({ bodyLogs: [...s.bodyLogs.filter((x) => x.day !== entry.day), entry] })),
 }));

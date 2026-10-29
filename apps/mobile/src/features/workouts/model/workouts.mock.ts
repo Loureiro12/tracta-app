@@ -48,10 +48,14 @@ function seedExercise(e: SeedExercise): RoutineExercise {
   };
 }
 
-/** Seeded routines A/B/C from the prototype (`const W`). */
+/**
+ * Seeded routines A/B/C from the prototype (`const W`). The workouts screens read the backend
+ * (see `api/`); this stays exported for features that still render mock layouts.
+ */
 export const routines: Routine[] = [
   {
     id: 'A',
+    label: 'A',
     name: 'Treino A',
     focus: 'Peito & Tríceps',
     day: 0,
@@ -125,6 +129,7 @@ export const routines: Routine[] = [
   },
   {
     id: 'B',
+    label: 'B',
     name: 'Treino B',
     focus: 'Costas & Bíceps',
     day: 2,
@@ -185,6 +190,7 @@ export const routines: Routine[] = [
   },
   {
     id: 'C',
+    label: 'C',
     name: 'Treino C',
     focus: 'Pernas',
     day: 4,
@@ -323,10 +329,11 @@ const LIB_SEED: SeedLib[] = [
   ['Mobilidade torácica', 'Mobilidade', 'Livre', 'c', null, 5, 0],
 ];
 
-/** Default exercise library (`LIB`). User-created exercises live in the store. */
+/** Default exercise library (`LIB`), legacy mock kept for other features. */
 export const exerciseLibrary: LibraryExercise[] = LIB_SEED.map(
   ([name, group, eq, type, kg, reps, rest]) => ({
     id: exerciseIdFromName(name),
+    slug: exerciseIdFromName(name),
     name,
     group,
     secondary: [],
@@ -336,6 +343,7 @@ export const exerciseLibrary: LibraryExercise[] = LIB_SEED.map(
     reps,
     rest,
     notes: '',
+    personalNotes: '',
     favorite: false,
     custom: false,
   }),

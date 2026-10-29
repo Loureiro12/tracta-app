@@ -17,7 +17,10 @@
     "trialDescription": "Free trial until Nov 3 · then {{price}}",
     "activeDescription": "{{plan}} plan · renews Oct 27, 2027",
     "perYear": "/year",
-    "perMonth": "/month"
+    "perMonth": "/month",
+    "trialDescriptionOn": "Free trial until {{date}} · then {{price}}",
+    "cancelledDescriptionOn": "Cancelled · access until {{date}}",
+    "activeDescriptionOn": "{{plan}} plan · renews {{date}}"
   },
   "goals": {
     "section": "Goals",
@@ -30,14 +33,23 @@
     "workoutsValue": "{{value}}",
     "workoutsTimes": "{{value}}×",
     "runKmValue": "{{value}} km",
-    "steps": { "name": "Steps per day", "description": "last 7 days average: 9,539" },
-    "sleep": { "name": "Sleep per night", "description": "weekly average: 7h 20" },
+    "steps": {
+      "name": "Steps per day",
+      "description": "last 7 days average: 9,539"
+    },
+    "sleep": {
+      "name": "Sleep per night",
+      "description": "weekly average: 7h 20"
+    },
     "sleepShort": "Sleep",
     "workouts": {
       "name": "Workouts per week",
       "description": "strength, running and other sports"
     },
-    "runKm": { "name": "Running per week", "description": "distance recorded with GPS" },
+    "runKm": {
+      "name": "Running per week",
+      "description": "distance recorded with GPS"
+    },
     "footnote": "Goals are references to track your progress. There is no penalty for missing them — rest days count too."
   },
   "sources": {
@@ -81,7 +93,8 @@
     "visibilityAll": "Everyone",
     "visibilityAllDescription": "public profile on Tracta",
     "privacy": "Privacy & data",
-    "appSettings": "App preferences"
+    "appSettings": "App preferences",
+    "unitsValueLb": "lb · km"
   },
   "footnote": "We tell imported, manually logged and calculated data apart. Nothing is sent to servers without your permission.",
   "edit": {
@@ -107,7 +120,8 @@
     "errorNewSame": "Use a password different from the current one",
     "savedToast": "Profile updated",
     "emailSentToast": "We sent a confirmation link to {{email}}",
-    "passwordToast": "Password changed"
+    "passwordToast": "Password changed",
+    "errorEmailTaken": "This email is already in use"
   },
   "photos": {
     "title": "Progress photos",
@@ -204,12 +218,30 @@
       "others": "Others"
     },
     "rows": {
-      "rest": { "title": "Rest over", "description": "sound and vibration when the interval ends" },
-      "sound": { "title": "Sound", "description": "turn off to vibrate only" },
-      "remind": { "title": "Workout reminder", "description": "on the routine's planned days" },
-      "daily": { "title": "Daily summary", "description": "sleep and movement at 21:00" },
-      "weekly": { "title": "Weekly summary", "description": "Sunday, with the week's consistency" },
-      "goals": { "title": "Goals", "description": "when you reach a goal" },
+      "rest": {
+        "title": "Rest over",
+        "description": "sound and vibration when the interval ends"
+      },
+      "sound": {
+        "title": "Sound",
+        "description": "turn off to vibrate only"
+      },
+      "remind": {
+        "title": "Workout reminder",
+        "description": "on the routine's planned days"
+      },
+      "daily": {
+        "title": "Daily summary",
+        "description": "sleep and movement at 21:00"
+      },
+      "weekly": {
+        "title": "Weekly summary",
+        "description": "Sunday, with the week's consistency"
+      },
+      "goals": {
+        "title": "Goals",
+        "description": "when you reach a goal"
+      },
       "sync": {
         "title": "Sync and permissions",
         "description": "if something needs your attention"
@@ -249,5 +281,12 @@
     "deleteAccountDescription": "deletes account and backup; cannot be undone",
     "deleteAccountToast": "Account deleted",
     "footnote": "We never log health data. Deleting in Tracta does not erase what was already written to Apple Health."
+  },
+  "state": {
+    "loading": "Loading your account…",
+    "errorTitle": "Could not load your account",
+    "errorDescription": "Check your connection and try again.",
+    "retry": "Try again",
+    "saveFailed": "Could not save. Try again."
   }
 }

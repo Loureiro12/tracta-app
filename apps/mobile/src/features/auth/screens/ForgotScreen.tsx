@@ -4,13 +4,13 @@ import { useRouter } from 'expo-router';
 
 import { Button, Screen, TextField, VStack } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useTranslation } from '@/shared/i18n';
 
+import { usePasswordReset } from '../api/useAuthActions';
 import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthTitle } from '../components/AuthTitle';
-import { useDelayedAction } from '../hooks/useDelayedAction';
-import { REQUEST_DELAY_MS } from '../model/auth.mock';
 import { useAuthStore } from '../model/auth.store';
 import { isEmailValid } from '../model/auth.validation';
 
@@ -19,11 +19,11 @@ export function ForgotScreen() {
   const { t } = useTranslation('auth');
   const storedEmail = useAuthStore((s) => s.email);
   const setStoredEmail = useAuthStore((s) => s.setEmail);
-  const runLater = useDelayedAction();
+  const reset = usePasswordReset();
 
   const [email, setEmail] = useState(storedEmail);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const busy = reset.isPending;
 
   const submit = () => {
     if (!isEmailValid(email)) {
@@ -31,12 +31,14 @@ export function ForgotScreen() {
       return;
     }
     setError(null);
-    setBusy(true);
-    runLater(() => {
-      setBusy(false);
-      setStoredEmail(email.trim());
-      router.push('/sent');
-    }, REQUEST_DELAY_MS);
+    setStoredEmail(email.trim());
+    reset.mutate(email.trim(), {
+      onSuccess: () => router.push('/sent'),
+      onError: (e) =>
+        setError(
+          e instanceof ApiError && e.code === 'network' ? t('errors.network') : t('errors.generic'),
+        ),
+    });
   };
 
   return (

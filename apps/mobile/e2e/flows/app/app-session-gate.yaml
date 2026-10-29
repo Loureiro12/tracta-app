@@ -1,0 +1,42 @@
+appId: com.tracta.mobile
+name: app-session-gate
+tags:
+  - smoke
+  - app
+---
+# Signed out: any private deep link lands on the welcome screen
+- runFlow: ../../subflows/launch-signed-out.yaml
+- openLink: "tracta://history?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- extendedWaitUntil:
+    visible:
+      id: "auth.screen"
+    timeout: 10000
+- assertNotVisible:
+    id: "history.screen"
+# Public routes stay reachable without an account
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "settings.screen"
+# Signed in (demo account): auth screens bounce back to Home, private routes open
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://login?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 10000
+- assertNotVisible:
+    id: "auth.login.screen"
+- openLink: "tracta://history?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "history.screen"
+# The session survives an app restart (persisted in AsyncStorage)
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 30000

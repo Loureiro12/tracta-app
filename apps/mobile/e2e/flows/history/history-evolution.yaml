@@ -67,7 +67,7 @@ tags:
     id: "history.evo.metric.vol"
 - assertVisible:
     id: "history.evo.big"
-    text: "1.805 kg"
+    text: "1.840 kg"
 # Exercise chips scroll horizontally: swipe to reveal the dip
 # The chip strip scrolls horizontally: swipe it from its own center until the dip chip shows up,
 # then nudge once more so the chip's center is on screen before tapping.
@@ -79,7 +79,7 @@ tags:
     times: 8
     while:
       notVisible:
-        id: "history.evo.chips.mergulho"
+        id: "history.evo.chips.mergulho-nas-paralelas"
     commands:
       - swipe:
           from:
@@ -91,10 +91,10 @@ tags:
     end: "35%,69%"
     duration: 1200
 - tapOn:
-    id: "history.evo.chips.mergulho"
+    id: "history.evo.chips.mergulho-nas-paralelas"
 - assertVisible:
     id: "history.evo.big"
-    text: "30 reps"
+    text: "27 reps"
 # Cardio: all runs → around 5 km → distance
 - tapOn:
     id: "history.evo.kind.cardio"

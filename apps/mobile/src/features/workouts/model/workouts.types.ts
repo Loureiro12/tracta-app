@@ -6,7 +6,7 @@ export type PrevSet = readonly [number | null, number];
 
 /** An exercise inside a routine, with its prescription. */
 export type RoutineExercise = {
-  /** Library exercise id (slug of the name). */
+  /** Library exercise id (uuid from the backend; slug in the legacy mock). */
   exerciseId: string;
   name: string;
   group: string;
@@ -25,8 +25,10 @@ export type RoutineExercise = {
 };
 
 export type Routine = {
-  /** Letter id: A, B, C… */
+  /** Routine id (uuid from the backend; the letter in the legacy mock). */
   id: string;
+  /** Visible badge: A, B, C… */
+  label: string;
   name: string;
   /** "Peito & Tríceps" */
   focus: string;
@@ -40,8 +42,10 @@ export type Routine = {
 };
 
 export type LibraryExercise = {
-  /** Slug of the name (stable, URL safe). */
+  /** Exercise id (uuid from the backend; slug in the legacy mock). */
   id: string;
+  /** Slug of the name (stable, URL safe; used in testIDs). */
+  slug: string;
   name: string;
   group: string;
   secondary: string[];
@@ -53,7 +57,10 @@ export type LibraryExercise = {
   reps: number;
   /** Default rest in seconds. */
   rest: number;
+  /** Execution cues (for custom exercises, the notes typed when registering it). */
   notes: string;
+  /** The user's private notes on the exercise. */
+  personalNotes: string;
   favorite: boolean;
   custom: boolean;
 };
@@ -104,7 +111,7 @@ export type Modality = {
   swim: boolean;
 };
 
-export type ActiveProgram = { id: string; week: number };
+export type ActiveProgram = { id: string; week: number; startedOn: string };
 
 export type RaceDistance = 5 | 10 | 21 | 42;
 
@@ -112,7 +119,7 @@ export type Race = {
   distance: RaceDistance;
   /** Exact distance in km (21.0975 / 42.195 for half/full marathon). */
   km: number;
-  /** Weeks from today until the race. */
+  /** Weeks from today until the race (fractional when the saved date is not a whole week away). */
   weeks: number;
   /** Target time in seconds. */
   goal: number;

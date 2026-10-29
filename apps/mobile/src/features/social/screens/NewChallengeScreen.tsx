@@ -21,15 +21,18 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
+import { now, toDateKey } from '@/shared/clock';
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatDate, useTranslation } from '@/shared/i18n';
 
+import { useCreateChallenge } from '../api/useChallenges';
+import { useFriends } from '../api/useFriends';
 import { CheckSquare } from '../components/CheckSquare';
 import { PeopleCard } from '../components/PeopleCard';
 import { PersonRow } from '../components/PersonRow';
 import { SheetHeader } from '../components/SheetHeader';
 import { StepBar } from '../components/StepBar';
-import { MIN_DURATION, challengeLengths, friends as allFriends } from '../model/social.mock';
+import { MIN_DURATION, challengeLengths } from '../model/social.constants';
 import { challengeDates, firstName } from '../model/social.ranking';
 import { socialRoutes } from '../model/social.routes';
 import { useSocialStore } from '../model/social.store';
@@ -48,15 +51,17 @@ export function NewChallengeScreen() {
   const { t } = useTranslation('social');
   const showToast = useFeedbackStore((s) => s.showToast);
   const draft = useSocialStore((s) => s.draft);
-  const friendIds = useSocialStore((s) => s.friendIds);
   const startDraft = useSocialStore((s) => s.startDraft);
   const updateDraft = useSocialStore((s) => s.updateDraft);
   const toggleDraftMember = useSocialStore((s) => s.toggleDraftMember);
-  const createChallenge = useSocialStore((s) => s.createChallenge);
+  const clearDraft = useSocialStore((s) => s.clearDraft);
+  const friendsQuery = useFriends();
+  const create = useCreateChallenge();
+  const friends = friendsQuery.data;
 
   useEffect(() => {
-    if (!draft) startDraft();
-  }, [draft, startDraft]);
+    if (!draft && friends) startDraft(friends.map((f) => f.userId));
+  }, [draft, friends, startDraft]);
 
   const option = useMemo(
     () => ({
@@ -95,11 +100,12 @@ export function NewChallengeScreen() {
   if (!draft) return null;
 
   const { step } = draft;
-  const { startDate, endDate } = challengeDates(draft.start, draft.days);
-  const friends = allFriends.filter((f) => friendIds.includes(f.id));
-  const members = friends.filter((f) => draft.members.includes(f.id));
+  const { startDate, endDate } = challengeDates(now(), draft.start, draft.days);
+  const people = friends ?? [];
+  const members = people.filter((f) => draft.members.includes(f.userId));
 
   const onNext = () => {
+    if (create.isPending) return;
     if (step === 3 && draft.members.length === 0) {
       showToast(t('newChallenge.pickFriend'));
       return;
@@ -108,9 +114,24 @@ export function NewChallengeScreen() {
       updateDraft({ step: (step + 1) as 2 | 3 | 4 });
       return;
     }
-    const id = createChallenge(t('newChallenge.defaultName'));
-    showToast(t('newChallenge.created'));
-    router.replace(socialRoutes.challenge(id));
+    create.mutate(
+      {
+        name: draft.name.trim() || t('newChallenge.defaultName'),
+        kind: draft.type,
+        minValue: draft.type === 'day' ? draft.min : 0,
+        days: draft.days,
+        startsOn: toDateKey(startDate),
+        memberIds: draft.members,
+      },
+      {
+        onSuccess: (id) => {
+          clearDraft();
+          showToast(t('newChallenge.created'));
+          router.replace(socialRoutes.challenge(id));
+        },
+        onError: () => showToast(t('actionError')),
+      },
+    );
   };
 
   return (
@@ -266,13 +287,13 @@ export function NewChallengeScreen() {
             {t('newChallenge.step3')}
           </Text>
           <PeopleCard testID={socialIds.newPeople}>
-            {friends.map((f, i) => {
-              const checked = draft.members.includes(f.id);
+            {people.map((f, i) => {
+              const checked = draft.members.includes(f.userId);
               return (
                 <Pressable
-                  key={f.id}
-                  testID={`${socialIds.newPeople}.${f.id}`}
-                  onPress={() => toggleDraftMember(f.id)}
+                  key={f.userId}
+                  testID={`${socialIds.newPeople}.${f.key}`}
+                  onPress={() => toggleDraftMember(f.userId)}
                   accessibilityRole="checkbox"
                   accessibilityState={{ checked }}
                   accessibilityLabel={f.name}
@@ -281,7 +302,7 @@ export function NewChallengeScreen() {
                     name={f.name}
                     color={f.color}
                     minHeight={62}
-                    last={i === friends.length - 1}
+                    last={i === people.length - 1}
                     trailing={<CheckSquare checked={checked} />}
                   />
                 </Pressable>

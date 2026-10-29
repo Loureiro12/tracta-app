@@ -1,14 +1,12 @@
 import { create } from 'zustand';
 
-import { DEFAULT_PERMISSIONS, HEALTH_IMPORT_MS, READ_TYPES, SOCIAL_ACCOUNTS } from './auth.mock';
+import { DEFAULT_PERMISSIONS, HEALTH_IMPORT_MS, READ_TYPES } from './auth.mock';
 
-import type { PermissionKey, SocialProvider } from './auth.mock';
+import type { PermissionKey } from './auth.mock';
 
 export type HealthStatus = 'off' | 'busy' | 'on';
-export type Account = { name: string; email: string };
 
 type AuthState = {
-  account: Account | null;
   /** Last e-mail typed in a form; carried over to the "check your e-mail" screen. */
   email: string;
   health: HealthStatus;
@@ -17,8 +15,6 @@ type AuthState = {
   notifications: boolean;
   permissions: Record<PermissionKey, boolean>;
   setEmail: (email: string) => void;
-  signIn: (account: Account) => void;
-  signInWith: (provider: SocialProvider) => void;
   togglePermission: (key: PermissionKey) => void;
   setAllRead: (on: boolean) => void;
   setGoogleNotify: (on: boolean) => void;
@@ -32,7 +28,6 @@ let healthTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** In-memory auth/connections state (layout phase: no backend, no native APIs). */
 export const useAuthStore = create<AuthState>((set) => ({
-  account: null,
   email: '',
   health: 'off',
   googleNotify: false,
@@ -40,8 +35,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   notifications: false,
   permissions: DEFAULT_PERMISSIONS,
   setEmail: (email) => set({ email }),
-  signIn: (account) => set({ account, email: account.email }),
-  signInWith: (provider) => set({ account: SOCIAL_ACCOUNTS[provider] }),
   togglePermission: (key) =>
     set((s) => ({ permissions: { ...s.permissions, [key]: !s.permissions[key] } })),
   setAllRead: (on) =>

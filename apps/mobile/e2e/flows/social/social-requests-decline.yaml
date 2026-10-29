@@ -1,0 +1,32 @@
+appId: com.tracta.mobile
+name: social-requests-decline
+tags:
+  - social
+---
+# Declining the seeded invite from Felipe removes it; he does not become a friend.
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.requests.felipe.decline"
+    centerElement: true
+- tapOn:
+    id: "social.hub.requests.felipe.decline"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite declined"
+- assertNotVisible:
+    id: "social.hub.requests"
+- assertNotVisible:
+    id: "social.hub.friends.felipe"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.today-meta"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "social.hub.today-meta"
+    text: "2 of 3 worked out"

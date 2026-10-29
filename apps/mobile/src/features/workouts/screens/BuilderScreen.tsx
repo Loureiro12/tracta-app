@@ -19,27 +19,28 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useRoutines, useSaveRoutine } from '../api/useRoutines';
 import { BuilderExerciseRow } from '../components/BuilderExerciseRow';
 import { OverlayHeader } from '../components/OverlayHeader';
+import { QueryState } from '../components/QueryState';
 import { SelectChip } from '../components/SelectChip';
 import { useExerciseCopy } from '../hooks/useExerciseCopy';
-import { dayKey, useWorkoutsData } from '../hooks/useWorkoutsData';
+import { dayKey } from '../model/workouts.days';
 import {
   countSets,
   draftFocus,
   draftFromRoutine,
   emptyDraft,
   estimateMinutes,
-  mergeRoutines,
-  nextRoutineId,
 } from '../model/workouts.helpers';
+import { toRoutineInput } from '../model/workouts.mappers';
 import { workoutsRoutes } from '../model/workouts.routes';
 import { useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
 import type { StepField } from '../components/BuilderExerciseRow';
 
-/** Workout builder: name, description, day and the expandable exercise list. `id` edits a routine. */
+/** Workout builder: name, description, day and the expandable exercise list. `id` (uuid) edits a routine. */
 export function BuilderScreen({ id }: { id?: string | undefined }) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
@@ -47,17 +48,19 @@ export function BuilderScreen({ id }: { id?: string | undefined }) {
   const draft = useWorkoutsStore((s) => s.draft);
   const setDraft = useWorkoutsStore((s) => s.setDraft);
   const updateDraft = useWorkoutsStore((s) => s.updateDraft);
-  const upsertRoutine = useWorkoutsStore((s) => s.upsertRoutine);
-  const { allRoutines } = useWorkoutsData();
+  const routinesQuery = useRoutines();
+  const saveRoutine = useSaveRoutine();
   const { summary } = useExerciseCopy();
+  const editing = id ? routinesQuery.data?.find((r) => r.id === id) : undefined;
+  const waiting = Boolean(id) && !editing;
 
   // Keep the draft across the picker round-trip; start a fresh one when the target changes.
   useEffect(() => {
     const state = useWorkoutsStore.getState();
     if (state.draft && state.draft.id === (id ?? null)) return;
-    const routine = id ? mergeRoutines(state.customRoutines).find((r) => r.id === id) : undefined;
-    setDraft(routine ? draftFromRoutine(routine) : emptyDraft());
-  }, [id, setDraft]);
+    if (id && !editing) return; // wait for the routine to load
+    setDraft(editing ? draftFromRoutine(editing) : emptyDraft());
+  }, [id, editing, setDraft]);
 
   const cancel = () => {
     setDraft(null);
@@ -65,24 +68,27 @@ export function BuilderScreen({ id }: { id?: string | undefined }) {
   };
 
   const save = () => {
-    if (!draft) return;
+    if (!draft || saveRoutine.isPending) return;
     if (!draft.name.trim()) return showToast(t('toast.nameRequired'));
     if (!draft.exercises.length) return showToast(t('toast.exerciseRequired'));
-    const routineId = draft.id ?? nextRoutineId(allRoutines);
-    const old = allRoutines.find((r) => r.id === routineId);
-    upsertRoutine({
-      id: routineId,
-      name: draft.name.trim(),
-      focus: draftFocus(draft),
-      day: draft.day,
-      estMinutes: estimateMinutes(draft.exercises),
-      lastDoneAt: old?.lastDoneAt ?? null,
-      exercises: draft.exercises,
-    });
-    setDraft(null);
-    showToast(draft.id ? t('toast.updated') : t('toast.created'));
-    if (draft.id) router.back();
-    else router.replace(workoutsRoutes.detail(routineId));
+    saveRoutine.mutate(
+      {
+        ...(draft.id ? { id: draft.id } : {}),
+        name: draft.name.trim(),
+        focus: draftFocus(draft).slice(0, 60),
+        weekday: draft.day,
+        exercises: toRoutineInput(draft.exercises),
+      },
+      {
+        onSuccess: (saved) => {
+          setDraft(null);
+          showToast(draft.id ? t('toast.updated') : t('toast.created'));
+          if (draft.id) router.back();
+          else router.replace(workoutsRoutes.detail(saved.id));
+        },
+        onError: () => showToast(t('toast.saveFailed')),
+      },
+    );
   };
 
   const adjust = (i: number) => (field: StepField, delta: number, min: number, max: number) =>
@@ -152,7 +158,15 @@ export function BuilderScreen({ id }: { id?: string | undefined }) {
         </Box>
       }
     >
-      {draft ? (
+      {waiting ? (
+        <QueryState
+          testID={ids.builderScreen}
+          loading={routinesQuery.isLoading}
+          error={routinesQuery.error}
+          onRetry={() => void routinesQuery.refetch()}
+        />
+      ) : null}
+      {draft && !waiting ? (
         <VStack gap="2xl">
           <VStack gap="sm">
             <TextField

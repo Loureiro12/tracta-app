@@ -4,9 +4,11 @@ import { useRouter } from 'expo-router';
 
 import { Button, Screen, Text, TextField, VStack } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useSignUp } from '../api/useAuthActions';
 import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthFooterLink } from '../components/AuthFooterLink';
@@ -16,9 +18,6 @@ import { PasswordField } from '../components/PasswordField';
 import { PasswordRules } from '../components/PasswordRules';
 import { SocialButtons } from '../components/SocialButtons';
 import { TermsCheckbox } from '../components/TermsCheckbox';
-import { useDelayedAction } from '../hooks/useDelayedAction';
-import { REQUEST_DELAY_MS } from '../model/auth.mock';
-import { useAuthStore } from '../model/auth.store';
 import { isEmailValid, isPasswordStrong } from '../model/auth.validation';
 
 import type { SocialProvider } from '../model/auth.mock';
@@ -34,16 +33,14 @@ export function SignupScreen() {
   const router = useRouter();
   const { t } = useTranslation('auth');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const signIn = useAuthStore((s) => s.signIn);
-  const signInWith = useAuthStore((s) => s.signInWith);
-  const runLater = useDelayedAction();
+  const signUp = useSignUp();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const [busy, setBusy] = useState(false);
+  const busy = signUp.isPending;
 
   const goConnect = () => router.push({ pathname: '/connect', params: { mode: 'onboarding' } });
 
@@ -69,19 +66,23 @@ export function SignupScreen() {
       return;
     }
     setErrors({});
-    setBusy(true);
-    runLater(() => {
-      setBusy(false);
-      signIn({ name: name.trim(), email: email.trim() });
-      goConnect();
-    }, REQUEST_DELAY_MS);
+    signUp.mutate(
+      { name: name.trim(), email: email.trim(), password },
+      {
+        onSuccess: goConnect,
+        onError: (error) => {
+          const code = error instanceof ApiError ? error.code : 'unknown';
+          if (code === 'email_taken') setErrors({ email: t('signup.errors.emailTaken') });
+          else if (code === 'weak_password') setErrors({ password: t('signup.errors.password') });
+          else showToast(code === 'network' ? t('errors.network') : t('errors.generic'));
+        },
+      },
+    );
   };
 
-  const social = (provider: SocialProvider) => {
-    signInWith(provider);
-    showToast(t('social.connectedToast', { provider }));
-    goConnect();
-  };
+  // Apple/Google need OAuth credentials configured in Supabase; until then the buttons explain it.
+  const social = (provider: SocialProvider) =>
+    showToast(t('social.unavailableToast', { provider }));
 
   return (
     <Screen testID={authIds.signupScreen} header={<AuthBackButton testID={authIds.signupBack} />}>

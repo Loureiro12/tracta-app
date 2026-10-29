@@ -4,14 +4,15 @@ import { useRouter } from 'expo-router';
 
 import { Button, HStack, Sheet, Text, VStack } from '@tracta/design-system';
 
+import { today } from '@/shared/clock';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useLatestBody, useLogBody } from '../api/useBody';
 import { StepperField } from '../components/StepperField';
 import { healthIds as ids } from '../health.testids';
-import { latestMeasures, weightPoints } from '../lib/derive';
-import { TODAY_DAY } from '../model/health.mock';
-import { useHealthStore } from '../model/health.store';
+
+import type { body } from '@tracta/api';
 
 type Field = 'weight' | 'waist' | 'hip' | 'arm';
 const STEP: Record<Field, number> = { weight: 0.1, waist: 0.5, hip: 0.5, arm: 0.5 };
@@ -29,6 +30,16 @@ const FIELDS = [
 const [WEIGHT_FIELD, ...MEASURE_FIELDS] = FIELDS;
 
 const fmt = (v: number) => String(Math.round(v * 10) / 10);
+const fmtOpt = (v: number | undefined) => (v === undefined ? '' : fmt(v));
+
+function draftOf(latest: body.LatestBody | undefined): Record<Field, string> {
+  return {
+    weight: fmtOpt(latest?.weight?.value),
+    waist: fmtOpt(latest?.waist?.value),
+    hip: fmtOpt(latest?.hip?.value),
+    arm: fmtOpt(latest?.arm?.value),
+  };
+}
 const parse = (s: string) => Number.parseFloat(s.replace(',', '.'));
 
 /** "Registrar · hoje" sheet: weight + optional measurements, saved as a manual entry. */
@@ -36,42 +47,45 @@ export function BodyLogSheetScreen() {
   const { t } = useTranslation('health');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const bodyLogs = useHealthStore((s) => s.bodyLogs);
-  const addBodyLog = useHealthStore((s) => s.addBodyLog);
+  const latest = useLatestBody().data;
+  const logBody = useLogBody();
 
-  const [draft, setDraft] = useState<Record<Field, string>>(() => {
-    const points = weightPoints(bodyLogs);
-    const m = latestMeasures(bodyLogs);
-    return {
-      weight: fmt(points[points.length - 1]?.weight ?? 0),
-      waist: fmt(m.waist),
-      hip: fmt(m.hip),
-      arm: fmt(m.arm),
-    };
-  });
-  const setField = (field: Field, value: string) => setDraft((d) => ({ ...d, [field]: value }));
-  const adjust = (field: Field, dir: 1 | -1) =>
-    setDraft((d) => {
+  // Prefilled with the latest values (also when they arrive after the sheet opened); edits override.
+  const [edits, setEdits] = useState<Partial<Record<Field, string>>>({});
+  const draft: Record<Field, string> = { ...draftOf(latest), ...edits };
+  const setField = (field: Field, value: string) => setEdits((e) => ({ ...e, [field]: value }));
+  const adjust = (field: Field, dir: 1 | -1) => {
+    setEdits((e) => {
+      const d = { ...draftOf(latest), ...e };
       const current = parse(d[field]);
       const base = Number.isFinite(current) ? current : 0;
-      return { ...d, [field]: fmt(Math.max(0, base + dir * STEP[field])) };
+      return { ...e, [field]: fmt(Math.max(0, base + dir * STEP[field])) };
     });
+  };
   const valid = Number.isFinite(parse(draft.weight)) && parse(draft.weight) > 0;
 
   const save = () => {
-    const n = (field: Field) => {
+    if (logBody.isPending) return;
+    const value = (field: Field) => {
       const v = parse(draft[field]);
-      return Number.isFinite(v) ? v : 0;
+      return Number.isFinite(v) && v > 0 ? v : undefined;
     };
-    addBodyLog({
-      day: TODAY_DAY,
-      weight: n('weight'),
-      waist: n('waist'),
-      hip: n('hip'),
-      arm: n('arm'),
+    const input: body.LogBodyInput = { measuredOn: today() };
+    const weight = value('weight');
+    if (weight !== undefined) input.weightKg = weight;
+    const waist = value('waist');
+    if (waist !== undefined) input.waistCm = waist;
+    const hip = value('hip');
+    if (hip !== undefined) input.hipCm = hip;
+    const arm = value('arm');
+    if (arm !== undefined) input.armCm = arm;
+    logBody.mutate(input, {
+      onSuccess: () => {
+        showToast(t('bodyLog.saved'));
+        router.back();
+      },
+      onError: () => showToast(t('bodyLog.saveError')),
     });
-    showToast(t('bodyLog.saved'));
-    router.back();
   };
 
   const field = ({ key, id, labelKey, unitKey }: (typeof FIELDS)[number]) => (
@@ -102,7 +116,7 @@ export function BodyLogSheetScreen() {
             label={t('bodyLog.save')}
             size="lg"
             fullWidth
-            disabled={!valid}
+            disabled={!valid || logBody.isPending}
             onPress={save}
           />
           <Text variant="caption" color="text2" align="center">

@@ -18,14 +18,18 @@ import {
 
 import { useTranslation } from '@/shared/i18n';
 
+import { useRecords } from '../api/useHistory';
 import { BadgeCard } from '../components/BadgeCard';
+import { QueryState } from '../components/QueryState';
 import { historyIds as ids } from '../history.testids';
 import { useBackToHistory } from '../hooks/useBackToHistory';
+import { formatShortDate } from '../lib/dates';
 import { itemId } from '../lib/ids';
+import { RECORD_SLUGS, runRows, strengthRows } from '../lib/records';
 import { historyHrefs } from '../lib/routes';
-import { badges, recordGroups } from '../model/history.mock';
+import { badges } from '../model/history.mock';
 
-import type { RecordRow as RecordRowData } from '../model/history.mock';
+import type { RecordRow as RecordRowData } from '../lib/records';
 import type { ViewStyle } from 'react-native';
 
 export type AchievementsTab = 'records' | 'badges';
@@ -50,6 +54,14 @@ function RecordRow({ row, last }: { row: RecordRowData; last: boolean }) {
     [theme, last],
   );
   const rowId = itemId(ids.achievementsRecords, row.id);
+  const d = row.detail;
+  const detail = !d
+    ? t('achievements.recordDetail.none')
+    : d.bodyweight
+      ? t('achievements.recordDetail.bodyweight', { date: formatShortDate(d.date) })
+      : d.reps !== null
+        ? t('achievements.recordDetail.reps', { reps: d.reps, date: formatShortDate(d.date) })
+        : t('achievements.recordDetail.date', { date: formatShortDate(d.date) });
   return (
     <Box testID={rowId} style={style}>
       <VStack flex={1} gap="xxs">
@@ -57,15 +69,15 @@ function RecordRow({ row, last }: { row: RecordRowData; last: boolean }) {
           {t(`achievements.records.${row.id}.name`)}
         </Text>
         <Text variant="caption" color="text2">
-          {t(`achievements.records.${row.id}.detail`)}
+          {detail}
         </Text>
       </VStack>
       <VStack align="flex-end" gap="xxs">
         <Text testID={`${rowId}.value`} variant="stat" numberOfLines={1}>
           {row.value}
         </Text>
-        <Text variant="captionBold" color={row.hasDelta ? 'brand' : 'text2'} numberOfLines={1}>
-          {t(`achievements.records.${row.id}.delta`)}
+        <Text variant="captionBold" color={row.delta ? 'brand' : 'text2'} numberOfLines={1}>
+          {row.delta === 'new' ? t('achievements.recordNew') : (row.delta ?? '')}
         </Text>
       </VStack>
     </Box>
@@ -78,6 +90,17 @@ export function AchievementsScreen({ tab }: Props) {
   const router = useRouter();
   const goBack = useBackToHistory();
   const [current, setCurrent] = useState<AchievementsTab>(tab === 'badges' ? 'badges' : 'records');
+  const records = useRecords(RECORD_SLUGS);
+  const recordGroups = useMemo(
+    () =>
+      records.data
+        ? [
+            { id: 'strength' as const, rows: strengthRows(records.data) },
+            { id: 'run' as const, rows: runRows(records.data) },
+          ]
+        : null,
+    [records.data],
+  );
   const earned = badges.filter((b) => b.earned).length;
   const badgeRows = useMemo(() => {
     const rows: (typeof badges)[number][][] = [];
@@ -113,7 +136,14 @@ export function AchievementsScreen({ tab }: Props) {
             fullWidth
             onPress={() => router.push(historyHrefs.share('pr'))}
           />
-          {recordGroups.map((group) => (
+          {!recordGroups ? (
+            <QueryState
+              testID={ids.achievementsRecords}
+              error={records.isError}
+              onRetry={() => void records.refetch()}
+            />
+          ) : null}
+          {(recordGroups ?? []).map((group) => (
             <VStack key={group.id} gap="sm">
               <SectionLabel>{t(`achievements.group.${group.id}`)}</SectionLabel>
               <Card px="xl" py="xxs" gap="none">

@@ -1,0 +1,39 @@
+appId: com.tracta.mobile
+name: social-requests
+tags:
+  - social
+---
+# Felipe (@felipe) invited the demo user (seeded); accepting makes him a friend.
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.requests"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.requests.felipe.name"
+    text: "Felipe Costa"
+- assertVisible:
+    id: "social.hub.requests.felipe.status"
+    text: "Wants to train with you"
+- tapOn:
+    id: "social.hub.requests.felipe.accept"
+- assertVisible:
+    id: "app.toast.message"
+    text: "You and Felipe are now friends"
+- assertNotVisible:
+    id: "social.hub.requests"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.today-meta"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "social.hub.today-meta"
+    text: "2 of 4 worked out"
+- assertVisible:
+    id: "social.hub.friends.felipe.status"
+    text: "Hasn't worked out yet today"

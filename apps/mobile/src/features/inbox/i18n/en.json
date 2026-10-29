@@ -12,39 +12,13 @@
   },
   "groups": {
     "today": "Today",
-    "week": "This week"
+    "week": "This week",
+    "earlier": "Earlier"
   },
   "remove": "Remove",
-  "items": {
-    "n1": {
-      "title": "Today is Workout A day",
-      "description": "Chest & Triceps · ~55 min. You usually train at 18:30.",
-      "time": "08:00"
-    },
-    "n2": {
-      "title": "Marina accepted your challenge",
-      "description": "The 7-day challenge has started. She is 1 workout ahead.",
-      "time": "07:12"
-    },
-    "n3": {
-      "title": "Sleep partially imported",
-      "description": "The Mi Band did not send the stages from 03:10 to 04:00.",
-      "time": "07:01"
-    },
-    "n4": {
-      "title": "Weekly summary ready",
-      "description": "4 of 4 workouts and 32 km of running between Oct 19 and 25.",
-      "time": "Sun, 20:00"
-    },
-    "n5": {
-      "title": "New record: Bench press",
-      "description": "82.5 kg × 6 — 2.5 kg above the previous one.",
-      "time": "Fri, 19:44"
-    },
-    "n6": {
-      "title": "Step goal reached",
-      "description": "10,000 steps on 5 of the last 7 days.",
-      "time": "Thu, 21:00"
-    }
-  }
+  "loadError": {
+    "text": "Couldn't load your notifications.",
+    "retry": "Try again"
+  },
+  "actionError": "Something went wrong. Try again."
 }

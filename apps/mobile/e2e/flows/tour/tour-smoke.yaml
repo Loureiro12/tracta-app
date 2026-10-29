@@ -13,7 +13,7 @@ tags:
     id: "tour.modal"
 - assertVisible:
     id: "tour.modal.title"
-    text: "Let's get to know Tracta?"
+    text: "Hi, Lucas. Let's get to know Tracta?"
 - tapOn:
     id: "tour.modal.primary"
 # Spotlight 1 of 6: no "Back" yet

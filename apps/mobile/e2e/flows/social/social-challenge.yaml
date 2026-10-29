@@ -4,11 +4,12 @@ tags:
   - smoke
   - social
 ---
+# Challenge c1 "Semana em movimento" is seeded with id …c000-000000000001 (supabase/seeds/40_social.sql).
 - runFlow: ../../subflows/launch.yaml
 - openLink: "tracta://social?locale=en"
 - runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - tapOn:
-    id: "social.hub.challenges.c1"
+    id: "social.hub.challenges.00000000-0000-4000-c000-000000000001"
 - assertVisible:
     id: "social.challenge.screen"
 - assertVisible:
@@ -73,4 +74,4 @@ tags:
 - assertVisible:
     id: "social.screen"
 - assertNotVisible:
-    id: "social.hub.challenges.c1"
+    id: "social.hub.challenges.00000000-0000-4000-c000-000000000001"

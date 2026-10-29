@@ -17,8 +17,6 @@ type HomeState = {
   isNewUser: boolean;
   /** The dark weekly card disappears once the summary has been opened. */
   weeklySeen: boolean;
-  /** Today's planned workout already completed (mock, drives the "Concluído hoje" state). */
-  doneToday: boolean;
   moveCard: (key: HomeCardKey, direction: -1 | 1) => void;
   toggleCard: (key: HomeCardKey) => void;
   setDensity: (density: HomeDensity) => void;
@@ -33,7 +31,6 @@ export const useHomeStore = create<HomeState>((set) => ({
   density: 'summary',
   isNewUser: false,
   weeklySeen: false,
-  doneToday: false,
   moveCard: (key, direction) =>
     set((s) => {
       const i = s.cards.findIndex((c) => c.key === key);

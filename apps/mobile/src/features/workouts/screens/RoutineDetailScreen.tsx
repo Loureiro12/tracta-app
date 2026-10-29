@@ -5,22 +5,23 @@ import { BackHeader, Box, Button, Card, HStack, Screen, Text, VStack } from '@tr
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useDuplicateRoutine, useRoutine } from '../api/useRoutines';
+import { QueryState } from '../components/QueryState';
 import { useExerciseCopy } from '../hooks/useExerciseCopy';
-import { dayFullKey, useWorkoutsData } from '../hooks/useWorkoutsData';
-import { countSets, nextRoutineId } from '../model/workouts.helpers';
+import { dayFullKey } from '../model/workouts.days';
+import { countSets } from '../model/workouts.helpers';
 import { workoutsRoutes } from '../model/workouts.routes';
-import { useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
-/** Routine detail overlay: stats, exercise prescription, start / edit / duplicate. */
+/** Routine detail overlay (`id` is the routine uuid): stats, prescription, start / edit / duplicate. */
 export function RoutineDetailScreen({ id }: { id: string }) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const upsertRoutine = useWorkoutsStore((s) => s.upsertRoutine);
-  const { allRoutines } = useWorkoutsData();
+  const query = useRoutine(id);
+  const duplicateRoutine = useDuplicateRoutine();
   const { detailLine } = useExerciseCopy();
-  const routine = allRoutines.find((r) => r.id === id);
+  const routine = query.data;
 
   const header = (
     <BackHeader testID={ids.detailBack} label={t('detail.back')} onPress={() => router.back()} />
@@ -29,23 +30,29 @@ export function RoutineDetailScreen({ id }: { id: string }) {
   if (!routine) {
     return (
       <Screen testID={ids.detailScreen} header={header}>
-        <Text color="text2">{t('detail.notFound')}</Text>
+        <QueryState
+          testID={ids.detailScreen}
+          loading={query.isLoading}
+          error={query.error}
+          onRetry={() => void query.refetch()}
+        />
+        {query.isSuccess ? <Text color="text2">{t('detail.notFound')}</Text> : null}
       </Screen>
     );
   }
 
   const duplicate = () => {
-    const newId = nextRoutineId(allRoutines);
-    upsertRoutine({
-      ...routine,
-      id: newId,
-      name: t('routines.defaultName', { id: newId }),
-      day: null,
-      lastDoneAt: null,
-      exercises: routine.exercises.map((e) => ({ ...e })),
-    });
-    showToast(t('toast.duplicated', { name: routine.name, id: newId }));
-    router.replace(workoutsRoutes.detail(newId));
+    if (duplicateRoutine.isPending) return;
+    duplicateRoutine.mutate(
+      { id: routine.id, name: (label) => t('routines.defaultName', { id: label }) },
+      {
+        onSuccess: (copy) => {
+          showToast(t('toast.duplicated', { name: routine.name, id: copy.label }));
+          router.replace(workoutsRoutes.detail(copy.id));
+        },
+        onError: () => showToast(t('toast.saveFailed')),
+      },
+    );
   };
 
   const stats = [

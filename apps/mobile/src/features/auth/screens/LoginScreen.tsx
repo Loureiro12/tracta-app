@@ -4,9 +4,11 @@ import { useRouter } from 'expo-router';
 
 import { Box, Button, Card, Screen, Text, TextField, VStack } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useSignIn } from '../api/useAuthActions';
 import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthFooterLink } from '../components/AuthFooterLink';
@@ -14,10 +16,8 @@ import { AuthTitle } from '../components/AuthTitle';
 import { OrDivider } from '../components/OrDivider';
 import { PasswordField } from '../components/PasswordField';
 import { SocialButtons } from '../components/SocialButtons';
-import { useDelayedAction } from '../hooks/useDelayedAction';
-import { REQUEST_DELAY_MS } from '../model/auth.mock';
 import { useAuthStore } from '../model/auth.store';
-import { isEmailValid, MIN_LOGIN_PASSWORD, nameFromEmail } from '../model/auth.validation';
+import { isEmailValid } from '../model/auth.validation';
 
 import type { SocialProvider } from '../model/auth.mock';
 
@@ -32,16 +32,13 @@ export function LoginScreen() {
   const { t } = useTranslation('auth');
   const showToast = useFeedbackStore((s) => s.showToast);
   const storedEmail = useAuthStore((s) => s.email);
-  const signIn = useAuthStore((s) => s.signIn);
-  const signInWith = useAuthStore((s) => s.signInWith);
-  const runLater = useDelayedAction();
+  const setStoredEmail = useAuthStore((s) => s.setEmail);
+  const signIn = useSignIn();
 
   const [email, setEmail] = useState(storedEmail);
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>({});
-  const [busy, setBusy] = useState(false);
-
-  const goConnect = () => router.push({ pathname: '/connect', params: { mode: 'onboarding' } });
+  const busy = signIn.isPending;
 
   const onChangeEmail = (value: string) => {
     setEmail(value);
@@ -61,25 +58,28 @@ export function LoginScreen() {
       return;
     }
     setErrors({});
-    setBusy(true);
-    runLater(() => {
-      setBusy(false);
-      // Mock credentials check from the prototype: short passwords are "wrong".
-      if (password.length < MIN_LOGIN_PASSWORD) {
-        setErrors({ general: t('login.errors.general') });
-        return;
-      }
-      signIn({ name: nameFromEmail(email), email: email.trim() });
-      showToast(t('login.welcomeToast'));
-      goConnect();
-    }, REQUEST_DELAY_MS);
+    setStoredEmail(email.trim());
+    signIn.mutate(
+      { email: email.trim(), password },
+      {
+        onSuccess: () => {
+          showToast(t('login.welcomeToast'));
+          router.replace('/');
+        },
+        onError: (error) =>
+          setErrors({
+            general:
+              error instanceof ApiError && error.code === 'network'
+                ? t('errors.network')
+                : t('login.errors.general'),
+          }),
+      },
+    );
   };
 
-  const social = (provider: SocialProvider) => {
-    signInWith(provider);
-    showToast(t('social.connectedToast', { provider }));
-    goConnect();
-  };
+  // Apple/Google need OAuth credentials configured in Supabase; until then the buttons explain it.
+  const social = (provider: SocialProvider) =>
+    showToast(t('social.unavailableToast', { provider }));
 
   return (
     <Screen testID={authIds.loginScreen} header={<AuthBackButton testID={authIds.loginBack} />}>

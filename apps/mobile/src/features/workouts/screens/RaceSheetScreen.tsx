@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { useRouter } from 'expo-router';
 
 import { Button, HStack, ListGroup, ListRow, Sheet, Text, VStack } from '@tracta/design-system';
@@ -5,34 +7,73 @@ import { Button, HStack, ListGroup, ListRow, Sheet, Text, VStack } from '@tracta
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatDate, useTranslation } from '@/shared/i18n';
 
+import { useDeleteRace, useRace, useSaveRace } from '../api/usePrograms';
+import { QueryState } from '../components/QueryState';
 import { SelectChip } from '../components/SelectChip';
 import { StepperTile } from '../components/StepperTile';
 import { RACE_DISTANCES, defaultGoal, formatClock, raceView } from '../model/workouts.helpers';
 import { recentPaceSeconds } from '../model/workouts.mock';
-import { useWorkoutsStore } from '../model/workouts.store';
+import { DEFAULT_RACE } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
+
+import type { Race } from '../model/workouts.types';
 
 /** "Minha prova" sheet: distance, date and target time → required pace, recent pace and estimate. */
 export function RaceSheetScreen() {
   const { t } = useTranslation('workouts');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const race = useWorkoutsStore((s) => s.race);
-  const draft = useWorkoutsStore((s) => s.raceDraft);
-  const setRaceDraft = useWorkoutsStore((s) => s.setRaceDraft);
-  const saveRace = useWorkoutsStore((s) => s.saveRace);
-  const clearRace = useWorkoutsStore((s) => s.clearRace);
+  const query = useRace();
+  const saveRace = useSaveRace();
+  const deleteRace = useDeleteRace();
+  const race = query.data ?? null;
+  // The editable copy starts from the saved race (or the defaults) once it has loaded.
+  const [edited, setRaceDraft] = useState<Race | null>(null);
+  const draft = edited ?? (query.isSuccess ? (query.data ?? DEFAULT_RACE) : null);
+  const busy = saveRace.isPending || deleteRace.isPending;
+  const onError = () => showToast(t('toast.saveFailed'));
+
+  if (!draft) {
+    return (
+      <Sheet
+        testID={ids.raceScreen}
+        title={t('race.title')}
+        rightLabel={t('actions.close')}
+        onClose={() => router.back()}
+      >
+        <QueryState
+          testID={ids.raceScreen}
+          loading={query.isLoading}
+          error={query.error}
+          onRetry={() => void query.refetch()}
+        />
+      </Sheet>
+    );
+  }
   const view = raceView(draft, recentPaceSeconds);
 
   const save = () => {
-    saveRace();
-    showToast(t('toast.raceSaved'));
-    router.back();
+    if (busy) return;
+    saveRace.mutate(
+      { race: draft, date: view.date },
+      {
+        onSuccess: () => {
+          showToast(t('toast.raceSaved'));
+          router.back();
+        },
+        onError,
+      },
+    );
   };
   const remove = () => {
-    clearRace();
-    showToast(t('toast.raceRemoved'));
-    router.back();
+    if (busy) return;
+    deleteRace.mutate(undefined, {
+      onSuccess: () => {
+        showToast(t('toast.raceRemoved'));
+        router.back();
+      },
+      onError,
+    });
   };
 
   const rows = [
@@ -95,7 +136,7 @@ export function RaceSheetScreen() {
           label={t('race.goal')}
           valueLabel={formatClock(draft.goal)}
           onDecrement={() => setRaceDraft({ ...draft, goal: Math.max(600, draft.goal - 60) })}
-          onIncrement={() => setRaceDraft({ ...draft, goal: draft.goal + 60 })}
+          onIncrement={() => setRaceDraft({ ...draft, goal: Math.min(86_400, draft.goal + 60) })}
           bg="bg"
         />
       </HStack>

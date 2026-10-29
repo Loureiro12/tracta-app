@@ -4,23 +4,47 @@ import { useRouter } from 'expo-router';
 
 import { Avatar, Box, Button, Card, HStack, Text, VStack } from '@tracta/design-system';
 
+import { challengeView, useChallengeBoard, useChallenges, useFriends } from '@/features/social';
+import { today } from '@/shared/clock';
 import { useTranslation } from '@/shared/i18n';
+import { useAccount } from '@/shared/session';
 
 import { CardHeaderRow } from './CardHeaderRow';
 import { homeIds } from '../home.testids';
-import { friends } from '../model/home.mock';
 
-/** Friends / running challenge teaser; opens the social hub. */
+/** Friends / running challenge teaser (top 3 of the first challenge); opens the social hub. */
 export function FriendsCard() {
   const router = useRouter();
   const { t } = useTranslation('home');
-  const challenge = friends.challenge;
+  const account = useAccount().data;
+  const { data: friendsList } = useFriends();
+  const { data: challenges } = useChallenges();
+  const first = challenges?.[0];
+  const { data: board } = useChallengeBoard(first?.id ?? '');
+  const friendCount = friendsList?.length ?? 0;
+  const view =
+    board && account
+      ? challengeView(board, account.profile.id, account.profile.name, '#D8613C', today())
+      : null;
+  const challenge = view
+    ? {
+        name: view.challenge.name,
+        day: view.dayNumber,
+        days: view.challenge.days,
+        top: view.rows.slice(0, 3).map((row) => ({
+          id: row.participant.id === account?.profile.id ? 'me' : row.participant.id,
+          initials: row.participant.name.slice(0, 1),
+          name: row.participant.name,
+          points: row.points,
+        })),
+      }
+    : null;
   const open = () => router.push('/social');
 
   const meta = challenge
     ? t('friends.meta.day', { day: challenge.day, days: challenge.days })
-    : friends.count > 0
-      ? t('friends.meta.friends', { count: friends.count })
+    : friendCount > 0
+      ? t('friends.meta.friends', { count: friendCount })
       : t('friends.meta.together');
 
   return (
@@ -54,12 +78,12 @@ export function FriendsCard() {
         <HStack gap="md" justify="space-between">
           <Box flex={1}>
             <Text variant="small" color="text2">
-              {friends.count > 0 ? t('friends.line.create') : t('friends.line.invite')}
+              {friendCount > 0 ? t('friends.line.create') : t('friends.line.invite')}
             </Text>
           </Box>
           <Button
             testID={homeIds.friendsCta}
-            label={friends.count > 0 ? t('friends.cta.create') : t('friends.cta.invite')}
+            label={friendCount > 0 ? t('friends.cta.create') : t('friends.cta.invite')}
             size="xs"
             onPress={open}
           />

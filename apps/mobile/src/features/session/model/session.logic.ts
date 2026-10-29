@@ -1,25 +1,26 @@
-import { routines } from '@/features/workouts';
-
 import type {
   ActiveSession,
   PlateBar,
+  PrevSet,
   SessionExercise,
   SessionSet,
   SessionSummary,
 } from './session.types';
-import type { Routine } from '@/features/workouts';
+import type { routines, sessions } from '@tracta/api';
 
 /** Load increment for the kg stepper. */
 export const KG_STEP = 2.5;
 /** Smallest plate per side → total step for the plates calculator. */
 export const PLATES_STEP = 2.5;
 export const PLATE_BARS: readonly PlateBar[] = [20, 15, 10];
+/** Routine offered by the "recovered session" sheet when nothing is in progress. */
 export const DEFAULT_ROUTINE_ID = 'A';
 /** "Sessão livre": a session with no routine, built while training. */
 export const FREE_ROUTINE_ID = 'FREE';
 
-export function findRoutine(id: string | undefined): Routine {
-  return routines.find((r) => r.id === id) ?? routines[0]!;
+/** 0 = Monday … 6 = Sunday (the routines' `weekday`). */
+export function weekdayOf(date: Date): number {
+  return (date.getDay() + 6) % 7;
 }
 
 /** m:ss or h:mm:ss, like the prototype's `clock()`. */
@@ -32,7 +33,8 @@ export function clock(totalSec: number): string {
   return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
 }
 
-export function buildSession(routine: Routine, startedAt: number): ActiveSession {
+/** Session from a routine with its prescription and the sets of the last time (`routines` api). */
+export function buildSession(routine: routines.Routine, startedAt: number): ActiveSession {
   return {
     routineId: routine.id,
     name: routine.name,
@@ -41,27 +43,52 @@ export function buildSession(routine: Routine, startedAt: number): ActiveSession
     exerciseIndex: 0,
     elapsedSec: 0,
     paused: false,
-    exercises: routine.exercises.map((e, i) => ({
-      id: `${routine.id}-${i + 1}`,
-      name: e.name,
-      group: e.group,
-      equipment: e.equipment,
-      targetReps: e.reps,
-      restSec: e.rest,
-      superset: e.superset,
-      bodyweight: e.kg == null,
-      cardio: e.cardio,
-      prev: e.prev,
-      sets: Array.from({ length: e.sets }, (_, k) => ({
-        kg: e.prev[k]?.[0] ?? e.kg,
-        reps: e.reps,
-        done: false,
-      })),
-      warmup: null,
-      warmupSkipped: false,
-      suggestionDismissed: false,
-    })),
+    exercises: routine.exercises.map((e, i) => {
+      const prev: PrevSet[] = e.lastSets.map((p) => [p.kg, p.reps] as const);
+      const bodyweight =
+        e.exercise.kind === 'reps' || (e.exercise.kind === 'load_reps' && e.kg == null);
+      return {
+        id: `${routine.label}-${i + 1}`,
+        exerciseId: e.exerciseId,
+        name: e.exercise.name,
+        group: e.exercise.muscleGroup,
+        equipment: e.exercise.equipment,
+        targetReps: e.reps,
+        restSec: e.restSeconds,
+        superset: e.superset,
+        bodyweight,
+        cardio: e.exercise.kind === 'time',
+        prev,
+        sets: Array.from({ length: e.sets }, (_, k) => ({
+          kg: bodyweight ? null : (prev[k]?.[0] ?? e.kg),
+          reps: e.reps,
+          done: false,
+        })),
+        warmup: null,
+        warmupSkipped: false,
+        suggestionDismissed: false,
+      };
+    }),
   };
+}
+
+/**
+ * Routine to open for a `?routine=` / `?routineId=` param: uuid, then letter ("A"), then the
+ * routine scheduled for `weekday`, then the first one. null when nothing matches.
+ */
+export function pickRoutine(
+  list: readonly routines.Routine[],
+  param: string | undefined,
+  weekday: number,
+): routines.Routine | null {
+  if (param) {
+    return (
+      list.find((r) => r.id === param) ??
+      list.find((r) => r.label.toUpperCase() === param.toUpperCase()) ??
+      null
+    );
+  }
+  return list.find((r) => r.weekday === weekday) ?? list[0] ?? null;
 }
 
 /** Empty session for "Sessão livre" (name/focus are UI copy, resolved by the screen). */
@@ -246,5 +273,56 @@ export function buildSummary(session: ActiveSession): SessionSummary {
     prs,
     next,
     rows,
+  };
+}
+
+/**
+ * Payload of `sessions.saveSession` for a finished session: done sets only (warm-ups flagged).
+ * Times use the app clock, so E2E sessions land on the frozen "today".
+ */
+export function toSavePayload(
+  session: ActiveSession,
+  endedAt: Date,
+  freeTitle: string,
+): sessions.SaveSessionInput {
+  const wallSec = Math.max(0, Math.round((Date.now() - session.startedAt) / 1000));
+  const startedAt = new Date(endedAt.getTime() - wallSec * 1000);
+  const sets: sessions.SaveSessionInput['sets'] = [];
+  session.exercises.forEach((e, position) => {
+    (e.warmup ?? [])
+      .filter((s) => s.done)
+      .forEach((s, setIndex) =>
+        sets.push({
+          exerciseId: e.exerciseId,
+          exercisePosition: position,
+          setIndex,
+          kg: s.kg,
+          reps: s.reps,
+          isWarmup: true,
+          superset: e.superset,
+        }),
+      );
+    e.sets
+      .filter((s) => s.done)
+      .forEach((s, setIndex) =>
+        sets.push({
+          exerciseId: e.exerciseId,
+          exercisePosition: position,
+          setIndex,
+          kg: e.bodyweight ? null : s.kg,
+          reps: s.reps,
+          superset: e.superset,
+        }),
+      );
+  });
+  const free = session.routineId === FREE_ROUTINE_ID;
+  return {
+    routineId: free ? null : session.routineId,
+    title: free ? freeTitle : session.name,
+    focus: free ? '' : session.focus,
+    startedAt: startedAt.toISOString(),
+    endedAt: endedAt.toISOString(),
+    pausedSeconds: Math.max(0, wallSec - Math.round(session.elapsedSec)),
+    sets,
   };
 }

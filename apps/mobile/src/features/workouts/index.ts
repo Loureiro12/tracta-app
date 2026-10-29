@@ -11,6 +11,35 @@ export { ModalitiesSheetScreen } from './screens/ModalitiesSheetScreen';
 export { workoutsIds } from './workouts.testids';
 export { workoutsTranslations } from './i18n';
 export { useWorkoutsStore } from './model/workouts.store';
+// Server state (React Query over @tracta/api): routines, library, programs and race.
+export {
+  routinesKeys,
+  useRoutines,
+  useRoutine,
+  useSaveRoutine,
+  useDuplicateRoutine,
+} from './api/useRoutines';
+export {
+  exercisesKeys,
+  useExerciseLibrary,
+  useExercise,
+  useExerciseHistory,
+  useCreateExercise,
+  useUpdateExercise,
+  useDeleteExercise,
+  useToggleFavorite,
+} from './api/useExercises';
+export {
+  programsKeys,
+  usePrograms,
+  useEnrollment,
+  useEnroll,
+  useEndEnrollment,
+  useRace,
+  useSaveRace,
+  useDeleteRace,
+} from './api/usePrograms';
+export { toLibraryExercise, toRoutine } from './model/workouts.mappers';
 export {
   routines,
   exerciseLibrary,

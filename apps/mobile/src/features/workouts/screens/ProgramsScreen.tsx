@@ -5,11 +5,10 @@ import { BackHeader, Box, Button, Card, HStack, Screen, Text, VStack } from '@tr
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
-import { dayKey } from '../hooks/useWorkoutsData';
-import { findProgram } from '../model/workouts.helpers';
-import { programs } from '../model/workouts.mock';
+import { useEndEnrollment, useEnroll, useEnrollment, usePrograms } from '../api/usePrograms';
+import { QueryState } from '../components/QueryState';
+import { dayKey } from '../model/workouts.days';
 import { workoutsRoutes } from '../model/workouts.routes';
-import { useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
 import type { SemanticColors } from '@tracta/design-system';
@@ -30,10 +29,14 @@ export function ProgramsScreen({ id }: { id?: string | undefined }) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const activeProgram = useWorkoutsStore((s) => s.activeProgram);
-  const setActiveProgram = useWorkoutsStore((s) => s.setActiveProgram);
-  const program = findProgram(id);
+  const catalog = usePrograms();
+  const { data: activeProgram } = useEnrollment();
+  const enroll = useEnroll();
+  const endEnrollment = useEndEnrollment();
+  const programs = catalog.data ?? [];
+  const program = programs.find((p) => p.id === id) ?? null;
   const isActive = Boolean(program && activeProgram?.id === program.id);
+  const currentWeek = isActive ? (activeProgram?.week ?? 1) - 1 : -1;
 
   const header = (
     <BackHeader
@@ -52,6 +55,12 @@ export function ProgramsScreen({ id }: { id?: string | undefined }) {
           </Text>
           <Text color="text2">{t('programs.intro')}</Text>
         </VStack>
+        <QueryState
+          testID={ids.programsList}
+          loading={catalog.isLoading}
+          error={catalog.error}
+          onRetry={() => void catalog.refetch()}
+        />
         <VStack testID={ids.programsList} gap="md">
           {programs.map((p) => (
             <Card
@@ -80,14 +89,25 @@ export function ProgramsScreen({ id }: { id?: string | undefined }) {
   }
 
   const act = () => {
+    if (enroll.isPending || endEnrollment.isPending) return;
+    const onError = () => showToast(t('toast.saveFailed'));
     if (isActive) {
-      setActiveProgram(null);
-      showToast(t('toast.programEnded'));
+      endEnrollment.mutate(undefined, {
+        onSuccess: () => {
+          showToast(t('toast.programEnded'));
+          router.dismissTo(workoutsRoutes.tab());
+        },
+        onError,
+      });
     } else {
-      setActiveProgram({ id: program.id, week: 1 });
-      showToast(t('toast.programStarted', { name: program.name }));
+      enroll.mutate(program.id, {
+        onSuccess: () => {
+          showToast(t('toast.programStarted', { name: program.name }));
+          router.dismissTo(workoutsRoutes.tab());
+        },
+        onError,
+      });
     }
-    router.dismissTo(workoutsRoutes.tab());
   };
 
   return (
@@ -133,7 +153,7 @@ export function ProgramsScreen({ id }: { id?: string | undefined }) {
       </Card>
       <Box testID={ids.programWeeks} bg="surface" radius="card" px="xl" py="xs">
         {program.weekTitles.map((title, i) => {
-          const current = isActive && i === 0;
+          const current = i === currentWeek;
           const light = program.lightWeeks.includes(i);
           const color = weekColor(current, light);
           return (

@@ -15,38 +15,58 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { now } from '@/shared/clock';
 import { formatDate, useTranslation } from '@/shared/i18n';
+import { useAccount } from '@/shared/session';
 
+import { useExerciseLibrary } from '../api/useExercises';
+import { useEnrollment, useRace } from '../api/usePrograms';
+import { useRoutines } from '../api/useRoutines';
 import { ActivityTile } from '../components/ActivityTile';
 import { ProChip } from '../components/ProChip';
-import { dayKey, parseIsoDate, useWorkoutsData } from '../hooks/useWorkoutsData';
+import { QueryState } from '../components/QueryState';
+import { dayKey, parseIsoDate } from '../model/workouts.days';
 import { countSets, formatClock, raceView, weekPlan } from '../model/workouts.helpers';
-import { exerciseLibrary, recentPaceSeconds, routines } from '../model/workouts.mock';
+import { recentPaceSeconds } from '../model/workouts.mock';
 import { workoutsRoutes } from '../model/workouts.routes';
-import { DEFAULT_RACE, useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
 import type { Href } from 'expo-router';
 
 type Props = {
-  /** `new` hides the seeded routines to show the empty state (prototype "usuário novo"). */
+  /** `new` previews the screen as a new user (no routines yet), like the prototype demo state. */
   scenario?: 'default' | 'new';
 };
+
+/** Monday-based weekday index of the app clock's today. */
+function todayIndex(): number {
+  return (now().getDay() + 6) % 7;
+}
 
 /** Treinos tab: week strip, activity starters, planning (programs/race) and routines. */
 export function WorkoutsScreen({ scenario = 'default' }: Props) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
-  const isPro = useWorkoutsStore((s) => s.isPro);
-  const race = useWorkoutsStore((s) => s.race);
-  const setRaceDraft = useWorkoutsStore((s) => s.setRaceDraft);
-  const { allRoutines, userExercises, program, activeProgram } = useWorkoutsData();
+  const isPro = useAccount().data?.isPro ?? false;
+  const routinesQuery = useRoutines();
+  const allRoutines = routinesQuery.data ?? [];
+  const { data: activeProgram, program } = useEnrollment();
+  const race = useRace().data ?? null;
+  const library = useExerciseLibrary().data ?? [];
+  const customCount = library.filter((e) => e.custom).length;
 
-  const visibleRoutines =
-    scenario === 'new'
-      ? allRoutines.filter((r) => !routines.some((b) => b.id === r.id))
-      : allRoutines;
+  const visibleRoutines = scenario === 'new' ? [] : allRoutines;
+  const routinesLoaded = scenario === 'new' || routinesQuery.isSuccess;
   const plan = weekPlan(allRoutines, program);
+  const todayToken = program?.pattern[todayIndex()];
+  const todayRoutine = allRoutines.find((r) => r.label === todayToken);
+  const todayWorkout = todayRoutine
+    ? `${todayRoutine.name} · ${todayRoutine.focus}`
+    : todayToken === 'F'
+      ? t('planning.fullBody')
+      : todayToken === '⟶'
+        ? t('planning.run')
+        : null;
   const gate = (context: 'programs' | 'race' | 'intervals', href: Href) =>
     router.push(isPro ? href : workoutsRoutes.paywall(context));
 
@@ -211,9 +231,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
           </Text>
           <ProgressBar value={activeProgram.week / program.weeks} color="brandOnDark" track="ink" />
           <Text variant="secondary" color="text2OnInk">
-            {program.today[0]
-              ? t('planning.today', { workout: program.today[0] })
-              : t('planning.restDay')}
+            {todayWorkout ? t('planning.today', { workout: todayWorkout }) : t('planning.restDay')}
           </Text>
         </Card>
       ) : (
@@ -240,10 +258,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
       )}
       <Card
         testID={ids.raceCard}
-        onPress={() => {
-          setRaceDraft(race ?? DEFAULT_RACE);
-          gate('race', workoutsRoutes.race());
-        }}
+        onPress={() => gate('race', workoutsRoutes.race())}
         padding="lg"
         radius="pill"
         gap="sm"
@@ -282,7 +297,15 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
       </Card>
 
       <SectionLabel>{t('routines.title')}</SectionLabel>
-      {visibleRoutines.length === 0 ? (
+      {scenario === 'new' ? null : (
+        <QueryState
+          testID={ids.routines}
+          loading={routinesQuery.isLoading}
+          error={routinesQuery.error}
+          onRetry={() => void routinesQuery.refetch()}
+        />
+      )}
+      {routinesLoaded && visibleRoutines.length === 0 ? (
         <Box
           testID={ids.routinesEmpty}
           radius="card"
@@ -323,7 +346,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
         {visibleRoutines.map((r) => (
           <Card
             key={r.id}
-            testID={`${ids.routines}.${r.id}`}
+            testID={`${ids.routines}.${r.label}`}
             onPress={() => router.push(workoutsRoutes.detail(r.id))}
             padding="lg"
             px="xl"
@@ -332,7 +355,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
             <HStack gap="ml">
               <Box bg="fill1" radius="lg" align="center" justify="center" style={styles.letter}>
                 <Text variant="nameTitle" color="brandText">
-                  {r.id}
+                  {r.label}
                 </Text>
               </Box>
               <VStack gap="xxs" flex={1}>
@@ -376,8 +399,8 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
             <Text variant="cardTitleSm">{t('library.title')}</Text>
             <Text variant="secondary" color="text2">
               {t('library.meta', {
-                total: exerciseLibrary.length + userExercises.length,
-                custom: userExercises.length,
+                total: library.length,
+                custom: customCount,
               })}
             </Text>
           </VStack>

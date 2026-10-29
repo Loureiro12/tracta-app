@@ -47,6 +47,10 @@ tags:
 - assertVisible:
     id: "home.move.value"
     text: "6,842"
+# Goals come from the account (Perfil › Metas)
+- assertVisible:
+    id: "home.move.goal"
+    text: "of 10,000 steps"
 - assertVisible:
     id: "home.move.stats"
 - assertNotVisible:
@@ -66,6 +70,9 @@ tags:
 - assertVisible:
     id: "home.week.value"
     text: "0"
+- assertVisible:
+    id: "home.week.goal"
+    text: "of 4"
 # Planned workout
 - scrollUntilVisible:
     element:
@@ -84,20 +91,22 @@ tags:
     element:
       id: "home.friends.card"
     centerElement: true
+# The demo account takes part in the seeded challenge, so the card shows its top 3
 - assertVisible:
     id: "home.friends.title"
-    text: "Friends"
+    text: "Semana em movimento"
 - assertVisible:
-    id: "home.friends.cta"
-- assertVisible:
-    id: "home.friends.cta.label"
-    text: "Invite"
-- assertNotVisible:
     id: "home.friends.ranking"
+- assertNotVisible:
+    id: "home.friends.cta"
 - scrollUntilVisible:
     element:
       id: "home.last.card"
     centerElement: true
+# Latest seeded entry: Saturday's 8.2 km run
+- assertVisible:
+    id: "home.last.details"
+    text: "8.2 km · 45:41 · 5:34 /km"
 - assertVisible:
     id: "home.last.history.label"
     text: "History"

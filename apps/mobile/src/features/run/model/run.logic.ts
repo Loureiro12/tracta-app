@@ -7,7 +7,15 @@ import {
   modalities,
 } from './run.mock';
 
-import type { ActiveRun, IntervalConfig, IntervalPhase, ModalityId, Split } from './run.types';
+import type {
+  ActiveRun,
+  IntervalConfig,
+  IntervalPhase,
+  ModalityId,
+  RunSummary,
+  Split,
+} from './run.types';
+import type { activities } from '@tracta/api';
 
 export const EM_DASH = '—';
 
@@ -165,5 +173,36 @@ export function liveValues(run: ActiveRun, now: number): LiveValues {
     phase: run.intervals ? phaseAt(intervalPhases(run.intervals), sec) : null,
     routeFraction: routeFraction(run.type, dist),
     paused: run.pausedAt !== null,
+  };
+}
+
+/**
+ * `activities.saveActivity` input for a finished activity. Times use the app clock (E2E lands on
+ * the frozen "today"); the demo clock's seconds are what the summary shows, so they are saved too.
+ */
+export function toActivityInput(
+  summary: RunSummary,
+  intervals: IntervalConfig | null,
+  notes: string,
+  endedAt: Date,
+): activities.SaveActivityInput {
+  const durationSeconds = Math.max(1, Math.round(summary.sec));
+  const meters =
+    summary.swimMeters ?? (summary.distKm === null ? null : Math.round(summary.distKm * 1000));
+  const splits = splitsFor(summary.type, summary.distKm, summary.sec)
+    .map((s) => {
+      const km = s.km !== null ? 1 : Math.round((s.partialKm ?? 0) * 100) / 100;
+      return { km, seconds: Math.max(1, Math.round(s.paceSec * km)) };
+    })
+    .filter((s) => s.km > 0);
+  return {
+    kind: summary.type,
+    startedAt: new Date(endedAt.getTime() - durationSeconds * 1000).toISOString(),
+    durationSeconds,
+    distanceM: meters,
+    gps: summary.gps,
+    splits,
+    intervals,
+    notes: notes.trim(),
   };
 }

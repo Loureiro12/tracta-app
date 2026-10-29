@@ -15,24 +15,27 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
+import { useCreateExercise, useExerciseLibrary, useUpdateExercise } from '../api/useExercises';
 import { OverlayHeader } from '../components/OverlayHeader';
+import { QueryState } from '../components/QueryState';
 import { SelectChip } from '../components/SelectChip';
 import { StepperTile } from '../components/StepperTile';
-import { useWorkoutsData } from '../hooks/useWorkoutsData';
 import { formatClock, formatKg, normalize } from '../model/workouts.helpers';
+import { kindOf } from '../model/workouts.mappers';
 import { equipment, exerciseCategories, exerciseIdFromName } from '../model/workouts.mock';
 import { useWorkoutsStore } from '../model/workouts.store';
 import { workoutsIds as ids } from '../workouts.testids';
 
-import type { ExerciseType } from '../model/workouts.types';
+import type { ExerciseType, LibraryExercise } from '../model/workouts.types';
 
 type Props = {
   /** Prefilled name (from the picker search). */
   name?: string | undefined;
-  /** Id of a custom exercise to edit. */
+  /** Id (uuid) of a custom exercise to edit. */
   edit?: string | undefined;
   /** When opened from the picker, the saved exercise is also selected there. */
   from?: 'picker' | undefined;
@@ -55,14 +58,44 @@ const TIME_GROUPS = new Set(['Cardio', 'Mobilidade']);
 const TYPES: ExerciseType[] = ['s', 'b', 'c'];
 
 /** New / edit exercise form with chips for group, equipment and logging type plus default values. */
-export function ExerciseFormScreen({ name, edit, from }: Props) {
+export function ExerciseFormScreen(props: Props) {
+  const { t } = useTranslation('workouts');
+  const router = useRouter();
+  const query = useExerciseLibrary();
+  if (query.data) return <ExerciseForm {...props} library={query.data} />;
+  return (
+    <Screen
+      testID={ids.formScreen}
+      header={
+        <OverlayHeader
+          title={props.edit ? t('form.titleEdit') : t('form.titleNew')}
+          titleTestID={ids.formTitle}
+          left={{
+            label: t('builder.cancel'),
+            onPress: () => router.back(),
+            testID: ids.formCancel,
+          }}
+        />
+      }
+    >
+      <QueryState
+        testID={ids.formScreen}
+        loading={query.isLoading}
+        error={query.error}
+        onRetry={() => void query.refetch()}
+      />
+    </Screen>
+  );
+}
+
+function ExerciseForm({ name, edit, from, library }: Props & { library: LibraryExercise[] }) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
   const showToast = useFeedbackStore((s) => s.showToast);
-  const addUserExercise = useWorkoutsStore((s) => s.addUserExercise);
-  const updateUserExercise = useWorkoutsStore((s) => s.updateUserExercise);
-  const { library } = useWorkoutsData();
-  const editing = edit ? library.find((l) => l.id === edit) : undefined;
+  const createExercise = useCreateExercise();
+  const updateExercise = useUpdateExercise();
+  const pending = createExercise.isPending || updateExercise.isPending;
+  const editing = edit ? library.find((l) => l.id === edit && l.custom) : undefined;
   const [form, setForm] = useState<FormState>(() =>
     editing
       ? {
@@ -105,33 +138,40 @@ export function ExerciseFormScreen({ name, edit, from }: Props) {
     if (!form.group) return showToast(t('toast.groupRequired'));
     if (library.some((l) => normalize(l.name) === normalize(trimmed) && l.id !== editing?.id))
       return showToast(t('toast.duplicateExercise'));
-    const data = {
+    if (pending) return;
+    const input = {
       name: trimmed,
-      group: form.group,
-      secondary: form.secondary,
+      muscleGroup: form.group,
+      secondaryGroups: form.secondary,
       equipment: form.equipment || 'Outro',
-      type: form.type,
-      kg: form.type === 's' ? form.kg : null,
-      reps: form.reps,
-      rest: form.type === 'c' ? 0 : form.rest,
-      notes: form.notes,
+      kind: kindOf(form.type),
+      defaultKg: form.type === 's' ? form.kg : null,
+      defaultReps: form.reps,
+      defaultRestSeconds: form.type === 'c' ? 0 : form.rest,
+      instructions: form.notes.trim(),
       favorite: form.favorite,
     };
-    if (editing) {
-      updateUserExercise(editing.id, data);
-    } else {
-      const created = addUserExercise(data);
-      if (from === 'picker') {
+    const done = (saved: LibraryExercise) => {
+      if (from === 'picker' && !editing) {
         const s = useWorkoutsStore.getState();
-        s.setPickerSelection([...s.pickerSelection, created.id]);
+        s.setPickerSelection([...s.pickerSelection, saved.id]);
       }
-    }
-    showToast(
-      from === 'picker' && !editing
-        ? t('toast.exerciseCreatedSelected')
-        : t('toast.exerciseCreated'),
-    );
-    router.back();
+      showToast(
+        from === 'picker' && !editing
+          ? t('toast.exerciseCreatedSelected')
+          : t('toast.exerciseCreated'),
+      );
+      router.back();
+    };
+    const failed = (error: unknown) =>
+      showToast(
+        error instanceof ApiError && error.code === 'conflict'
+          ? t('toast.duplicateExercise')
+          : t('toast.saveFailed'),
+      );
+    if (editing)
+      updateExercise.mutate({ id: editing.id, input }, { onSuccess: done, onError: failed });
+    else createExercise.mutate(input, { onSuccess: done, onError: failed });
   };
 
   const steppers =

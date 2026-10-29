@@ -18,9 +18,14 @@ import {
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
-import { NOTIFICATION_GROUPS } from '../model/profile.mock';
+import { useUpdateSettings } from '../api/useAccountActions';
+import { AccountGate } from '../components/AccountGate';
+import { NOTIFICATION_GROUPS, REMINDER_HOUR } from '../model/profile.mock';
 import { useProfileStore } from '../model/profile.store';
 import { profileIds as ids } from '../profile.testids';
+
+import type { NotificationKey } from '../model/profile.types';
+import type { Account } from '@/shared/api';
 
 const formatHour = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
@@ -29,10 +34,6 @@ export function NotificationsScreen() {
   const router = useRouter();
   const { t } = useTranslation('profile');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const notifications = useProfileStore((s) => s.notifications);
-  const toggleNotification = useProfileStore((s) => s.toggleNotification);
-  const reminderMinutes = useProfileStore((s) => s.reminderMinutes);
-  const adjustReminder = useProfileStore((s) => s.adjustReminder);
   const systemAllowed = useProfileStore((s) => s.systemNotificationsAllowed);
   const allowSystemNotifications = useProfileStore((s) => s.allowSystemNotifications);
 
@@ -87,6 +88,36 @@ export function NotificationsScreen() {
         </Card>
       ) : null}
 
+      <AccountGate testID={ids.notificationsScreen}>
+        {(account) => <NotificationSettings account={account} />}
+      </AccountGate>
+      <Text variant="caption" color="text2">
+        {t('notifications.footnote')}
+      </Text>
+    </Screen>
+  );
+}
+
+/** Switches and reminder hour, saved to the account on every change (optimistic). */
+function NotificationSettings({ account }: { account: Account }) {
+  const { t } = useTranslation('profile');
+  const showToast = useFeedbackStore((s) => s.showToast);
+  const updateSettings = useUpdateSettings();
+  const { notifications, reminderMinutes } = account.settings;
+  const onError = () => showToast(t('state.saveFailed'));
+
+  const toggleNotification = (key: NotificationKey) =>
+    updateSettings.mutate({ notifications: { [key]: !notifications[key] } }, { onError });
+  const adjustReminder = (direction: 1 | -1) => {
+    const value = Math.min(
+      REMINDER_HOUR.max,
+      Math.max(REMINDER_HOUR.min, reminderMinutes + direction * REMINDER_HOUR.step),
+    );
+    if (value !== reminderMinutes) updateSettings.mutate({ reminderMinutes: value }, { onError });
+  };
+
+  return (
+    <>
       <VStack testID={ids.notificationsRows} gap="md">
         {NOTIFICATION_GROUPS.map((group) => (
           <VStack key={group.key} gap="sm">
@@ -131,10 +162,7 @@ export function NotificationsScreen() {
           </Box>
         </Card>
       ) : null}
-      <Text variant="caption" color="text2">
-        {t('notifications.footnote')}
-      </Text>
-    </Screen>
+    </>
   );
 }
 

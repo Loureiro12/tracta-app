@@ -3,56 +3,47 @@ name: auth-social
 tags:
   - auth
 ---
-- runFlow: ../../subflows/launch.yaml
-# Sign up with Google
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+# Apple/Google sign-in need OAuth credentials in Supabase; until then the buttons say so.
+- runFlow: ../../subflows/launch-signed-out.yaml
 - tapOn:
     id: "auth.welcome.signup"
-- tapOn:
-    id: "auth.signup.google"
 - assertVisible:
-    id: "auth.connect.screen"
-- tapOn:
-    id: "auth.connect.skip"
-- assertVisible:
-    id: "home.screen"
-# Sign up with Apple
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
-- tapOn:
-    id: "auth.welcome.signup"
+    id: "auth.signup.screen"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.apple"
+    centerElement: true
 - tapOn:
     id: "auth.signup.apple"
 - assertVisible:
-    id: "auth.connect.screen"
+    id: "app.toast"
+    text: "Apple sign-in is coming soon"
 - tapOn:
-    id: "auth.connect.skip"
+    id: "auth.signup.google"
 - assertVisible:
-    id: "home.screen"
-# Sign in with Apple
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+    id: "app.toast"
+    text: "Google sign-in is coming soon"
+- tapOn:
+    id: "auth.signup.back"
 - tapOn:
     id: "auth.welcome.login"
+- scrollUntilVisible:
+    element:
+      id: "auth.login.apple"
+    centerElement: true
 - tapOn:
     id: "auth.login.apple"
 - assertVisible:
-    id: "auth.connect.screen"
-- tapOn:
-    id: "auth.connect.skip"
-- assertVisible:
-    id: "home.screen"
-# Sign in with Google
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
-- tapOn:
-    id: "auth.welcome.login"
+    id: "app.toast"
+    text: "Apple sign-in is coming soon"
+- scrollUntilVisible:
+    element:
+      id: "auth.login.google"
+    centerElement: true
 - tapOn:
     id: "auth.login.google"
 - assertVisible:
-    id: "auth.connect.screen"
-- tapOn:
-    id: "auth.connect.skip"
+    id: "app.toast"
+    text: "Google sign-in is coming soon"
 - assertVisible:
-    id: "home.screen"
+    id: "auth.login.screen"

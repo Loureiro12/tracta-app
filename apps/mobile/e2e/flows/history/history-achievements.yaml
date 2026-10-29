@@ -24,7 +24,7 @@ tags:
     text: "Barbell bench press"
 - assertVisible:
     id: "history.achievements.records.bench.value"
-    text: "82,5 kg"
+    text: "60 kg"
 - scrollUntilVisible:
     element:
       id: "history.achievements.records.5k.value"

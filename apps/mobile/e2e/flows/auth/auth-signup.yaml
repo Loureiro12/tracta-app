@@ -4,9 +4,7 @@ tags:
   - smoke
   - auth
 ---
-- runFlow: ../../subflows/launch.yaml
-- openLink: "tracta://welcome?locale=en"
-- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- runFlow: ../../subflows/launch-signed-out.yaml
 - assertVisible:
     id: "auth.screen"
 - assertVisible:
@@ -67,7 +65,8 @@ tags:
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 - tapOn:
     id: "auth.signup.email.input"
-- inputText: "lucas@tracta.app"
+# Every run creates a real account, so the e-mail must be unique
+- inputRandomEmail
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 - tapOn:
     id: "auth.signup.password.input"

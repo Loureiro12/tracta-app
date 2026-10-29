@@ -20,7 +20,7 @@ tags:
     text: "Invite friends"
 - assertVisible:
     id: "social.invite.link"
-    text: "tracta.app/convite/voce-7f2k"
+    text: "tracta.app/convite/lucas"
 - tapOn:
     id: "social.invite.copy"
 - assertVisible:
@@ -46,7 +46,7 @@ tags:
     id: "social.invite.query"
 - tapOn:
     id: "social.invite.query.input"
-- inputText: "@diegor"
+- inputText: "@diego"
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
 - hideKeyboard
 - runFlow: ../../subflows/dismiss-system-dialogs.yaml
@@ -84,4 +84,4 @@ tags:
     text: "Invite sent · waiting"
 - assertVisible:
     id: "social.hub.pending.elisa.name"
-    text: "Elisa Prado"
+    text: "Elisa Rocha"

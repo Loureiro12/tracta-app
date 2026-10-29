@@ -54,3 +54,20 @@ tags:
 - assertVisible:
     id: "profile.goals-list.workouts.value"
     text: "5"
+# Saved to the account: Home reads the same goals
+- tapOn:
+    id: "app.tab.home"
+- scrollUntilVisible:
+    element:
+      id: "home.move.card"
+    centerElement: true
+- assertVisible:
+    id: "home.move.goal"
+    text: "of 10,500 steps"
+- scrollUntilVisible:
+    element:
+      id: "home.week.card"
+    centerElement: true
+- assertVisible:
+    id: "home.week.goal"
+    text: "of 5"

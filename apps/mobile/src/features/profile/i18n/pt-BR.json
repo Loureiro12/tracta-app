@@ -17,7 +17,10 @@
     "trialDescription": "Teste grátis até 3 nov · depois {{price}}",
     "activeDescription": "Plano {{plan}} · renova em 27 out 2027",
     "perYear": "/ano",
-    "perMonth": "/mês"
+    "perMonth": "/mês",
+    "trialDescriptionOn": "Teste grátis até {{date}} · depois {{price}}",
+    "cancelledDescriptionOn": "Cancelado · acesso até {{date}}",
+    "activeDescriptionOn": "Plano {{plan}} · renova em {{date}}"
   },
   "goals": {
     "section": "Metas",
@@ -30,14 +33,23 @@
     "workoutsValue": "{{value}}",
     "workoutsTimes": "{{value}}×",
     "runKmValue": "{{value}} km",
-    "steps": { "name": "Passos por dia", "description": "média dos últimos 7 dias: 9.539" },
-    "sleep": { "name": "Sono por noite", "description": "média da semana: 7h 20" },
+    "steps": {
+      "name": "Passos por dia",
+      "description": "média dos últimos 7 dias: 9.539"
+    },
+    "sleep": {
+      "name": "Sono por noite",
+      "description": "média da semana: 7h 20"
+    },
     "sleepShort": "Sono",
     "workouts": {
       "name": "Treinos por semana",
       "description": "musculação, corrida e outras modalidades"
     },
-    "runKm": { "name": "Corrida por semana", "description": "distância registrada com GPS" },
+    "runKm": {
+      "name": "Corrida por semana",
+      "description": "distância registrada com GPS"
+    },
     "footnote": "Metas são referências para acompanhar sua evolução. Não há penalidade por não atingir — dias de descanso também contam."
   },
   "sources": {
@@ -81,7 +93,8 @@
     "visibilityAll": "Todos",
     "visibilityAllDescription": "perfil público no Tracta",
     "privacy": "Privacidade e dados",
-    "appSettings": "Preferências do app"
+    "appSettings": "Preferências do app",
+    "unitsValueLb": "lb · km"
   },
   "footnote": "Diferenciamos dados importados, registrados manualmente e calculados. Nada é enviado a servidores sem sua autorização.",
   "edit": {
@@ -107,7 +120,8 @@
     "errorNewSame": "Use uma senha diferente da atual",
     "savedToast": "Perfil atualizado",
     "emailSentToast": "Enviamos um link de confirmação para {{email}}",
-    "passwordToast": "Senha alterada"
+    "passwordToast": "Senha alterada",
+    "errorEmailTaken": "Este e-mail já está em uso"
   },
   "photos": {
     "title": "Fotos de progresso",
@@ -208,11 +222,26 @@
         "title": "Fim do descanso",
         "description": "som e vibração ao terminar o intervalo"
       },
-      "sound": { "title": "Som", "description": "desative para só vibrar" },
-      "remind": { "title": "Lembrete de treino", "description": "nos dias planejados da rotina" },
-      "daily": { "title": "Resumo diário", "description": "sono e movimento às 21:00" },
-      "weekly": { "title": "Resumo semanal", "description": "domingo, com consistência da semana" },
-      "goals": { "title": "Metas", "description": "quando você atingir uma meta" },
+      "sound": {
+        "title": "Som",
+        "description": "desative para só vibrar"
+      },
+      "remind": {
+        "title": "Lembrete de treino",
+        "description": "nos dias planejados da rotina"
+      },
+      "daily": {
+        "title": "Resumo diário",
+        "description": "sono e movimento às 21:00"
+      },
+      "weekly": {
+        "title": "Resumo semanal",
+        "description": "domingo, com consistência da semana"
+      },
+      "goals": {
+        "title": "Metas",
+        "description": "quando você atingir uma meta"
+      },
       "sync": {
         "title": "Sincronização e permissões",
         "description": "se algo precisar da sua atenção"
@@ -252,5 +281,12 @@
     "deleteAccountDescription": "apaga conta e backup; não pode ser desfeito",
     "deleteAccountToast": "Conta excluída",
     "footnote": "Não registramos dados de saúde em logs. Excluir no Tracta não apaga o que já foi gravado no Apple Health."
+  },
+  "state": {
+    "loading": "Carregando sua conta…",
+    "errorTitle": "Não foi possível carregar sua conta",
+    "errorDescription": "Verifique sua conexão e tente de novo.",
+    "retry": "Tentar de novo",
+    "saveFailed": "Não foi possível salvar. Tente de novo."
   }
 }
