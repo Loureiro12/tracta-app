@@ -1,4 +1,16 @@
-# Testes: E2E-first com Maestro
+# Testes
+
+Três camadas, cada uma no lugar certo:
+
+| Camada | Ferramenta                                      | Onde                                 | Cobre                                                              |
+| ------ | ----------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------ |
+| Banco  | pgTAP (`pnpm db:test`)                          | `supabase/tests/database/*.test.sql` | RLS entre usuários, constraints, RPCs, triggers                    |
+| API    | vitest contra o Supabase real (`pnpm test:api`) | `packages/api/tests/*.test.ts`       | contratos do `@tracta/api`, validação, códigos de erro, isolamento |
+| App    | Maestro (`pnpm e2e`)                            | `apps/mobile/e2e/flows/**`           | comportamento de ponta a ponta no simulador, com backend real      |
+
+Não há mocks de rede: os testes de API e o E2E falam com o Supabase local (`pnpm db:start`). Os de API criam usuários próprios por teste, então rodam em paralelo; o E2E usa a conta demo restaurada a cada fluxo (ver docs/BACKEND.md).
+
+# E2E com Maestro
 
 ## Por que só E2E
 
@@ -39,6 +51,10 @@ Regras aplicadas por `check-flows`:
 - `runFlow` aponta para arquivo existente.
 
 ## O que `check-tests` exige de um commit
+
+Backend: mudou `supabase/migrations/*` → algum `supabase/tests/database/*.test.sql` muda junto; mudou `packages/api/src/domains/<d>.ts` → `packages/api/tests/<d>.test.ts` muda junto (mesmo trailer `E2E-Skip:` para exceções).
+
+App:
 
 | Alterou                                                | Precisa de                                         |
 | ------------------------------------------------------ | -------------------------------------------------- |

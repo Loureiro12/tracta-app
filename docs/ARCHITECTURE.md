@@ -5,6 +5,7 @@
 | Pacote                  | Papel                                                                               |
 | ----------------------- | ----------------------------------------------------------------------------------- |
 | `@tracta/mobile`        | App Expo. Rotas em `app/`, código em `src/`.                                        |
+| `@tracta/api`           | Cliente Supabase tipado, tipos gerados e módulos por domínio. Ver BACKEND.md.       |
 | `@tracta/design-system` | Tokens, tema e primitivos de UI. Única fonte de cores, espaçamento e tipografia.    |
 | `@tracta/eslint-config` | Regras compartilhadas. `appConfig()` para apps, `libraryConfig()` para bibliotecas. |
 | `@tracta/tsconfig`      | Bases de TypeScript (`react-native.json`, `react-native-library.json`).             |
@@ -52,6 +53,8 @@ Os nomes de grupo são omitidos nos hrefs: `app/(overlays)/workouts/builder.tsx`
 - Deep imports (`@tracta/design-system/src/...`) e subir mais de um diretório (`../../`) são erros de lint.
 
 ### Estado
+
+Dados do servidor: React Query com hooks em `features/<f>/api/use*.ts` sobre `@/shared/api`. Sessão em `@/shared/session` (`useSession`, `useAccount`); o `SessionGate` mantém deslogados nas telas de `(auth)`.
 
 Estado global por feature com `zustand` em `model/<feature>.store.ts`, exportado pelo barrel. Preferências do usuário (tema, idioma) ficam no store de `settings`, persistido em AsyncStorage. Providers globais só em `app-providers/`.
 

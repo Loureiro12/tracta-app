@@ -16,7 +16,9 @@ tracta/
 │       └── e2e/
 │           ├── flows/<dominio>/*.yaml   # fluxos Maestro (app, <feature>, design-system)
 │           └── subflows/                # passos reutilizáveis
+├── supabase/                   # migrations, seeds (demo), testes pgTAP
 ├── packages/
+│   ├── api/                    # @tracta/api: cliente Supabase tipado + domínios + testes de integração
 │   └── design-system/          # tokens, tema, primitivos testáveis, galeria
 ├── design_handoff_tracta_app/  # referência de design (protótipo HTML + README com tokens); não é código
 ├── tooling/
@@ -27,6 +29,19 @@ tracta/
 ```
 
 ## Começando
+
+Requisitos: Node 22, pnpm 10, Docker (Supabase local), Xcode/Android Studio e [Maestro](https://maestro.mobile.dev) para E2E.
+
+```bash
+pnpm install
+pnpm db:start          # Supabase local (portas 553xx) com schema e conta demo
+pnpm ios               # build de desenvolvimento no simulador
+pnpm dev               # Metro; entre com lucas@tracta.app / Tracta2026
+```
+
+Backend, testes de banco e de API: ver [docs/BACKEND.md](docs/BACKEND.md).
+
+### Detalhes
 
 ```bash
 corepack enable && corepack prepare pnpm@10.32.1 --activate   # ou instale o pnpm 10
