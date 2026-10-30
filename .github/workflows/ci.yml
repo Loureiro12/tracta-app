@@ -69,8 +69,9 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: 2.120.0
+      # edge-runtime serves supabase/functions (invite-friend); Mailpit receives the invite e-mails.
       - name: Start Supabase (only the services the tests use)
-        run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
+        run: supabase start -x studio,imgproxy,logflare,vector,supavisor
       - name: Schema lint
         run: supabase db lint --schema public --level error
       - name: Database tests (pgTAP)
@@ -107,7 +108,7 @@ jobs:
         with:
           version: 2.120.0
       - name: Start Supabase with demo seed
-        run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
+        run: supabase start -x studio,imgproxy,logflare,vector,supavisor
 
       - name: Enable KVM for the emulator
         run: |
