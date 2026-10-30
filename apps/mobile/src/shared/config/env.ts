@@ -20,8 +20,14 @@ function reachable(url: string): string {
 }
 
 function supabaseConfig(): { url: string; anonKey: string } {
-  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  // E2E builds reset the demo account, so they never read the app's (production) variables: they
+  // use the E2E_ ones (a staging project in CI) or the local stack.
+  const url = isE2E
+    ? process.env.EXPO_PUBLIC_E2E_SUPABASE_URL
+    : process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const anonKey = isE2E
+    ? process.env.EXPO_PUBLIC_E2E_SUPABASE_ANON_KEY
+    : process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
   if (url && anonKey) return { url: reachable(url), anonKey };
   if (__DEV__ || isE2E)
     return { url: reachable(LOCAL_SUPABASE_URL), anonKey: LOCAL_SUPABASE_ANON_KEY };

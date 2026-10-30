@@ -153,8 +153,8 @@ jobs:
     # macOS runners have no Docker: the iOS build targets a hosted staging Supabase project that
     # runs the same migrations + demo seed. Configure the two secrets to enable this job.
     env:
-      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
-      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
+      EXPO_PUBLIC_E2E_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+      EXPO_PUBLIC_E2E_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
     # macOS minutes are expensive: run on main and on demand, not on every PR.
     if: github.event_name != 'pull_request' && vars.E2E_IOS_ENABLED == 'true'
     runs-on: macos-latest

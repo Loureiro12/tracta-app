@@ -105,6 +105,8 @@ Os textos assertados são em inglês. O subflow `launch.yaml` abre `tracta://?lo
 
 Builds para E2E usam `EXPO_PUBLIC_E2E=1` (scripts `e2e:ios`/`e2e:android` e a CI), que mantém a galeria do design system acessível em Release.
 
+Esses builds ignoram `EXPO_PUBLIC_SUPABASE_URL`/`_ANON_KEY` (que no `.env` apontam para produção): usam `EXPO_PUBLIC_E2E_SUPABASE_URL`/`_ANON_KEY` quando definidos (o projeto de staging na CI) e, sem eles, o Supabase local. O reset da conta demo nunca alcança produção.
+
 ## iOS: alerta "Abrir com Tracta?"
 
 Na primeira vez que um deep link de scheme custom abre em um simulador, o iOS pede confirmação. O subflow `subflows/accept-deep-link-prompt.yaml` toca em "Open|Abrir" se o alerta estiver visível e é chamado após todo `openLink`. A aceitação fica gravada no simulador. Se fluxos forem abortados repetidas vezes, os alertas se empilham e nenhum tap resolve: reinicie o simulador (`xcrun simctl shutdown <udid> && xcrun simctl boot <udid>`).
