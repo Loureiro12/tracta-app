@@ -38,8 +38,14 @@ begin
   delete from public.notifications where owner_id = any (demo_ids);
   delete from public.cheers where from_id = any (demo_ids) or to_id = any (demo_ids);
   delete from public.challenges where owner_id = any (demo_ids);
+  delete from public.health_days where user_id = any (demo_ids);
+  delete from public.health_connections where user_id = any (demo_ids);
   delete from public.daily_summaries where user_id = any (demo_ids);
   delete from public.friend_requests where from_id = any (demo_ids) or to_id = any (demo_ids);
+  delete from public.email_invites where inviter_id = any (demo_ids);
+  -- addresses the demo user invited by e-mail in flows (unconfirmed Auth users, never signed up)
+  delete from auth.users
+    where email_confirmed_at is null and raw_user_meta_data ->> 'invited_by' = any (demo_ids::text[]);
   delete from public.workout_sessions where owner_id = any (demo_ids);
   delete from public.activities where owner_id = any (demo_ids);
   delete from public.body_measurements where owner_id = any (demo_ids);
@@ -49,6 +55,13 @@ begin
   delete from public.program_enrollments where user_id = any (demo_ids);
   delete from public.races where user_id = any (demo_ids);
   delete from public.subscriptions where user_id = any (demo_ids);
+  delete from public.progress_photos where owner_id = any (demo_ids);
+  -- Photos uploaded by the flows. Local/CI only: SQL deletes are normally refused by Storage
+  -- (they orphan the file bytes); orphaned bytes of throwaway demo uploads are acceptable here.
+  perform set_config('storage.allow_delete_query', 'true', true);
+  delete from storage.objects
+    where bucket_id = 'progress-photos' and split_part(name, '/', 1) = any (demo_ids::text[]);
+  perform set_config('storage.allow_delete_query', 'false', true);
 
   -- Account fields the flows edit (name, e-mail, password, preferences, goals).
   update auth.users
