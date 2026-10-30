@@ -1,4 +1,3 @@
-import type { PaywallContext } from './profile.types';
 import type { Href } from 'expo-router';
 
 /**
@@ -8,9 +7,6 @@ import type { Href } from 'expo-router';
 export const profileRoutes = {
   edit: '/profile/edit' as Href,
   photos: '/profile/photos' as Href,
-  paywall: (context?: PaywallContext): Href =>
-    (context ? `/profile/paywall?context=${context}` : '/profile/paywall') as Href,
-  manage: '/profile/manage' as Href,
   notifications: '/profile/notifications' as Href,
   privacy: '/profile/privacy' as Href,
   goals: '/profile/goals' as Href,

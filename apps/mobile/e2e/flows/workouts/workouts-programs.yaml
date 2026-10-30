@@ -4,7 +4,7 @@ tags:
   - workouts
 ---
 - runFlow: ../../subflows/launch.yaml
-# Programs are a Pro feature; the flow deep-links past the paywall (see workouts-pro-gate).
+# The flow deep-links to the catalog (opening it from the tab is covered by workouts-open-features).
 - openLink: "tracta://workouts/programs?locale=en"
 - runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:

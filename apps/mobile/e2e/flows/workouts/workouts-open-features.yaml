@@ -1,0 +1,51 @@
+appId: com.tracta.mobile
+name: workouts-open-features
+tags:
+  - workouts
+---
+# Purchases are hidden for now: programs, interval runs and "My race" open for every account,
+# with no PRO chip and no paywall.
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.programs.card"
+    speed: 30
+    centerElement: true
+# Let the list settle so the tap is not swallowed by scroll momentum
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertNotVisible:
+    id: "workouts.programs.pro"
+- tapOn:
+    id: "workouts.programs.card"
+- assertVisible:
+    id: "workouts.programs.screen"
+- tapOn:
+    id: "workouts.programs.back"
+- assertVisible:
+    id: "workouts.screen"
+- assertNotVisible:
+    id: "workouts.race.card.pro"
+- tapOn:
+    id: "workouts.race.card"
+- assertVisible:
+    id: "workouts.race.screen"
+# Sheets have no close button of their own here: relaunch for the next entry point
+- runFlow: ../../subflows/launch.yaml
+- tapOn:
+    id: "app.tab.workouts"
+- scrollUntilVisible:
+    element:
+      id: "workouts.start.intervals"
+    speed: 30
+    centerElement: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertNotVisible:
+    id: "workouts.start.intervals.pro"
+- tapOn:
+    id: "workouts.start.intervals"
+- assertVisible:
+    id: "workouts.intervals.screen"

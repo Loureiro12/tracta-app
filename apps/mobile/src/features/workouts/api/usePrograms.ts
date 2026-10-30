@@ -14,7 +14,7 @@ export const programsKeys = {
   race: (userId: string | undefined) => ['programs', userId, 'race'] as const,
 };
 
-/** Program catalog (PRO). */
+/** Program catalog. */
 export function usePrograms() {
   const { user } = useSession();
   return useQuery({

@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 
 import {
   Box,
-  Button,
   Card,
   Divider,
   HStack,
@@ -15,7 +14,7 @@ import {
 } from '@tracta/design-system';
 
 import { useFeedbackStore } from '@/shared/feedback';
-import { formatDate, useTranslation } from '@/shared/i18n';
+import { useTranslation } from '@/shared/i18n';
 import { useAccount } from '@/shared/session';
 
 import { useSignOut, useUpdateSettings } from '../api/useAccountActions';
@@ -23,7 +22,6 @@ import { AccountGate } from '../components/AccountGate';
 import { ActionButton } from '../components/ActionButton';
 import { ProfileHeader } from '../components/ProfileHeader';
 import { toGoalValues, useGoalLabels } from '../hooks/useGoalLabels';
-import { useProStatus } from '../hooks/useProStatus';
 import { GOAL_KEYS, NOTIFICATION_COUNTED } from '../model/profile.mock';
 import { profileRoutes } from '../model/profile.routes';
 import { profileIds as ids } from '../profile.testids';
@@ -79,33 +77,10 @@ function ProfileBody({ account }: { account: Account }) {
   const router = useRouter();
   const { t } = useTranslation('profile');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const { pro, isPro, fromServer, trialEndsAt, periodEnd } = useProStatus();
   const updateSettings = useUpdateSettings();
   const signOut = useSignOut();
   const { settings } = account;
   const goalLabels = useGoalLabels(toGoalValues(account.goals));
-
-  const shortDate = (d: Date) => formatDate(d, { day: 'numeric', month: 'short' });
-  const planPrice = pro.plan === 'year' ? t('paywall.yearPrice') : t('paywall.monthPrice');
-  const planName = (
-    pro.plan === 'year' ? t('paywall.yearName') : t('paywall.monthName')
-  ).toLowerCase();
-  const price = planPrice + (pro.plan === 'year' ? t('pro.perYear') : t('pro.perMonth'));
-  // Server subscriptions show their real dates; the local simulation keeps the handoff copy.
-  const proDescription = !isPro
-    ? t('pro.freeDescription')
-    : pro.cancelled
-      ? fromServer && periodEnd
-        ? t('pro.cancelledDescriptionOn', { date: shortDate(periodEnd) })
-        : t('pro.cancelledDescription')
-      : pro.trial
-        ? fromServer && trialEndsAt
-          ? t('pro.trialDescriptionOn', { date: shortDate(trialEndsAt), price })
-          : t('pro.trialDescription', { price })
-        : fromServer && periodEnd
-          ? t('pro.activeDescriptionOn', { plan: planName, date: formatDate(periodEnd) })
-          : t('pro.activeDescription', { plan: planName });
-  const openPro = () => router.push(isPro ? profileRoutes.manage : profileRoutes.paywall());
 
   const notificationsOn = NOTIFICATION_COUNTED.filter((k) => settings.notifications[k]).length;
   const notificationsSummary = notificationsOn
@@ -143,37 +118,6 @@ function ProfileBody({ account }: { account: Account }) {
 
   return (
     <>
-      <Card
-        testID={ids.proCard}
-        variant={isPro ? 'ink' : 'surface'}
-        padding="xl"
-        py="lg"
-        onPress={openPro}
-        accessibilityLabel={t('pro.title')}
-      >
-        <HStack gap="md" justify="space-between">
-          <VStack flex={1} gap="xxs">
-            <Text testID={ids.proTitle} variant="subtitle" color={isPro ? 'textOnInk' : 'text'}>
-              {t('pro.title')}
-            </Text>
-            <Text
-              testID={ids.proDescription}
-              variant="secondary"
-              color={isPro ? 'text2OnInk' : 'text2'}
-            >
-              {proDescription}
-            </Text>
-          </VStack>
-          <Button
-            testID={ids.proCta}
-            label={isPro ? t('pro.manage') : t('pro.seePlans')}
-            variant={isPro ? 'onInk' : 'primary'}
-            size="xs"
-            onPress={openPro}
-          />
-        </HStack>
-      </Card>
-
       <SectionLabel>{t('goals.section')}</SectionLabel>
       <ListGroup testID={ids.goalsGroup}>
         {GOAL_KEYS.map((key, i) => (

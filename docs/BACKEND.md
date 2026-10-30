@@ -62,4 +62,4 @@ Os seeds definem loaders `seed.demo_<NN>_<o-que>()`; `seed.load_demo()` executa 
 
 ## Fora do backend (por ora)
 
-Sono, passos e frequência cardíaca vêm do Apple Health/Health Connect no aparelho; GPS é local; fotos de progresso ficam no aparelho. Compras (Pro) não têm integração com loja ainda: o app lê o status real e simula a compra localmente.
+Sono, passos e frequência cardíaca vêm do Apple Health/Health Connect no aparelho; GPS é local; fotos de progresso ficam no aparelho. Compras e assinaturas estão **ocultas no app por enquanto**: não há paywall, gerenciamento de plano nem selo PRO, e programas, provas e intervalados ficam liberados para todos. O backend mantém a tabela `subscriptions` e o `isPro` em `account.getAccount`, prontos para quando a integração com a loja voltar.

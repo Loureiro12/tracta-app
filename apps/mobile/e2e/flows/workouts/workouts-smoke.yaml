@@ -33,16 +33,10 @@ tags:
     element:
       id: "workouts.start.intervals"
     centerElement: true
-- assertVisible:
-    id: "workouts.start.intervals.pro"
-    text: "PRO"
 - scrollUntilVisible:
     element:
       id: "workouts.programs.card"
     centerElement: true
-- assertVisible:
-    id: "workouts.programs.pro"
-    text: "PRO"
 - scrollUntilVisible:
     element:
       id: "workouts.race.card"

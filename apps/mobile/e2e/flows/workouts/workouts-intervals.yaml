@@ -4,7 +4,7 @@ tags:
   - workouts
 ---
 - runFlow: ../../subflows/launch.yaml
-# Interval runs are a Pro feature; the sheet is deep-linked (the gate is covered by workouts-pro-gate).
+# The sheet is deep-linked (opening it from the tab is covered by workouts-open-features).
 - openLink: "tracta://workouts/intervals?locale=en"
 - runFlow: ../../subflows/accept-deep-link-prompt.yaml
 - assertVisible:

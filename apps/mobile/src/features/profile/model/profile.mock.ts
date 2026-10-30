@@ -44,16 +44,3 @@ export const NOTIFICATION_COUNTED: readonly NotificationKey[] = [
 ];
 
 export const REMINDER_HOUR = { step: 30, min: 300, max: 1380 } as const;
-
-/** Paywall comparison table: free column value kind. */
-export type PaywallRowKey =
-  'workouts' | 'gps' | 'social' | 'programs' | 'race' | 'intervals' | 'evolution';
-export const PAYWALL_ROWS: readonly { key: PaywallRowKey; free: 'yes' | 'no' | 'limited' }[] = [
-  { key: 'workouts', free: 'yes' },
-  { key: 'gps', free: 'yes' },
-  { key: 'social', free: 'yes' },
-  { key: 'programs', free: 'no' },
-  { key: 'race', free: 'no' },
-  { key: 'intervals', free: 'no' },
-  { key: 'evolution', free: 'limited' },
-];

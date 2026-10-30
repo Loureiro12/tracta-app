@@ -17,21 +17,17 @@ import {
 
 import { now } from '@/shared/clock';
 import { formatDate, useTranslation } from '@/shared/i18n';
-import { useAccount } from '@/shared/session';
 
 import { useExerciseLibrary } from '../api/useExercises';
 import { useEnrollment, useRace } from '../api/usePrograms';
 import { useRoutines } from '../api/useRoutines';
 import { ActivityTile } from '../components/ActivityTile';
-import { ProChip } from '../components/ProChip';
 import { QueryState } from '../components/QueryState';
 import { dayKey, parseIsoDate } from '../model/workouts.days';
 import { countSets, formatClock, raceView, weekPlan } from '../model/workouts.helpers';
 import { recentPaceSeconds } from '../model/workouts.mock';
 import { workoutsRoutes } from '../model/workouts.routes';
 import { workoutsIds as ids } from '../workouts.testids';
-
-import type { Href } from 'expo-router';
 
 type Props = {
   /** `new` previews the screen as a new user (no routines yet), like the prototype demo state. */
@@ -47,7 +43,6 @@ function todayIndex(): number {
 export function WorkoutsScreen({ scenario = 'default' }: Props) {
   const { t } = useTranslation('workouts');
   const router = useRouter();
-  const isPro = useAccount().data?.isPro ?? false;
   const routinesQuery = useRoutines();
   const allRoutines = routinesQuery.data ?? [];
   const { data: activeProgram, program } = useEnrollment();
@@ -67,8 +62,6 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
       : todayToken === '⟶'
         ? t('planning.run')
         : null;
-  const gate = (context: 'programs' | 'race' | 'intervals', href: Href) =>
-    router.push(isPro ? href : workoutsRoutes.paywall(context));
 
   const rv = race ? raceView(race, recentPaceSeconds) : null;
   const raceStats = rv
@@ -185,7 +178,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
         </HStack>
         <Card
           testID={ids.startIntervals}
-          onPress={() => gate('intervals', workoutsRoutes.intervals())}
+          onPress={() => router.push(workoutsRoutes.intervals())}
           padding="lg"
           py="ml"
           radius="pill"
@@ -193,10 +186,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
         >
           <HStack justify="space-between" gap="sm">
             <VStack gap="xs" flex={1}>
-              <HStack gap="sm">
-                <Text variant="subtitle">{t('start.intervals')}</Text>
-                {!isPro ? <ProChip testID={ids.intervalsPro} /> : null}
-              </HStack>
+              <Text variant="subtitle">{t('start.intervals')}</Text>
               <Text variant="caption" color="text2">
                 {t('start.intervalsDescription')}
               </Text>
@@ -237,17 +227,14 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
       ) : (
         <Card
           testID={ids.programsCard}
-          onPress={() => gate('programs', workoutsRoutes.programs())}
+          onPress={() => router.push(workoutsRoutes.programs())}
           padding="lg"
           radius="pill"
           gap="none"
         >
           <HStack justify="space-between" gap="sm">
             <VStack gap="xs" flex={1}>
-              <HStack gap="sm">
-                <Text variant="subtitle">{t('planning.programs')}</Text>
-                {!isPro ? <ProChip testID={ids.programsPro} /> : null}
-              </HStack>
+              <Text variant="subtitle">{t('planning.programs')}</Text>
               <Text variant="caption" color="text2">
                 {t('planning.programsDescription')}
               </Text>
@@ -258,7 +245,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
       )}
       <Card
         testID={ids.raceCard}
-        onPress={() => gate('race', workoutsRoutes.race())}
+        onPress={() => router.push(workoutsRoutes.race())}
         padding="lg"
         radius="pill"
         gap="sm"
@@ -267,12 +254,9 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
           <Text variant="subtitle" numberOfLines={1}>
             {race ? t('race.titleWith', { distance: race.distance }) : t('race.title')}
           </Text>
-          <HStack gap="sm">
-            <Text testID={ids.raceChip} variant="captionBold" color="brandText">
-              {race && rv ? t('race.daysLeft', { count: rv.days }) : t('race.define')}
-            </Text>
-            {!isPro ? <ProChip testID={`${ids.raceCard}.pro`} /> : null}
-          </HStack>
+          <Text testID={ids.raceChip} variant="captionBold" color="brandText">
+            {race && rv ? t('race.daysLeft', { count: rv.days }) : t('race.define')}
+          </Text>
         </HStack>
         <Text variant="secondary" color="text2">
           {raceLine}
@@ -337,7 +321,7 @@ export function WorkoutsScreen({ scenario = 'default' }: Props) {
               variant="secondary"
               size="sm"
               shape="rounded"
-              onPress={() => gate('programs', workoutsRoutes.programs())}
+              onPress={() => router.push(workoutsRoutes.programs())}
             />
           </HStack>
         </Box>

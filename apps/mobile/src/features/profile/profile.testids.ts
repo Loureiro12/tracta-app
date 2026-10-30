@@ -9,10 +9,6 @@ export const profileIds = {
   headerName: testId('profile', 'header', 'name'),
   headerEmail: testId('profile', 'header', 'email'),
   headerEdit: testId('profile', 'header', 'edit'),
-  proCard: testId('profile', 'pro', 'card'),
-  proTitle: testId('profile', 'pro', 'title'),
-  proDescription: testId('profile', 'pro', 'description'),
-  proCta: testId('profile', 'pro', 'cta'),
   goalsGroup: testId('profile', 'goals-list'),
   sourcesCard: testId('profile', 'sources', 'card'),
   achievements: testId('profile', 'nav', 'achievements'),
@@ -51,24 +47,6 @@ export const profileIds = {
   photosSwapB: testId('profile', 'photos', 'swap-b'),
   photosDiff: testId('profile', 'photos', 'diff'),
   photosSpan: testId('profile', 'photos', 'span'),
-
-  // Paywall overlay
-  paywallScreen: testId('profile', 'paywall', 'screen'),
-  paywallBack: testId('profile', 'paywall', 'back'),
-  paywallContext: testId('profile', 'paywall', 'context'),
-  paywallTitle: testId('profile', 'paywall', 'title'),
-  paywallTable: testId('profile', 'paywall', 'table'),
-  paywallPlanYear: testId('profile', 'paywall', 'plan', 'year'),
-  paywallPlanMonth: testId('profile', 'paywall', 'plan', 'month'),
-  paywallBuy: testId('profile', 'paywall', 'buy'),
-  paywallRestore: testId('profile', 'paywall', 'restore'),
-
-  // Manage subscription overlay
-  manageScreen: testId('profile', 'manage', 'screen'),
-  manageBack: testId('profile', 'manage', 'back'),
-  manageRows: testId('profile', 'manage', 'rows'),
-  manageSwitch: testId('profile', 'manage', 'switch'),
-  manageCancel: testId('profile', 'manage', 'cancel'),
 
   // Notifications overlay
   notificationsScreen: testId('profile', 'notifications', 'screen'),

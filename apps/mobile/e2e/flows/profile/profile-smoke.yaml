@@ -18,17 +18,6 @@ tags:
 - assertVisible:
     id: "profile.header.edit"
 - assertVisible:
-    id: "profile.pro.card"
-- assertVisible:
-    id: "profile.pro.title"
-    text: "Tracta Pro"
-- assertVisible:
-    id: "profile.pro.description"
-    text: "Programs, races, interval runs and progress analytics."
-- assertVisible:
-    id: "profile.pro.cta.label"
-    text: "See plans"
-- assertVisible:
     id: "profile.goals-list"
 - assertVisible:
     id: "profile.goals-list.steps.value"

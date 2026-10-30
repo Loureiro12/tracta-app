@@ -15,5 +15,5 @@ export {
   sessions,
   social,
 } from '@tracta/api';
-export type { Account, ApiErrorCode, AuthUser, Goals, Settings, Subscription } from '@tracta/api';
+export type { Account, ApiErrorCode, AuthUser, Goals, Settings } from '@tracta/api';
 export { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

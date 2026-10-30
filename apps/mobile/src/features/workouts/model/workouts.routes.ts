@@ -30,6 +30,4 @@ export const workoutsRoutes = {
     href(routineId ? `/session?routineId=${routineId}` : '/session?free=1'),
   run: (type: string) => href(`/run?type=${type}`),
   history: () => href('/history'),
-  paywall: (context: 'programs' | 'race' | 'intervals') =>
-    href(`/profile/paywall?context=${context}`),
 };

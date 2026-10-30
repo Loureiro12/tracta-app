@@ -31,4 +31,4 @@ tags:
 - tapOn:
     id: "workouts.routines.empty.programs"
 - assertVisible:
-    id: "profile.paywall.screen"
+    id: "workouts.programs.screen"
