@@ -9,3 +9,5 @@ apps/mobile/android
 CHANGELOG.md
 # design reference (prototype), not code
 design_handoff_tracta_app
+# Go templates for Supabase Auth e-mails (prettier would split {{ }} actions)
+supabase/templates

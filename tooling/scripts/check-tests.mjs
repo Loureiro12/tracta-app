@@ -150,6 +150,17 @@ function domainOf(path) {
       strict: true,
     };
   }
+  // Edge functions run against the real stack in the api integration tests (functions.invoke).
+  if ((m = path.match(/^supabase\/functions\/([^/]+)\//))) {
+    return {
+      key: `fn:${m[1]}`,
+      label: `edge function "${m[1]}"`,
+      testsDir: 'packages/api/tests',
+      testExt: '.test.ts',
+      backend: true,
+      strict: true,
+    };
+  }
   if (/^supabase\/seeds\/[^/]+\.sql$/.test(path)) {
     return {
       key: 'db:seeds',
@@ -197,6 +208,7 @@ if (args.all) {
     ...walk(PATHS.ds, { ext: ['.ts', '.tsx'] }),
     ...walk('packages/api/src', { ext: ['.ts'] }),
     ...walk('supabase/migrations', { ext: ['.sql'] }),
+    ...walk('supabase/functions', { ext: ['.ts'] }),
   ].map((path) => ({ status: 'M', path }));
 } else if (args.staged) {
   mode = 'staged';
