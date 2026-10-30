@@ -81,6 +81,7 @@
     "completeSet": "Concluir série {{num}}"
   },
   "rest": {
+    "alert": "Descanso terminado",
     "label": "Descanso",
     "pausedLabel": "Descanso pausado",
     "of": "de {{total}}",

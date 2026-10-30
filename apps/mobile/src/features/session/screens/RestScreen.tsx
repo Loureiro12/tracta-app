@@ -7,6 +7,7 @@ import { Box, Button, HStack, Ring, Screen, Text, VStack } from '@tracta/design-
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
+import { useRestAlert } from '../hooks/useRestAlert';
 import { useRestCountdown } from '../hooks/useRestCountdown';
 import { activeSetIndex, clock } from '../model/session.logic';
 import { sessionRoutes } from '../model/session.routes';
@@ -52,6 +53,7 @@ export function RestScreen() {
               }),
         })
       : t('rest.end');
+  useRestAlert(t('rest.alert'), nextLine);
 
   const remaining = rest?.remainingSec ?? 0;
   const total = rest?.totalSec ?? 1;

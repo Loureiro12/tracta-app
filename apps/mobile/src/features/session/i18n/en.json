@@ -81,6 +81,7 @@
     "completeSet": "Complete set {{num}}"
   },
   "rest": {
+    "alert": "Rest is over",
     "label": "Rest",
     "pausedLabel": "Rest paused",
     "of": "of {{total}}",

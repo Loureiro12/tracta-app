@@ -107,8 +107,12 @@ const config: ExpoConfig = {
       },
     ],
     'expo-sharing',
+    // Local notifications only (rest timer ending); no push.
+    'expo-notifications',
   ],
   experiments: { typedRoutes: true },
+  owner: 'loureiro_12',
+  extra: { eas: { projectId: '22dcfc6b-b81e-4328-b02f-a96334353962' } },
 };
 
 export default config;

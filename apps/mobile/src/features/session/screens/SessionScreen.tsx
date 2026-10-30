@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo } from 'react';
 
 import { StyleSheet } from 'react-native';
 
@@ -20,6 +20,7 @@ import {
 
 import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
+import { alerts } from '@/shared/notifications';
 
 import { useSessionRoutine } from '../api/useSessionRoutine';
 import { ActiveSetCard } from '../components/ActiveSetCard';
@@ -96,6 +97,10 @@ export function SessionScreen({ routine, free = false }: Props) {
     else if (loadedRoutine) startSession(loadedRoutine);
   }, [startSession, free, loadedRoutine]);
   useSessionTicker();
+  // Ask for notifications before the first rest, not in the middle of it (rest end rings).
+  useEffect(() => {
+    void alerts.ensurePermission();
+  }, []);
 
   const footerStyle = useMemo<ViewStyle>(
     () => ({
