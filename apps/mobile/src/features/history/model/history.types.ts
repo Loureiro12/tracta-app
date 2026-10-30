@@ -33,8 +33,6 @@ export type RunSplit = {
   best: boolean;
 };
 
-export type RouteGeometry = { full: string; partial: string; cx: number; cy: number };
-
 export type EvoKind = 'strength' | 'cardio';
 export type StrengthMetric = 'kg' | 'vol' | 'reps';
 export type CardioMetric = 'pace' | 'dist' | 'hr';

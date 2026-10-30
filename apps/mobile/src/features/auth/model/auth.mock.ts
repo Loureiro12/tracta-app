@@ -28,14 +28,14 @@ export const DEFAULT_PERMISSIONS: Record<PermissionKey, boolean> = {
   'write.distance': false,
 };
 
-/** What the mock import "finds" once Apple Health is connected. Copy in i18n `connect.health.found.*`. */
+/** Data groups listed once Health is connected. Copy in i18n `connect.health.found.*`. */
 export const FOUND_SOURCES = ['sleep', 'steps', 'heart', 'workouts'] as const;
 export type FoundSource = (typeof FOUND_SOURCES)[number];
 
 export type SocialProvider = 'Apple' | 'Google';
 
-/** How long the mock Apple Health import stays in the "busy" state. */
-export const HEALTH_IMPORT_MS = 2000;
+/** Minimum time the "importing" state stays on screen, so the first sync is perceivable. */
+export const HEALTH_IMPORT_MS = 1500;
 /** Seconds before the "resend link" button becomes available again. */
 export const RESEND_SECONDS = 30;
 

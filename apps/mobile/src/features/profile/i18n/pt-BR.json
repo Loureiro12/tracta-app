@@ -48,7 +48,12 @@
     "googleDescription": "Ainda testando quais tipos de treino aparecem lá. Ativaremos só depois de confirmar.",
     "miBand": "Mi Band 8",
     "miBandStatus": "via Apple Health",
-    "miBandDescription": "Fornece sono com estágios e FC. Não fornece VFC nem temperatura."
+    "miBandDescription": "Fornece sono com estágios e FC. Não fornece VFC nem temperatura.",
+    "appleStatusOff": "Não conectado",
+    "healthConnect": "Health Connect",
+    "healthConnectStatus": "Conectado",
+    "healthConnectDescription": "Lê: passos, distância, energia, frequência cardíaca, sono. Grava: resumo dos treinos.",
+    "lastSync": "Última sincronização {{time}}"
   },
   "actions": {
     "achievements": "Conquistas",
@@ -122,8 +127,18 @@
     "diffValue": "{{value}}",
     "spanSame": "Escolha duas datas diferentes para comparar.",
     "span": "Do {{from}} ao {{to}} · peso registrado no mesmo dia da foto",
-    "localTitle": "Fotos ficam só neste iPhone",
-    "localDescription": "Não vão para o backup, para amigos nem para o Apple Health. Lembrete opcional a cada 4 semanas — mesmo horário e mesma luz ajudam a comparar."
+    "addLibrary": "Escolher da galeria",
+    "addFailed": "Não foi possível enviar a foto. Tente de novo.",
+    "noWeight": "sem peso",
+    "loading": "Carregando suas fotos…",
+    "loadFailed": "Não foi possível carregar suas fotos. Volte e tente de novo.",
+    "empty": "Nenhuma foto ainda. Registre a primeira hoje.",
+    "compareEmpty": "Adicione pelo menos duas fotos para comparar.",
+    "deleteArmed": "Toque de novo para excluir",
+    "deleteHint": "Toque duas vezes para excluir esta foto",
+    "deletedToast": "Foto excluída",
+    "privateTitle": "Fotos são só suas",
+    "privateDescription": "Ficam em um backup privado que só a sua conta abre. Nunca vão para amigos nem para o Apple Health. Lembrete opcional a cada 4 semanas — mesmo horário e mesma luz ajudam a comparar."
   },
   "notifications": {
     "title": "Notificações",
@@ -187,7 +202,7 @@
     "dataSection": "Seus dados",
     "confirmAgain": "Toque de novo para confirmar",
     "export": "Exportar meus dados",
-    "exportDescription": "treinos, séries e atividades em CSV e JSON",
+    "exportDescription": "tudo da sua conta em um arquivo JSON",
     "exportToast": "Arquivo de exportação preparado",
     "disconnectHealth": "Desconectar Apple Health",
     "disconnectHealthDescription": "para de ler e gravar; o histórico continua no Tracta",
@@ -198,7 +213,11 @@
     "deleteAccount": "Excluir conta",
     "deleteAccountDescription": "apaga conta e backup; não pode ser desfeito",
     "deleteAccountToast": "Conta excluída",
-    "footnote": "Não registramos dados de saúde em logs. Excluir no Tracta não apaga o que já foi gravado no Apple Health."
+    "footnote": "Não registramos dados de saúde em logs. Excluir no Tracta não apaga o que já foi gravado no Apple Health.",
+    "exportFailed": "Não foi possível exportar seus dados. Tente de novo.",
+    "deleteHealthData": "Apagar dados de saúde sincronizados",
+    "deleteHealthDataDescription": "remove sono, passos e frequência cardíaca copiados para a sua conta; o app Saúde mantém os dele",
+    "deleteHealthDataToast": "Dados de saúde sincronizados apagados"
   },
   "state": {
     "loading": "Carregando sua conta…",

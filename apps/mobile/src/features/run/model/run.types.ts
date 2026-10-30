@@ -15,7 +15,7 @@ export type Modality = {
   id: ModalityId;
   /** Records a GPS route (distance, pace, splits). */
   gps: boolean;
-  /** Mock base pace in seconds per km, GPS modalities only. */
+  /** Typical pace in seconds per km (GPS modalities): drives the E2E GPS playback. */
   paceSec?: number;
   /** Shows km/h instead of min/km. */
   speed?: boolean;
@@ -47,16 +47,21 @@ export type ActiveRun = {
   /** Epoch ms. */
   startedAt: number;
   pausedAt: number | null;
-  pausedTotalMs: number;
+  /** Closed pauses as [from, to] epoch ms; time and distance inside them are not counted. */
+  pauses: [number, number][];
 };
 
 export type RunSummary = {
   type: ModalityId;
   gps: boolean;
-  /** Activity seconds (already scaled by the demo factor). */
+  /** Activity seconds, pauses excluded. */
   sec: number;
   distKm: number | null;
   swimMeters: number | null;
+  /** Per-km splits from the recorded points (last one may be partial). */
+  splits: Split[];
+  /** Recorded GPS track ([lat, lng]); null without GPS or without enough fixes. */
+  route: [number, number][] | null;
 };
 
 export type Split = {

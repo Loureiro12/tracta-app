@@ -20,9 +20,9 @@
     "oct": "Oct"
   },
   "sleep": {
-    "heroSource": "Night of Oct 25 → 26 · Mi Band 8 via Apple Health",
+    "heroSource": "Night of {{night}} · via {{source}}",
     "heroSlept": " asleep",
-    "heroSub": "40 min below your {{goal}} goal · {{inBed}} in bed",
+    "heroSub": "{{diff}} below your {{goal}} goal · {{inBed}} in bed",
     "stages": {
       "title": "Stages",
       "hint": "estimated by the device",
@@ -45,9 +45,9 @@
       },
       "detail": {
         "duration": "{{slept}} of {{goal}}",
-        "regularity": "±18 min",
-        "interruptions": "3 · 22 min",
-        "consistency": "7 nights"
+        "regularity": "±{{value}} min",
+        "interruptions": "{{count}} · {{minutes}} min",
+        "consistency": "{{count}} nights"
       },
       "note": "Not provided by this band: overnight HRV and temperature. Those factors are left out of the calculation. This is not a medical assessment.",
       "how": "How we calculate"
@@ -62,17 +62,19 @@
       "avg": "avg {{value}}",
       "goal": "goal",
       "insightBefore": "Your average sleep duration was ",
-      "insightBold": "35 minutes longer",
-      "insightAfter": " this week (7h 20 vs. 6h 45)."
+      "insightBold": "{{minutes}} minutes longer",
+      "insightAfter": " this week ({{avg}} vs. {{previous}}).",
+      "insightBoldShorter": "{{minutes}} minutes shorter",
+      "insightSame": "Your average sleep duration this week was {{avg}}, the same as the week before."
     },
     "month": {
       "title": "Last 30 days",
       "avg": "avg {{value}}",
       "onGoal": "Nights on goal",
-      "onGoalValue": "{{hit}} of 30",
+      "onGoalValue": "{{hit}} of {{total}}",
       "longest": "Longest",
       "shortest": "Shortest",
-      "insight": "Your average duration over the last 30 days was {{avg}}. Friday and Saturday nights tend to be longer."
+      "insight": "Your average duration over the last 30 days was {{avg}}."
     },
     "compare": {
       "thisWeek": "This week",
@@ -86,23 +88,29 @@
         "wakeups": "Wake-ups"
       },
       "delta": {
-        "duration": "+35 min",
-        "bedtime": "27 min earlier",
-        "regularity": "more regular",
-        "onGoal": "+2 nights",
-        "wakeups": "similar"
+        "more": "+{{value}} min",
+        "less": "−{{value}} min",
+        "earlier": "{{value}} min earlier",
+        "later": "{{value}} min later",
+        "moreRegular": "more regular",
+        "lessRegular": "less regular",
+        "moreNights": "+{{count}} nights",
+        "fewerNights": "−{{count}} nights",
+        "moreWakeups": "more",
+        "fewerWakeups": "fewer",
+        "similar": "similar"
       },
-      "note": "Oct 20–26 vs. Oct 13–19. We describe the differences without claiming a cause."
+      "note": "{{current}} vs. {{previous}}. We describe the differences without claiming a cause."
     },
     "bedtime": {
       "avg": "Average bedtime",
-      "avgValue": "23:41",
+      "avgValue": "{{time}}",
       "variation": "Variation",
-      "variationValue": "±18 min"
+      "variationValue": "±{{value}} min"
     },
     "trainRest": {
       "title": "Training × rest days",
-      "month": "October",
+      "month": "last 30 days",
       "train": "Training",
       "rest": "Rest",
       "row": {
@@ -111,38 +119,46 @@
         "restingHr": "Resting HR the next day"
       },
       "delta": {
-        "sleepAfter": "+22 min after training",
-        "steps": "+57% on training days",
-        "restingHr": "similar"
+        "sleepMore": "+{{value}} min after training",
+        "sleepLess": "−{{value}} min after training",
+        "stepsMore": "+{{pct}}% on training days",
+        "stepsLess": "−{{pct}}% on training days",
+        "hrMore": "+{{value}} bpm after training",
+        "hrLess": "−{{value}} bpm after training",
+        "similar": "similar"
       },
-      "note": "18 training days and 8 rest days. Shows observed differences, not causes."
+      "note": "{{train}} training days and {{rest}} rest days. Shows observed differences, not causes."
     },
     "suggestion": {
       "label": "Suggestion · not medical advice",
-      "text": "On the 4 nights you went to bed before 23:45, you slept 28 min longer on average. Keeping that time may help your regularity."
-    }
+      "text": "On the {{count}} nights you went to bed before {{time}}, you slept {{minutes}} min longer on average. Keeping that time may help your regularity.",
+      "textNeutral": "Going to bed at a similar time every night helps your regularity score."
+    },
+    "heroSubAbove": "{{diff}} above your {{goal}} goal · {{inBed}} in bed",
+    "heroSubOnGoal": "On your {{goal}} goal · {{inBed}} in bed",
+    "empty": "No sleep recorded last night yet. It shows up here after your band syncs with {{source}}."
   },
   "activity": {
     "steps": {
       "title": "Steps today ›",
       "ofGoal": "{{pct}}% of goal",
       "goal": " / {{goal}}",
-      "insight": "Most of your steps were recorded in the afternoon."
+      "insight": "Your most active hour today was {{hour}}h."
     },
     "week": {
       "title": "Last 7 days",
       "avg": "avg {{value}}",
-      "insight": "You reached your goal on 3 of the last 7 days. Today is still in progress."
+      "insight": "You reached your goal on {{hit}} of the last 7 days. Today is still in progress."
     },
     "calories": {
       "title": "Calories ›",
-      "hint": "estimates · until 16:12",
+      "hint": "estimates · until {{time}}",
       "active": "Active",
       "activeSub": "energy spent moving",
       "rest": "Resting",
       "restSub": "energy your body uses at rest",
       "total": "Total",
-      "totalSub": "value provided by Apple Health",
+      "totalSub": "value provided by {{source}}",
       "kcal": "{{value}} kcal"
     },
     "distance": {
@@ -154,8 +170,9 @@
       "intense": "Moderate/vigorous",
       "km": "{{value}} km",
       "min": "{{value}} min",
-      "note": "iPhone and Mi Band 8 recorded the same walk; we count it once. No GPS activity today."
-    }
+      "note": "When two devices record the same walk, we count it once. GPS distance comes from the runs you record in Tracta."
+    },
+    "empty": "No activity synced for today yet."
   },
   "body": {
     "sourceScale": "Scale via Apple Health · {{date}}",
@@ -216,7 +233,7 @@
     },
     "bigSub": {
       "steps": {
-        "D": "today until 16:12",
+        "D": "today until {{time}}",
         "W": "daily average · 7 days",
         "M": "daily average · 30 days"
       },
@@ -226,7 +243,7 @@
         "M": "resting average · 30 days"
       },
       "cal": {
-        "D": "active today · total 1,432 kcal",
+        "D": "active today · total {{total}} kcal",
         "W": "daily average of active",
         "M": "daily average of active"
       },
@@ -236,7 +253,7 @@
         "M": "total · 30 days"
       },
       "sleep": {
-        "D": "night of Oct 25 → 26",
+        "D": "night of {{night}}",
         "W": "average per night · 7 nights",
         "M": "average per night · 30 nights"
       },
@@ -278,17 +295,17 @@
     },
     "insight": {
       "steps": {
-        "D": "Most of your steps were recorded in the afternoon.",
-        "W": "Your daily step average went up over the last seven days compared with the seven before.",
+        "D": "Your most active hour today was {{hour}}h.",
+        "W": "Your daily average over the last seven days was {{avg}} steps.",
         "M": "You reached your goal on {{count}} of the last 30 days."
       },
       "hr": {
-        "D": "Lower values during sleep and peaks while walking in the afternoon. No exercise recorded today.",
+        "D": "Lowest {{min}} bpm and highest {{max}} bpm today. This is not a health assessment.",
         "W": "Your resting HR stayed stable, varying by {{count}} bpm over the period.",
         "M": "Your resting HR stayed stable, varying by {{count}} bpm over the period."
       },
       "cal": {
-        "D": "Active burn peaked at 16h, together with the highest concentration of steps.",
+        "D": "Active burn peaked at {{hour}}h, together with the highest concentration of steps.",
         "W": "Training days recorded more active calories than rest days, on average.",
         "M": "Training days recorded more active calories than rest days, on average."
       },
@@ -298,8 +315,8 @@
         "M": "You walked and ran more this week than the previous one."
       },
       "sleep": {
-        "D": "You slept 40 min below your goal. Three short wake-ups, the longest around 05h.",
-        "W": "Your average sleep duration was 35 minutes longer this week (7h 20 vs. 6h 45).",
+        "D": "You slept {{slept}} of your {{goal}} goal, with {{wakeups}} wake-ups.",
+        "W": "Your average sleep this week was {{avg}} ({{previous}} the week before).",
         "M": "You reached your goal on {{count}} of the last 30 nights."
       },
       "weight": {
@@ -355,7 +372,9 @@
         "bValue": "logged in Tracta"
       }
     },
-    "updated": "Updated at 16:12 via Apple Health"
+    "updated": "Updated at {{time}} via {{source}}",
+    "notSynced": "Not synced yet",
+    "empty": "—"
   },
   "calc": {
     "title": "How we calculate",
@@ -366,31 +385,31 @@
     "row": {
       "duration": {
         "description": "How much you slept compared with your personal goal. Reaching the goal earns all 40 points.",
-        "now": "{{slept}} of {{goal}} · 34 pts"
+        "now": "{{slept}} of {{goal}} · {{pts}} pts"
       },
       "regularity": {
-        "description": "Difference between the time you fell asleep and your average over the last 14 days.",
-        "now": "±18 min · 27 pts"
+        "description": "Difference between the time you fell asleep and your average over the last 7 nights.",
+        "now": "±{{value}} min · {{pts}} pts"
       },
       "interruptions": {
         "description": "Time awake and the number of wake-ups recorded by the band.",
-        "now": "3 wake-ups, 22 min · 16 pts"
+        "now": "{{count}} wake-ups, {{minutes}} min · {{pts}} pts"
       },
       "consistency": {
         "description": "How similar your last 7 nights were in duration.",
-        "now": "7 nights · 8 pts"
+        "now": "{{count}} nights · {{pts}} pts"
       }
     },
     "outside": {
       "title": "Left out of the calculation",
       "text": "Overnight HRV, skin temperature and blood oxygen are not provided by the Mi Band 8. We do not estimate those values — they simply are not included."
     },
-    "note": "The score is a personal trend reference. It is not a diagnosis or a medical assessment; sleep stages are device estimates."
+    "note": "The score is a personal trend reference. It is not a diagnosis or a medical assessment; sleep stages are device estimates.",
+    "empty": "No sleep recorded last night yet."
   },
   "report": {
     "back": "History",
     "title": "Report",
-    "range30": "Sep 27 – Oct 26",
     "range": "{{from}} – {{to}}",
     "period": {
       "7": "7 days",
@@ -430,7 +449,8 @@
       "frequencyValue": "{{value}}×",
       "frequencySub": "workouts per week",
       "records": "Records",
-      "recordsSub": "in strength training"
+      "recordsSub": "in strength training",
+      "none": "—"
     },
     "goals": {
       "title": "Goals in the period",

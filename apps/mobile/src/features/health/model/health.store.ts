@@ -12,15 +12,15 @@ type HealthState = {
   setMetricPeriod: (period: MetricPeriod) => void;
   reportPeriod: ReportPeriod;
   setReportPeriod: (period: ReportPeriod) => void;
-  /** Custom report range (days of October). */
+  /** Custom report range (days of the current month). */
   reportFrom: number;
   reportTo: number;
   adjustReportFrom: (delta: number) => void;
-  adjustReportTo: (delta: number) => void;
+  /** `maxDay` = today's day of the month (the range never goes past today). */
+  adjustReportTo: (delta: number, maxDay: number) => void;
 };
 
 const REPORT_MIN_DAY = 1;
-const REPORT_MAX_DAY = 26;
 
 export const useHealthStore = create<HealthState>((set) => ({
   segment: 'sleep',
@@ -37,8 +37,8 @@ export const useHealthStore = create<HealthState>((set) => ({
     set((s) => ({
       reportFrom: Math.min(s.reportTo, Math.max(REPORT_MIN_DAY, s.reportFrom + delta)),
     })),
-  adjustReportTo: (delta) =>
+  adjustReportTo: (delta, maxDay) =>
     set((s) => ({
-      reportTo: Math.max(s.reportFrom, Math.min(REPORT_MAX_DAY, s.reportTo + delta)),
+      reportTo: Math.max(s.reportFrom, Math.min(maxDay, s.reportTo + delta)),
     })),
 }));

@@ -65,8 +65,11 @@ tags:
     id: "home.edit.sheet.right"
 - assertNotVisible:
     id: "home.sleep.card"
-- assertVisible:
-    id: "home.hr.card"
+- scrollUntilVisible:
+    element:
+      id: "home.hr.card"
+    direction: UP
+    centerElement: true
 # Restore defaults
 - tapOn:
     id: "home.nav.edit"
@@ -99,7 +102,8 @@ tags:
     id: "home.checklist.card"
 - assertVisible:
     id: "home.checklist.progress"
-    text: "0 of 3"
+    # The demo account has Apple Health connected, so that step is already done
+    text: "1 of 3"
 - assertVisible:
     id: "home.checklist.steps"
 - assertVisible:

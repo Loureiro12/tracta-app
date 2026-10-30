@@ -18,19 +18,19 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
+import { RunMap } from '@/features/run';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
 import { useDeleteEntry, useEntryDetail, useUpdateNotes } from '../api/useHistory';
 import { PrTag } from '../components/PrTag';
 import { QueryState } from '../components/QueryState';
-import { RouteMap } from '../components/RouteMap';
 import { SplitsCard } from '../components/SplitsCard';
 import { StatTile } from '../components/StatTile';
 import { historyIds as ids } from '../history.testids';
 import { useBackToHistory } from '../hooks/useBackToHistory';
 import { formatLongDate } from '../lib/dates';
-import { routeAt, splitBars } from '../lib/detail';
+import { splitBars } from '../lib/detail';
 import { clock, kg, km2, thousands, timeOfDay } from '../lib/format';
 import { itemId } from '../lib/ids';
 import { historyHrefs } from '../lib/routes';
@@ -170,7 +170,9 @@ export function SessionDetailScreen({ id }: Props) {
     ];
     body = (
       <>
-        {a.gps ? <RouteMap route={routeAt(1)} /> : null}
+        {a.route ? (
+          <RunMap testID={ids.sessionMap} route={a.route} caption={t('detail.mapLabel')} />
+        ) : null}
         {a.splits.length ? <SplitsCard splits={splitBars(a.splits)} /> : null}
       </>
     );

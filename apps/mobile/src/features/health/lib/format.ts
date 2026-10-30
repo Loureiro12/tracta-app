@@ -1,11 +1,17 @@
 import { formatNumber } from '@/shared/i18n';
 
-import type { CompareValue } from '../model/health.mock';
+import type { CompareValue } from '../model/health.constants';
 
 /** 440 → "7h 20" (locale independent, as in the handoff). */
 export function hm(minutes: number): string {
   const m = Math.max(0, Math.round(minutes));
   return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}`;
+}
+
+/** A duration difference: 40 → "40 min", 75 → "1h 15". */
+export function minutesLabel(minutes: number): string {
+  const m = Math.abs(Math.round(minutes));
+  return m >= 60 ? hm(m) : `${m} min`;
 }
 
 /** Integer with locale grouping: 6842 → "6,842" (en) / "6.842" (pt-BR). */
@@ -28,6 +34,8 @@ export function formatCompareValue(
   ofLabel: (hit: number, total: number) => string,
 ) {
   switch (v.kind) {
+    case 'none':
+      return '—';
     case 'text':
       return v.text;
     case 'ratio':

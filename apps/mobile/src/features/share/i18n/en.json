@@ -86,21 +86,24 @@
     "pr": {
       "kicker": "New personal record",
       "bigReps": "× {{reps}}",
-      "line": "Bench press × {{reps}} · +{{delta}} kg over previous",
-      "lineNoLoads": "Bench press · best mark to date",
-      "month": "Records in October",
+      "line": "{{name}} × {{reps}} · +{{delta}} kg over previous",
+      "lineNoLoads": "{{name}} · best mark to date",
+      "month": "Records in {{month}}",
       "since": "Since the start",
       "sinceKg": "+{{value}} kg",
-      "sincePct": "+{{value}}%"
+      "sincePct": "+{{value}}%",
+      "lineNone": "Beat a previous best to share it."
     },
     "week": {
-      "kicker": "Week · Oct 19–25",
+      "kicker": "Week · {{range}}",
       "big": "{{done}}/{{goal}}",
-      "line": "Weekly goal hit. {{days}} days moving in a row.",
       "strength": "Strength",
       "strengthValue_one": "{{count}} workout",
       "strengthValue_other": "{{count}} workouts",
-      "run": "Run"
+      "run": "Run",
+      "lineMet": "Weekly goal hit.",
+      "lineBelow": "Every workout counts.",
+      "streak": "{{days}} days moving in a row."
     },
     "run": {
       "kicker": "Run · Oct 25",
@@ -113,12 +116,15 @@
       "distance": "Distance"
     },
     "month": {
-      "kicker": "October 2026",
-      "line": "workouts — {{more}} more than in September.",
+      "kicker": "{{month}}",
       "run": "Run",
       "volume": "Volume",
-      "records": "Records"
-    }
+      "records": "Records",
+      "lineMore": "workouts — {{count}} more than in {{previous}}.",
+      "lineFewer": "workouts — {{count}} fewer than in {{previous}}.",
+      "lineSame": "workouts — same as in {{previous}}."
+    },
+    "none": "—"
   },
   "nudge": {
     "create": "Create card",

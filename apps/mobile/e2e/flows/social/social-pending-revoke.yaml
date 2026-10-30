@@ -1,0 +1,25 @@
+appId: com.tracta.mobile
+name: social-pending-revoke
+tags:
+  - social
+---
+# The demo user invited marina@example.com by e-mail (seed 45_email_invites); cancel it.
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.pending.marina@example.com.revoke"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.pending.marina@example.com.status"
+    text: "Invite sent · waiting for sign-up"
+- tapOn:
+    id: "social.hub.pending.marina@example.com.revoke"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite cancelled"
+- assertNotVisible:
+    id: "social.hub.pending.marina@example.com"

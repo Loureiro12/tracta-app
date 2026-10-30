@@ -1,0 +1,40 @@
+appId: com.tracta.mobile
+name: social-invite-email
+tags:
+  - social
+---
+# Needs the invite-friend edge function served (supabase start with edge-runtime, or
+# `supabase functions serve`). The e-mail lands in Mailpit (http://127.0.0.1:55324).
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social/invite?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.invite.screen"
+- tapOn:
+    id: "social.invite.query.input"
+- inputText: "nina@example.com"
+- runFlow: ../../subflows/dismiss-system-dialogs.yaml
+- tapOn:
+    id: "social.invite.send"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast.message"
+      text: "Invite sent"
+    timeout: 15000
+- tapOn:
+    id: "social.invite.close"
+# The invite sheet was deep-linked, so closing lands on Home; open the hub to see the invite
+- openLink: "tracta://social?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.pending.nina@example.com"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.pending.nina@example.com.name"
+    text: "nina@example.com"
+- assertVisible:
+    id: "social.hub.pending.nina@example.com.status"
+    text: "Invite sent · waiting for sign-up"

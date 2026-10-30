@@ -3,13 +3,10 @@ import { create } from 'zustand';
 import type { ChallengeDraft } from './social.types';
 
 type SocialState = {
-  /** E-mail invites (no backend yet): shown as "waiting for sign-up" for this session. */
-  emailInvites: string[];
   /** Dev affordance: hides friends, invites and challenges so the empty state can be reached. */
   simulateNoFriends: boolean;
   draft: ChallengeDraft | null;
 
-  inviteEmail: (email: string) => void;
   setSimulateNoFriends: (value: boolean) => void;
   /** Starts the wizard with every friend selected. */
   startDraft: (friendIds: string[]) => void;
@@ -20,15 +17,9 @@ type SocialState = {
 
 /** Local UI state of the Social feature; server data lives in the React Query hooks (api/). */
 export const useSocialStore = create<SocialState>((set) => ({
-  emailInvites: [],
   simulateNoFriends: false,
   draft: null,
 
-  inviteEmail: (email) =>
-    set((s) => {
-      const key = email.toLowerCase();
-      return s.emailInvites.includes(key) ? s : { emailInvites: [...s.emailInvites, key] };
-    }),
   setSimulateNoFriends: (simulateNoFriends) => set({ simulateNoFriends }),
   startDraft: (friendIds) =>
     set({

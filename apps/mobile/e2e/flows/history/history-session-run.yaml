@@ -31,6 +31,8 @@ tags:
 - assertVisible:
     id: "history.session.stats.hr.value"
     text: "154 bpm"
+# The map draws the run's saved GPS route (seeds/36_run_routes.sql); E2E builds render the
+# drawn fallback instead of map tiles, under the same testID.
 - scrollUntilVisible:
     element:
       id: "history.session.map"

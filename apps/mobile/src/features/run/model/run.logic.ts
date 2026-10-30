@@ -1,20 +1,9 @@
-import {
-  COOLDOWN_SEC,
-  DEFAULT_LOOP_KM,
-  LOOP_KM,
-  ROUTE_POINTS,
-  SIM_FACTOR,
-  modalities,
-} from './run.mock';
+import { COOLDOWN_SEC } from './run.mock';
+import { activitySecAt, buildTrack, rollingPace, trackRoute, trackSplits } from './run.track';
 
-import type {
-  ActiveRun,
-  IntervalConfig,
-  IntervalPhase,
-  ModalityId,
-  RunSummary,
-  Split,
-} from './run.types';
+import type { Track } from './run.track';
+import type { ActiveRun, IntervalConfig, IntervalPhase, RunSummary, Split } from './run.types';
+import type { GeoPoint } from '@/shared/location';
 import type { activities } from '@tracta/api';
 
 export const EM_DASH = '—';
@@ -29,26 +18,9 @@ export function clock(totalSec: number): string {
   return `${h ? `${h}:` : ''}${mm}:${String(x).padStart(2, '0')}`;
 }
 
-/** Activity seconds elapsed, excluding pauses, scaled by the demo factor. */
+/** Activity seconds elapsed, excluding pauses. */
 export function elapsedSec(run: ActiveRun, now: number): number {
-  const pausedNow = run.pausedAt ? now - run.pausedAt : 0;
-  const ms = now - run.startedAt - run.pausedTotalMs - pausedNow;
-  return Math.max(0, (ms / 1000) * SIM_FACTOR);
-}
-
-export function basePace(type: ModalityId): number {
-  return modalities[type].paceSec ?? 335;
-}
-
-/** Mock distance for GPS activities: base pace with a gentle wobble. */
-export function distanceKm(run: ActiveRun, sec: number): number | null {
-  if (!run.gps) return null;
-  return Math.max(0, (sec / basePace(run.type)) * (1 + 0.025 * Math.sin(sec / 97)));
-}
-
-/** Current pace wobbles around the average, like the prototype. */
-export function currentPace(avg: number | null, sec: number): number | null {
-  return avg ? avg + 9 * Math.sin(sec / 40) : null;
+  return activitySecAt(run, now);
 }
 
 export function averagePace(sec: number, dist: number | null): number | null {
@@ -57,34 +29,6 @@ export function averagePace(sec: number, dist: number | null): number | null {
 
 export function kmh(paceSec: number): number {
   return 3600 / paceSec;
-}
-
-/**
- * Per-km splits. `sec` > 0 adds the trailing partial km; the live screen passes 0 so only
- * complete kms are listed.
- */
-export function splitsFor(type: ModalityId, dist: number | null, sec: number): Split[] {
-  if (dist === null) return [];
-  const p = basePace(type);
-  const n = Math.floor(dist);
-  const paces: number[] = [];
-  for (let k = 1; k <= n; k++) paces.push(p + ((k * 37) % 17) - 8);
-  const rest = dist - n;
-  const hasPartial = rest > 0.05 && sec > 0;
-  if (hasPartial) {
-    const used = paces.reduce((a, b) => a + b, 0);
-    paces.push(Math.max(p - 20, (sec - used) / rest));
-  }
-  if (paces.length === 0) return [];
-  const mn = Math.min(...paces);
-  const mx = Math.max(...paces);
-  return paces.map((v, i) => ({
-    km: i < n ? i + 1 : null,
-    partialKm: i < n ? null : rest,
-    paceSec: v,
-    width: (100 - (mx === mn ? 0 : (v - mn) / (mx - mn)) * 45) / 100,
-    fastest: v === mn,
-  }));
 }
 
 export function intervalPhases(c: IntervalConfig): IntervalPhase[] {
@@ -126,26 +70,6 @@ export function phaseAt(phases: IntervalPhase[], sec: number): PhaseProgress {
   };
 }
 
-/** Fraction of the mock loop covered by `dist` km (one loop = 5 km, 2.5 km when walking). */
-export function routeFraction(type: ModalityId, dist: number | null): number {
-  if (dist === null) return 0;
-  return Math.min(1, dist / (LOOP_KM[type] ?? DEFAULT_LOOP_KM));
-}
-
-export type RoutePath = { full: string; drawn: string; cx: number; cy: number };
-
-function toPath(points: readonly (readonly [number, number])[]): string {
-  return points.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
-}
-
-/** SVG path data for the loop and the portion already covered (`fraction` 0..1). */
-export function routePath(fraction: number): RoutePath {
-  const n = Math.max(1, Math.round(Math.min(1, Math.max(0, fraction)) * (ROUTE_POINTS.length - 1)));
-  const drawn = ROUTE_POINTS.slice(0, n + 1);
-  const last = drawn[drawn.length - 1] ?? ROUTE_POINTS[0] ?? [0, 0];
-  return { full: toPath(ROUTE_POINTS), drawn: toPath(drawn), cx: last[0], cy: last[1] };
-}
-
 export type LiveValues = {
   run: ActiveRun;
   sec: number;
@@ -155,30 +79,62 @@ export type LiveValues = {
   /** Latest km first. */
   splits: Split[];
   phase: PhaseProgress | null;
-  routeFraction: number;
+  /** Accepted fixes drawn on the map ([lat, lng]). */
+  route: [number, number][];
+  /** A fix arrived in the last few seconds. */
+  gpsFix: boolean;
   paused: boolean;
 };
 
-export function liveValues(run: ActiveRun, now: number): LiveValues {
+/** A GPS run without a fix for this long (real ms) shows "searching". */
+const FIX_STALE_MS = 15000;
+
+function trackOf(run: ActiveRun, points: readonly GeoPoint[]): Track | null {
+  return run.gps ? buildTrack(run, points) : null;
+}
+
+export function liveValues(run: ActiveRun, points: readonly GeoPoint[], now: number): LiveValues {
   const sec = elapsedSec(run, now);
-  const dist = distanceKm(run, sec);
-  const avgPace = averagePace(sec, dist);
+  const track = trackOf(run, points);
+  const dist = track ? track.distanceM / 1000 : null;
+  const last = points[points.length - 1];
   return {
     run,
     sec,
     dist,
-    avgPace,
-    curPace: currentPace(avgPace, sec),
-    splits: splitsFor(run.type, dist === null ? null : Math.floor(dist), 0).reverse(),
+    avgPace: averagePace(sec, dist),
+    curPace: track ? rollingPace(track, sec) : null,
+    splits: track ? trackSplits(track, 0).reverse() : [],
     phase: run.intervals ? phaseAt(intervalPhases(run.intervals), sec) : null,
-    routeFraction: routeFraction(run.type, dist),
+    route: track ? track.points.map((p) => [p.lat, p.lng]) : [],
+    gpsFix: last !== undefined && now - last.t < FIX_STALE_MS,
     paused: run.pausedAt !== null,
+  };
+}
+
+/** Freezes distance, splits and route of a finished activity (`run` already paused). */
+export function summarize(
+  run: ActiveRun,
+  points: readonly GeoPoint[],
+  now: number,
+  swimMeters: number | null,
+): RunSummary {
+  const sec = elapsedSec(run, now);
+  const track = trackOf(run, points);
+  return {
+    type: run.type,
+    gps: run.gps,
+    sec,
+    distKm: track ? track.distanceM / 1000 : null,
+    swimMeters,
+    splits: track ? trackSplits(track, sec) : [],
+    route: track ? trackRoute(track) : null,
   };
 }
 
 /**
  * `activities.saveActivity` input for a finished activity. Times use the app clock (E2E lands on
- * the frozen "today"); the demo clock's seconds are what the summary shows, so they are saved too.
+ * the frozen "today"); the activity seconds the summary shows are what is saved.
  */
 export function toActivityInput(
   summary: RunSummary,
@@ -189,7 +145,7 @@ export function toActivityInput(
   const durationSeconds = Math.max(1, Math.round(summary.sec));
   const meters =
     summary.swimMeters ?? (summary.distKm === null ? null : Math.round(summary.distKm * 1000));
-  const splits = splitsFor(summary.type, summary.distKm, summary.sec)
+  const splits = summary.splits
     .map((s) => {
       const km = s.km !== null ? 1 : Math.round((s.partialKm ?? 0) * 100) / 100;
       return { km, seconds: Math.max(1, Math.round(s.paceSec * km)) };
@@ -202,6 +158,7 @@ export function toActivityInput(
     distanceM: meters,
     gps: summary.gps,
     splits,
+    route: summary.gps ? summary.route : null,
     intervals,
     notes: notes.trim(),
   };

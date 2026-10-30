@@ -1,6 +1,7 @@
 export { SocialHubScreen } from './screens/SocialHubScreen';
 export { ChallengeDetailScreen } from './screens/ChallengeDetailScreen';
 export { InviteScreen } from './screens/InviteScreen';
+export { AddFriendScreen } from './screens/AddFriendScreen';
 export { NewChallengeScreen } from './screens/NewChallengeScreen';
 export { SocialPrivacySheet } from './screens/SocialPrivacyScreen';
 export { useSocialStore } from './model/social.store';

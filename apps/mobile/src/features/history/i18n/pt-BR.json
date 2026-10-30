@@ -5,13 +5,13 @@
   },
   "recapCard": {
     "eyebrow": "Retrospectiva",
-    "title": "Seu outubro em 5 telas",
-    "line": "16 treinos · 58 km · 3 recordes",
+    "title": "Seu {{month}} em 5 telas",
+    "line": "{{workouts}} treinos · {{km}} km · {{records}} recordes",
     "cta": "Ver"
   },
   "achievementsCard": {
     "title": "Recordes e conquistas",
-    "sub": "3 recordes e 1 conquista em outubro"
+    "sub": "{{records}} recordes em {{month}} · {{earned}} de {{total}} conquistas"
   },
   "calendar": {
     "month": "{{month}} {{year}}",
@@ -126,7 +126,7 @@
       "hr": "FC média"
     },
     "minutes": "{{minutes}} min",
-    "mapLabel": "Percurso por GPS · mapa ilustrativo",
+    "mapLabel": "Percurso por GPS",
     "splits": "Parciais",
     "splitKm": "Km {{km}}",
     "splitPartial": "{{km}} km",
@@ -155,101 +155,74 @@
     "deleteError": "Não foi possível excluir a sessão. Tente de novo."
   },
   "recap": {
-    "brand": "Tracta · Outubro 2026",
+    "brand": "Tracta · {{month}}",
     "close": "Fechar",
     "prev": "Anterior",
     "share": "Compartilhar",
+    "none": "—",
+    "km": "{{value}} km",
+    "tons": "{{value}} t",
     "slides": {
       "0": {
-        "kicker": "Em outubro você treinou",
-        "title": "vezes — 4 a mais que em setembro.",
-        "rows": {
-          "0": {
-            "label": "Musculação",
-            "value": "11 sessões"
-          },
-          "1": {
-            "label": "Corrida",
-            "value": "5 corridas"
-          },
-          "2": {
-            "label": "Dia favorito",
-            "value": "segunda"
-          }
-        }
+        "kicker": "Em {{month}} você treinou",
+        "titleMore": "vezes — {{count}} a mais que em {{previous}}.",
+        "titleFewer": "vezes — {{count}} a menos que em {{previous}}.",
+        "titleSame": "vezes — o mesmo que em {{previous}}.",
+        "strength": "Musculação",
+        "strengthValue_one": "{{count}} sessão",
+        "strengthValue_other": "{{count}} sessões",
+        "running": "Corrida",
+        "runningValue_one": "{{count}} corrida",
+        "runningValue_other": "{{count}} corridas",
+        "favorite": "Dia favorito"
       },
       "1": {
         "kicker": "Você correu",
-        "title": "em 5 corridas, cada vez mais rápido.",
-        "rows": {
-          "0": {
-            "label": "Ritmo médio",
-            "value": "5:36 /km"
-          },
-          "1": {
-            "label": "Mais longa",
-            "value": "12,4 km"
-          },
-          "2": {
-            "label": "Melhor 5 km",
-            "value": "27:41"
-          }
-        }
+        "title_one": "em {{count}} corrida este mês.",
+        "title_other": "em {{count}} corridas este mês.",
+        "pace": "Ritmo médio",
+        "paceValue": "{{pace}} /km",
+        "longest": "Mais longa",
+        "best5k": "Melhor 5 km"
       },
       "2": {
         "kicker": "Você levantou",
-        "title": "de volume total, com supino no topo.",
-        "rows": {
-          "0": {
-            "label": "Mais treinado",
-            "value": "Peito & Tríceps"
-          },
-          "1": {
-            "label": "Séries",
-            "value": "238"
-          },
-          "2": {
-            "label": "Duração média",
-            "value": "54 min"
-          }
-        }
+        "title": "de volume total, com {{exercise}} no topo.",
+        "titleNone": "de volume total.",
+        "focus": "Mais treinado",
+        "sets": "Séries",
+        "duration": "Duração média",
+        "durationValue": "{{minutes}} min"
       },
       "3": {
         "kicker": "Recordes novos",
         "title": "marcas pessoais quebradas este mês.",
-        "rows": {
-          "0": {
-            "label": "Supino reto",
-            "value": "82,5 kg × 6"
-          },
-          "1": {
-            "label": "Agachamento",
-            "value": "100 kg × 5"
-          },
-          "2": {
-            "label": "5 km",
-            "value": "27:41"
-          }
-        }
+        "empty": "Supere uma marca anterior para vê-la aqui.",
+        "value": "{{kg}} kg × {{reps}}",
+        "valueBodyweight": "× {{reps}}"
       },
       "4": {
         "kicker": "E descansou",
-        "title": "de sono por noite, em média — 18 min a mais.",
-        "rows": {
-          "0": {
-            "label": "Noites na meta",
-            "value": "19 de 31"
-          },
-          "1": {
-            "label": "Horário médio",
-            "value": "23:41"
-          },
-          "2": {
-            "label": "Sequência atual",
-            "value": "12 dias"
-          }
-        }
+        "title": "de sono por noite, em média — {{minutes}} min a mais.",
+        "titleLess": "de sono por noite, em média — {{minutes}} min a menos.",
+        "titleSame": "de sono por noite, em média — igual ao mês passado.",
+        "titleNone": "Ainda sem dados de sono neste mês.",
+        "nights": "Noites na meta",
+        "nightsValue": "{{done}} de {{total}}",
+        "bedtime": "Horário médio",
+        "streak": "Sequência atual",
+        "streakValue_one": "{{count}} dia",
+        "streakValue_other": "{{count}} dias"
       }
+    },
+    "weekdays": {
+      "0": "segunda",
+      "1": "terça",
+      "2": "quarta",
+      "3": "quinta",
+      "4": "sexta",
+      "5": "sábado",
+      "6": "domingo"
     }
   },
   "achievements": {
@@ -296,39 +269,46 @@
     "badges": {
       "streak12": {
         "name": "Sequência de 12 dias",
-        "description": "treinou ou caminhou 12 dias seguidos"
+        "description": "treinou ou caminhou 12 dias seguidos",
+        "progress": "{{current}} de {{target}} dias"
       },
       "workouts50": {
         "name": "50 treinos",
-        "description": "desde que você começou no Tracta"
+        "description": "desde que você começou no Tracta",
+        "progress": "{{current}} de {{target}}"
       },
       "first5k": {
         "name": "Primeiro 5 km",
-        "description": "correu 5 km sem parar"
+        "description": "uma corrida de 5 km ou mais",
+        "progress": "mais longa: {{km}} km",
+        "progressNone": "nenhuma corrida ainda"
       },
       "oneTon": {
         "name": "Uma tonelada",
-        "description": "1.000 kg de volume em um treino"
+        "description": "1.000 kg de volume em um treino",
+        "progress": "melhor: {{kg}} kg",
+        "progressNone": "nenhum treino ainda"
       },
       "perfectMonth": {
         "name": "Mês perfeito",
-        "description": "bateu a meta semanal em todas as semanas",
-        "progress": "3 de 4 semanas"
+        "description": "bateu a meta semanal em todas as semanas de um mês",
+        "progress": "{{current}} de {{target}} semanas"
       },
       "tenKSub55": {
         "name": "10 km abaixo de 55 min",
-        "description": "meta da sua prova de dezembro",
-        "progress": "melhor: 58:12"
+        "description": "10 km em menos de 55 minutos",
+        "progress": "melhor: {{time}}",
+        "progressNone": "nenhum 10 km ainda"
       },
       "streak30": {
         "name": "Sequência de 30 dias",
         "description": "um pouco de movimento todo dia",
-        "progress": "12 de 30 dias"
+        "progress": "{{current}} de {{target}} dias"
       },
       "workouts100": {
         "name": "100 treinos",
         "description": "continue no ritmo",
-        "progress": "64 de 100"
+        "progress": "{{current}} de {{target}}"
       }
     },
     "recordDetail": {

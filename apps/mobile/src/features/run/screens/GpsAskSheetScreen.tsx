@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { StyleSheet } from 'react-native';
 
@@ -6,7 +6,9 @@ import { useRouter } from 'expo-router';
 
 import { Box, Pressable, Text, VStack, useTheme } from '@tracta/design-system';
 
+import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
+import { locationSource } from '@/shared/location';
 
 import { resolveActivity } from '../model/run.mock';
 import { useRunStore } from '../model/run.store';
@@ -25,6 +27,8 @@ export function GpsAskSheetScreen({ type }: GpsAskSheetScreenProps) {
   const theme = useTheme();
   const { t } = useTranslation('run');
   const startRun = useRunStore((s) => s.startRun);
+  const showToast = useFeedbackStore((s) => s.showToast);
+  const busy = useRef(false);
 
   const rowStyle = useMemo<ViewStyle>(
     () => ({
@@ -38,13 +42,24 @@ export function GpsAskSheetScreen({ type }: GpsAskSheetScreenProps) {
     [theme],
   );
 
+  // "Allow" asks the OS for real; a denial falls back to an activity without GPS (duration only).
   const begin = useCallback(
-    (gps: boolean) => {
+    async (wantsGps: boolean) => {
+      if (busy.current) return;
+      busy.current = true;
       const activity = resolveActivity(type);
-      startRun(activity.type, gps, activity.intervals);
+      const permission = wantsGps
+        ? await locationSource.requestPermission().catch(() => 'denied' as const)
+        : 'denied';
+      const gps = permission !== 'denied';
+      if (wantsGps && !gps) showToast(t('gps.deniedToast'));
+      startRun(activity.type, gps, activity.intervals, {
+        title: t('tracking.title'),
+        body: t('tracking.body'),
+      });
       router.replace({ pathname: '/run', params: { type: type ?? activity.type } });
     },
-    [type, startRun, router],
+    [type, startRun, router, showToast, t],
   );
 
   return (
@@ -62,7 +77,7 @@ export function GpsAskSheetScreen({ type }: GpsAskSheetScreenProps) {
           testID={runIds.gpsAllow}
           accessibilityLabel={t('gps.allow')}
           style={rowStyle}
-          onPress={() => begin(true)}
+          onPress={() => void begin(true)}
         >
           <Text testID={`${runIds.gpsAllow}.label`} variant="button" color="brandText">
             {t('gps.allow')}
@@ -72,7 +87,7 @@ export function GpsAskSheetScreen({ type }: GpsAskSheetScreenProps) {
           testID={runIds.gpsOnce}
           accessibilityLabel={t('gps.once')}
           style={rowStyle}
-          onPress={() => begin(true)}
+          onPress={() => void begin(true)}
         >
           <Text testID={`${runIds.gpsOnce}.label`} variant="bodyLg" color="brandText">
             {t('gps.once')}
@@ -82,7 +97,7 @@ export function GpsAskSheetScreen({ type }: GpsAskSheetScreenProps) {
           testID={runIds.gpsDeny}
           accessibilityLabel={t('gps.deny')}
           style={rowStyle}
-          onPress={() => begin(false)}
+          onPress={() => void begin(false)}
         >
           <Text testID={`${runIds.gpsDeny}.label`} variant="bodyLg">
             {t('gps.deny')}

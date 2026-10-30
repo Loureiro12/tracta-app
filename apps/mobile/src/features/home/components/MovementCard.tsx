@@ -8,18 +8,12 @@ import { formatNumber, useTranslation } from '@/shared/i18n';
 
 import { CardHeaderRow } from './CardHeaderRow';
 import { useHomeGoals } from '../api/useHomeAccount';
+import { useHomeHealth } from '../api/useHomeHealth';
 import { homeIds } from '../home.testids';
-import { movement } from '../model/home.mock';
 
 import type { Bar } from '@tracta/design-system';
 
 const MAX_STEPS_PER_HOUR = 1800;
-
-const hourBars: Bar[] = movement.hours.map((value, i) => ({
-  value,
-  color:
-    i > movement.currentHour ? 'fill1' : i === movement.currentHour ? 'brandText' : 'brandOnDark',
-}));
 
 type MovementCardProps = { detailed: boolean };
 
@@ -28,23 +22,31 @@ export function MovementCard({ detailed }: MovementCardProps) {
   const router = useRouter();
   const { t } = useTranslation('home');
   const goals = useHomeGoals();
+  const { move: movement } = useHomeHealth();
+  const hours = movement?.hours ?? [];
+  const current = movement?.currentHour ?? 0;
+  const hourBars: Bar[] = hours.map((value, i) => ({
+    value,
+    color: i > current ? 'fill1' : i === current ? 'brandText' : 'brandOnDark',
+  }));
+  const delta = movement?.deltaPercent;
   const stats = [
     {
       key: 'distance',
       label: t('move.distance'),
       value: t('move.km', {
-        value: formatNumber(movement.distanceKm, { maximumFractionDigits: 1 }),
+        value: formatNumber(movement?.distanceKm ?? 0, { maximumFractionDigits: 1 }),
       }),
     },
     {
       key: 'calories',
       label: t('move.calories'),
-      value: t('move.kcal', { value: movement.activeKcal }),
+      value: t('move.kcal', { value: Math.round(movement?.activeKcal ?? 0) }),
     },
     {
       key: 'activity',
       label: t('move.activity'),
-      value: t('move.min', { value: movement.activeMinutes }),
+      value: t('move.min', { value: movement?.activeMinutes ?? 0 }),
     },
   ];
 
@@ -53,22 +55,28 @@ export function MovementCard({ detailed }: MovementCardProps) {
       <CardHeaderRow
         title={t('move.title')}
         dot="brand"
-        meta={t('move.delta', { percent: movement.deltaPercent })}
+        meta={
+          delta == null
+            ? undefined
+            : delta >= 0
+              ? t('move.delta', { percent: delta })
+              : t('move.deltaDown', { percent: delta })
+        }
       />
       <HStack gap="sm" align="baseline">
         <Text testID={homeIds.moveValue} variant="heroLg">
-          {formatNumber(movement.steps)}
+          {movement ? formatNumber(movement.steps) : '—'}
         </Text>
         <Text testID={homeIds.moveGoal} variant="secondary" color="text2" numberOfLines={1}>
           {t('move.goal', { goal: formatNumber(goals.steps) })}
         </Text>
       </HStack>
-      <ProgressBar value={movement.steps / goals.steps} />
+      <ProgressBar value={(movement?.steps ?? 0) / goals.steps} />
       {detailed ? (
         <Bars
           testID={homeIds.moveBars}
           bars={hourBars}
-          max={MAX_STEPS_PER_HOUR}
+          max={Math.max(MAX_STEPS_PER_HOUR, ...hours)}
           height={40}
           gap={2}
           radius={2}

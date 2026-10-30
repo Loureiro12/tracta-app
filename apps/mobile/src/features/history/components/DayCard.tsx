@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 
 import { Box, Card, HStack, Icon, Pressable, Text, VStack, useTheme } from '@tracta/design-system';
 
+import { useHealthDay } from '@/features/health';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
 import { historyIds as ids } from '../history.testids';
 import { formatLongDate } from '../lib/dates';
 import { hoursMinutes } from '../lib/format';
 import { itemId } from '../lib/ids';
-import { dayHealth } from '../model/history.mock';
 
 import type { DayItem } from '../model/history.types';
 import type { SemanticColors } from '@tracta/design-system';
@@ -44,7 +44,9 @@ export function DayCard({
 }: Props) {
   const { t } = useTranslation('history');
   const theme = useTheme();
-  const health = dayHealth(dateKey, todayKey);
+  const day = useHealthDay(dateKey).data;
+  const health =
+    day && dateKey <= todayKey && (day.steps != null || day.sleepMinutes != null) ? day : null;
   const future = dateKey > todayKey;
   const rowStyle = useMemo<ViewStyle>(
     () => ({
@@ -90,8 +92,8 @@ export function DayCard({
         <Text testID={ids.dayMeta} variant="caption" color="text2" numberOfLines={1}>
           {health
             ? t('day.meta', {
-                steps: formatNumber(health.steps),
-                sleep: hoursMinutes(health.sleepMinutes),
+                steps: health.steps == null ? '—' : formatNumber(health.steps),
+                sleep: health.sleepMinutes == null ? '—' : hoursMinutes(health.sleepMinutes),
               })
             : t('day.metaUnavailable')}
         </Text>

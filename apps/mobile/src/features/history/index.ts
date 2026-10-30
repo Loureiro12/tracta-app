@@ -6,3 +6,5 @@ export { AchievementsScreen } from './screens/AchievementsScreen';
 export { useHistoryStore } from './model/history.store';
 export { historyIds } from './history.testids';
 export { historyTranslations } from './i18n';
+export { useAchievements, useMonthlyRecap } from './api/useAchievements';
+export { monthName } from './hooks/useRecapSlides';

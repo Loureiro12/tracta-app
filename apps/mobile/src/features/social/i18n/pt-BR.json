@@ -46,7 +46,9 @@
     "privacyLine_other": "{{count}} itens compartilhados · saúde nunca",
     "dev": {
       "noFriends": "Simular sem amigos"
-    }
+    },
+    "revoke": "Cancelar",
+    "revoked": "Convite cancelado"
   },
   "detail": {
     "back": "Amigos",
@@ -127,7 +129,16 @@
     "contactInvite": "Convidar",
     "contactSent": "Enviado",
     "noContacts": "Todos os seus contatos já foram convidados.",
-    "note": "Amigos veem só o que você escolher em \"O que seus amigos veem\". Dados de saúde nunca são compartilhados."
+    "note": "Amigos veem só o que você escolher em \"O que seus amigos veem\". Dados de saúde nunca são compartilhados.",
+    "rateLimited": "Você enviou muitos convites hoje. Tente de novo amanhã.",
+    "shareSubject": "Bora treinar junto no Tracta",
+    "shareMessage": "Bora treinar junto no Tracta? Me adiciona: {{link}}"
+  },
+  "add": {
+    "title": "Adicionar amigo",
+    "subtitle": "Você abriu um link de convite. Amigos veem os dias de treino um do outro e criam desafios juntos.",
+    "send": "Adicionar {{name}}",
+    "notFound": "Este link de convite não é mais válido."
   },
   "newChallenge": {
     "title": "Novo desafio",

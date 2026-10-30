@@ -48,7 +48,7 @@ tags:
     id: "health.report.period.30"
 - assertVisible:
     id: "health.report.sessions"
-    text: "19 sessions"
+    text: "17 sessions"
 - tapOn:
     id: "health.report.period.custom"
 - assertVisible:

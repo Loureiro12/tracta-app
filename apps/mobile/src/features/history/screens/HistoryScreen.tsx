@@ -18,8 +18,9 @@ import {
   useTheme,
 } from '@tracta/design-system';
 
-import { useTranslation } from '@/shared/i18n';
+import { formatNumber, useTranslation } from '@/shared/i18n';
 
+import { useAchievements, useMonthlyRecap } from '../api/useAchievements';
 import { DayCard } from '../components/DayCard';
 import { EvolutionCard } from '../components/EvolutionCard';
 import { MonthCalendar } from '../components/MonthCalendar';
@@ -27,6 +28,7 @@ import { QueryState } from '../components/QueryState';
 import { StatTile } from '../components/StatTile';
 import { historyIds as ids } from '../history.testids';
 import { useMonthModel } from '../hooks/useMonthModel';
+import { monthName } from '../hooks/useRecapSlides';
 import { decimal } from '../lib/format';
 import { defaultSelection, parseDateKey } from '../lib/month';
 import { historyHrefs } from '../lib/routes';
@@ -46,6 +48,10 @@ export function HistoryScreen() {
   const { query, view, grid, todayKey, byDay, activity, itemsOf } = useMonthModel();
   const selectedDate = picked ?? defaultSelection(byDay, todayKey);
   const selected = parseDateKey(selectedDate) ?? new Date();
+  const recap = useMonthlyRecap().data;
+  const badges = useAchievements().data;
+  const recapMonth = recap ? monthName(recap.month) : t('recap.none');
+  const recapRecords = recap?.records.length ?? 0;
 
   const reportStyle = useMemo<ViewStyle>(
     () => ({
@@ -90,7 +96,7 @@ export function HistoryScreen() {
         px="xl"
         py="lg"
         onPress={() => router.push(historyHrefs.recap)}
-        accessibilityLabel={t('recapCard.title')}
+        accessibilityLabel={t('recapCard.title', { month: recapMonth })}
       >
         <HStack gap="md" justify="space-between">
           <VStack flex={1} gap="xxs">
@@ -98,10 +104,14 @@ export function HistoryScreen() {
               {t('recapCard.eyebrow')}
             </Text>
             <Text variant="stat" color="textOnInk" numberOfLines={1}>
-              {t('recapCard.title')}
+              {t('recapCard.title', { month: recapMonth })}
             </Text>
             <Text variant="secondary" color="text2OnInk" numberOfLines={1}>
-              {t('recapCard.line')}
+              {t('recapCard.line', {
+                workouts: recap?.workouts ?? 0,
+                km: formatNumber((recap?.runDistanceM ?? 0) / 1000, { maximumFractionDigits: 0 }),
+                records: recapRecords,
+              })}
             </Text>
           </VStack>
           <Box bg="surface" radius="xl" px="ml" justify="center" style={styles.pill}>
@@ -121,7 +131,12 @@ export function HistoryScreen() {
           <VStack flex={1} gap="xxs">
             <Text variant="cardTitleSm">{t('achievementsCard.title')}</Text>
             <Text variant="secondary" color="text2">
-              {t('achievementsCard.sub')}
+              {t('achievementsCard.sub', {
+                records: recapRecords,
+                month: recapMonth,
+                earned: badges?.filter((b) => b.earnedOn !== null).length ?? 0,
+                total: badges?.length ?? 0,
+              })}
             </Text>
           </VStack>
           <Icon name="chevron-right" size={16} color="text3" />

@@ -1,17 +1,4 @@
-import type { GoalKey, NotificationKey, ProgressPhoto } from './profile.types';
-
-/** Progress photos, newest first (prototype `extraVals`). Dates are data, weight in kg. */
-export const PROGRESS_PHOTOS: readonly ProgressPhoto[] = [
-  { id: '26-out', date: '26 out', kg: 78.4 },
-  { id: '28-set', date: '28 set', kg: 79.6 },
-  { id: '31-ago', date: '31 ago', kg: 80.9 },
-  { id: '27-jul', date: '27 jul', kg: 81.8 },
-  { id: '29-jun', date: '29 jun', kg: 82.6 },
-  { id: '1-jun', date: '1 jun', kg: 83.5 },
-];
-
-/** Weight attached to a photo registered today. */
-export const TODAY_PHOTO = { date: '27 out', kg: 78.3 } as const;
+import type { GoalKey, NotificationKey } from './profile.types';
 
 /** Goal steppers: step, min and max (prototype `gst`). */
 export const GOAL_STEPS: Record<GoalKey, { step: number; min: number; max: number }> = {

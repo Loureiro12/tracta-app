@@ -20,7 +20,7 @@ import { useFeedbackStore } from '@/shared/feedback';
 import { formatDate } from '@/shared/i18n';
 
 import { IntervalStrip } from '../components/IntervalStrip';
-import { RouteMap } from '../components/RouteMap';
+import { RunMap } from '../components/RunMap';
 import { RunStat } from '../components/RunStat';
 import { SplitRow } from '../components/SplitRow';
 import { useLiveRun } from '../hooks/useLiveRun';
@@ -46,7 +46,7 @@ export type RunScreenProps = {
   type?: string | undefined;
 };
 
-/** Live GPS activity: hero distance/time, pace stats, splits, route placeholder and pause/finish. */
+/** Live GPS activity: hero distance/time, pace stats, splits, route map and pause/finish. */
 export function RunScreen({ type }: RunScreenProps) {
   const router = useRouter();
   const theme = useTheme();
@@ -61,9 +61,12 @@ export function RunScreen({ type }: RunScreenProps) {
   // mini-player finds the run already in the store and just reopens it.
   useEffect(() => {
     const activity = resolveActivity(type);
-    startRun(activity.type, modalities[activity.type].gps, activity.intervals);
+    startRun(activity.type, modalities[activity.type].gps, activity.intervals, {
+      title: t('tracking.title'),
+      body: t('tracking.body'),
+    });
     setMiniPlayer(null);
-  }, [type, startRun, setMiniPlayer]);
+  }, [type, startRun, setMiniPlayer, t]);
 
   const footerStyle = useMemo<ViewStyle>(
     () => ({ borderTopWidth: 1, borderTopColor: theme.colors.divider }),
@@ -109,10 +112,16 @@ export function RunScreen({ type }: RunScreenProps) {
     );
   }
 
-  const { run, sec, dist, avgPace, curPace, splits, phase, paused } = live;
+  const { run, sec, dist, avgPace, curPace, splits, phase, paused, route, gpsFix } = live;
   const md = modalities[run.type];
-  const gpsText = run.gps ? t('live.gpsGood') : md.gps ? t('live.gpsOff') : t('live.gpsNotNeeded');
-  const gpsColor: keyof SemanticColors = run.gps ? 'brand' : 'text2';
+  const gpsText = run.gps
+    ? gpsFix
+      ? t('live.gpsGood')
+      : t('live.gpsSearching')
+    : md.gps
+      ? t('live.gpsOff')
+      : t('live.gpsNotNeeded');
+  const gpsColor: keyof SemanticColors = run.gps ? (gpsFix ? 'brand' : 'warnText') : 'text2';
   const stats: { key: string; label: string; value: string }[] = md.speed
     ? [
         { key: 'time', label: t('live.stat.time'), value: clock(sec) },
@@ -215,7 +224,7 @@ export function RunScreen({ type }: RunScreenProps) {
               {modality(run.type)}
             </Text>
             <HStack gap="xs">
-              <Dot color={gpsColor} size={6} pulse={run.gps} />
+              <Dot color={gpsColor} size={6} pulse={run.gps && gpsFix} />
               <Text
                 testID={runIds.liveGps}
                 variant="captionSemibold"
@@ -230,9 +239,10 @@ export function RunScreen({ type }: RunScreenProps) {
         </HStack>
 
         <Box px="lg" pt="sm">
-          <RouteMap
+          <RunMap
             testID={runIds.liveMap}
-            fraction={live.routeFraction}
+            route={route}
+            live
             caption={t('live.mapCaption')}
             {...(run.gps
               ? {}

@@ -1,15 +1,14 @@
 import { create } from 'zustand';
 
-import { DEFAULT_PERMISSIONS, HEALTH_IMPORT_MS, READ_TYPES } from './auth.mock';
+import { DEFAULT_PERMISSIONS, READ_TYPES } from './auth.mock';
 
 import type { PermissionKey } from './auth.mock';
-
-export type HealthStatus = 'off' | 'busy' | 'on';
 
 type AuthState = {
   /** Last e-mail typed in a form; carried over to the "check your e-mail" screen. */
   email: string;
-  health: HealthStatus;
+  /** A Health connection (permission prompt + first import) is running. */
+  healthBusy: boolean;
   googleNotify: boolean;
   gps: boolean;
   notifications: boolean;
@@ -20,16 +19,16 @@ type AuthState = {
   setGoogleNotify: (on: boolean) => void;
   setGps: (on: boolean) => void;
   setNotifications: (on: boolean) => void;
-  /** Mock import: "busy" for a moment, then "on". `onConnected` fires when it finishes. */
-  connectHealth: (onConnected?: () => void) => void;
+  setHealthBusy: (busy: boolean) => void;
 };
 
-let healthTimer: ReturnType<typeof setTimeout> | null = null;
-
-/** In-memory auth/connections state (layout phase: no backend, no native APIs). */
+/**
+ * In-memory auth/connections UI state. Whether Health is connected is server state
+ * (`useHealthConnection` from the health feature); GPS/notification switches stay local.
+ */
 export const useAuthStore = create<AuthState>((set) => ({
   email: '',
-  health: 'off',
+  healthBusy: false,
   googleNotify: false,
   gps: false,
   notifications: false,
@@ -46,13 +45,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   setGoogleNotify: (googleNotify) => set({ googleNotify }),
   setGps: (gps) => set({ gps }),
   setNotifications: (notifications) => set({ notifications }),
-  connectHealth: (onConnected) => {
-    if (healthTimer) clearTimeout(healthTimer);
-    set({ health: 'busy' });
-    healthTimer = setTimeout(() => {
-      healthTimer = null;
-      set({ health: 'on' });
-      onConnected?.();
-    }, HEALTH_IMPORT_MS);
-  },
+  setHealthBusy: (healthBusy) => set({ healthBusy }),
 }));

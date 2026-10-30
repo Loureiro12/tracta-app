@@ -30,8 +30,10 @@ tags:
     id: "history.day.card"
 - assertVisible:
     id: "history.day.date"
+# Steps and sleep of the day come from the synced health days (seeded like Apple Health)
 - assertVisible:
     id: "history.day.meta"
+    text: "12,880 steps · sleep 8h 08"
 - assertVisible:
     id: "history.day.sessions"
 - assertVisible:

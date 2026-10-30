@@ -13,6 +13,7 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { useHealthConnection } from '@/features/health';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 import { useAccount } from '@/shared/session';
@@ -74,6 +75,7 @@ export function ProfileScreen() {
 }
 
 function ProfileBody({ account }: { account: Account }) {
+  const source = useHealthConnection().data?.source ?? null;
   const router = useRouter();
   const { t } = useTranslation('profile');
   const showToast = useFeedbackStore((s) => s.showToast);
@@ -138,8 +140,12 @@ function ProfileBody({ account }: { account: Account }) {
         <VStack gap="xs">
           <HStack justify="space-between">
             <Text variant="cardTitleSm">{t('sources.appleHealth')}</Text>
-            <Text variant="captionSemibold" color="success">
-              {t('sources.appleStatus')}
+            <Text
+              testID={ids.sourcesAppleStatus}
+              variant="captionSemibold"
+              color={source === 'apple_health' ? 'success' : 'text2'}
+            >
+              {source === 'apple_health' ? t('sources.appleStatus') : t('sources.appleStatusOff')}
             </Text>
           </HStack>
           <Text variant="secondary" color="text2">
@@ -150,8 +156,13 @@ function ProfileBody({ account }: { account: Account }) {
         <VStack gap="xs">
           <HStack justify="space-between">
             <Text variant="cardTitleSm">{t('sources.googleHealth')}</Text>
-            <Text variant="captionSemibold" color="warnText">
-              {t('sources.googleStatus')}
+            <Text
+              variant="captionSemibold"
+              color={source === 'health_connect' ? 'success' : 'warnText'}
+            >
+              {source === 'health_connect'
+                ? t('sources.healthConnectStatus')
+                : t('sources.googleStatus')}
             </Text>
           </HStack>
           <Text variant="secondary" color="text2">

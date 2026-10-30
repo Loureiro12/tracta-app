@@ -17,6 +17,12 @@ tags:
     id: "home.weekly.stats.workouts"
     text: "5"
 - assertVisible:
+    id: "home.weekly.stats.distance"
+    text: "13.3 km"
+- assertVisible:
+    id: "home.weekly.stats.volume"
+    text: "24.5 t"
+- assertVisible:
     id: "home.weekly.days"
 - scrollUntilVisible:
     element:
@@ -24,6 +30,22 @@ tags:
     centerElement: true
 - assertVisible:
     id: "home.weekly.changes"
+# Health rows come from the synced days of Oct 19–25 against Oct 12–18 (seeds/50_health.sql)
+- scrollUntilVisible:
+    element:
+      text: "24 min more than the previous week"
+    centerElement: true
+- assertVisible: "Average sleep 7h 17"
+- scrollUntilVisible:
+    element:
+      text: "16% more · goal reached on 3 days"
+    centerElement: true
+- assertVisible: "Average steps 9,763"
+- scrollUntilVisible:
+    element:
+      text: "stable, 3 bpm variation"
+    centerElement: true
+- assertVisible: "Resting HR 61 bpm"
 - scrollUntilVisible:
     element:
       id: "home.weekly.highlights"
@@ -36,6 +58,8 @@ tags:
     centerElement: true
 - assertVisible:
     id: "home.weekly.goals"
+- assertVisible: "3 of 7 days"
+- assertVisible: "3 of 7 nights"
 - scrollUntilVisible:
     element:
       id: "home.weekly.note"

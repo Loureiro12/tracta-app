@@ -28,14 +28,15 @@
     "body": "Used only during activities to record your route, distance and pace. Accuracy depends on signal and surroundings.",
     "allow": "Allow While Using",
     "once": "Allow Once",
-    "deny": "Continue without GPS"
+    "deny": "Continue without GPS",
+    "deniedToast": "Location not allowed · recording without GPS"
   },
   "live": {
     "minimize": "Minimize",
     "gpsGood": "GPS · good signal",
     "gpsOff": "No GPS",
     "gpsNotNeeded": "No GPS · not needed",
-    "mapCaption": "GPS route · illustrative map",
+    "mapCaption": "GPS route",
     "noGpsTitle": "GPS off",
     "noGpsSubtitle": "Recording duration only.",
     "noGpsModality": "Time-based log. {{description}}.",
@@ -60,7 +61,8 @@
     "splitHintTimeOnly": "Pause to finish and add notes.",
     "pause": "Pause",
     "resume": "Resume",
-    "end": "Finish"
+    "end": "Finish",
+    "gpsSearching": "GPS · searching…"
   },
   "interval": {
     "warmup": "Warm-up",
@@ -121,5 +123,9 @@
     "toastSaved": "Activity saved",
     "toastDiscarded": "Activity discarded",
     "toastSaveError": "Couldn't save the activity. Try again."
+  },
+  "tracking": {
+    "title": "Recording your activity",
+    "body": "Tracta is using GPS to measure distance and pace."
   }
 }

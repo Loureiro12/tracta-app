@@ -16,7 +16,9 @@ export function avatarColor(id: string): string {
   return AVATAR_HUES[hash % AVATAR_HUES.length] ?? AVATAR_HUES[0];
 }
 
+/** Invite link shown on screen; the shared message carries the full URL. */
 export const INVITE_LINK_BASE = 'tracta.app/convite/';
+export const INVITE_URL_BASE = 'https://tracta.app/convite/';
 
 export const shareTargets = ['messages', 'whatsapp', 'email'] as const;
 export type ShareTarget = (typeof shareTargets)[number];

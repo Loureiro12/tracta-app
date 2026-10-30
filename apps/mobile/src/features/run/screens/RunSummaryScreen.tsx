@@ -20,11 +20,11 @@ import { useFeedbackStore } from '@/shared/feedback';
 import { formatNumber, useTranslation } from '@/shared/i18n';
 
 import { useSaveActivity } from '../api/useSaveActivity';
-import { RouteMap } from '../components/RouteMap';
+import { RunMap } from '../components/RunMap';
 import { RunStat } from '../components/RunStat';
 import { SplitRow } from '../components/SplitRow';
 import { useRunLabels } from '../hooks/useRunLabels';
-import { EM_DASH, clock, kmh as paceToKmh, splitsFor, toActivityInput } from '../model/run.logic';
+import { EM_DASH, clock, kmh as paceToKmh, toActivityInput } from '../model/run.logic';
 import { POOL_LENGTH_M, modalities } from '../model/run.mock';
 import { useRunStore } from '../model/run.store';
 import { runIds } from '../run.testids';
@@ -155,16 +155,12 @@ export function RunSummaryScreen() {
     ];
   }, [summary, t, km, kmh, modality]);
 
-  const splits = useMemo(
-    () => (summary ? splitsFor(summary.type, summary.distKm, summary.sec) : []),
-    [summary],
-  );
-
   if (!summary) {
     return <Screen testID={runIds.summaryScreen}>{null}</Screen>;
   }
 
   const md = modalities[summary.type];
+  const splits = summary.splits;
   const discardLabel = armed ? tc('actions.confirmAgain') : t('summary.discard');
   const swimMeters = summary.swimMeters ?? 0;
   const rows: Stat[][] = [];
@@ -219,7 +215,11 @@ export function RunSummaryScreen() {
       </VStack>
 
       {summary.gps ? (
-        <RouteMap testID={runIds.summaryMap} fraction={1} caption={t('live.mapCaption')} />
+        <RunMap
+          testID={runIds.summaryMap}
+          route={summary.route ?? []}
+          caption={t('live.mapCaption')}
+        />
       ) : null}
 
       {splits.length > 0 ? (

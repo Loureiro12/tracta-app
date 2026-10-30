@@ -29,17 +29,17 @@
     }
   },
   "sync": {
-    "line": "Apple Health · sincronizado às {{time}}"
+    "line": "{{source}} · sincronizado às {{time}}",
+    "never": "{{source}} · aguardando a primeira sincronização",
+    "off": "Saúde não conectada"
   },
   "weekly": {
     "eyebrow": "Resumo semanal · {{range}}",
-    "range": "19–25 out",
-    "previousRange": "12–18 out",
+    "range": "{{from}}–{{to}} {{month}}",
     "headline": "Semana consistente",
-    "homeLine": "5 treinos · sono 35 min maior · 2 recordes",
+    "homeLine": "{{workouts}} · {{records}}",
     "view": "Ver",
     "back": "Início",
-    "sub": "5 treinos em 7 dias, acima da sua meta de {{goal}}.",
     "stats": {
       "workouts": "Treinos",
       "workoutsSub": "meta {{goal}} por semana",
@@ -63,50 +63,84 @@
       "sat": "Sáb",
       "sun": "Dom"
     },
-    "restNote": "Dois dias de descanso — eles fazem parte do treino.",
     "changes": "O que mudou",
     "change": {
       "sleep": {
-        "title": "Sono médio 7h 20",
-        "description": "35 min a mais que na semana anterior"
+        "title": "Sono médio {{duration}}",
+        "titleNone": "Sem dados de sono nesta semana",
+        "more": "{{minutes}} min a mais que na semana anterior",
+        "less": "{{minutes}} min a menos que na semana anterior",
+        "same": "igual à semana anterior",
+        "none": "sem semana anterior para comparar"
       },
       "steps": {
         "title": "Passos médios {{value}}",
-        "description": "8% a mais · meta atingida em 3 dias"
+        "titleNone": "Sem dados de passos nesta semana",
+        "more": "{{percent}}% a mais",
+        "less": "{{percent}}% a menos",
+        "same": "igual à semana anterior",
+        "goal_one": "meta atingida em {{count}} dia",
+        "goal_other": "meta atingida em {{count}} dias"
       },
       "hr": {
-        "title": "FC de repouso 60 bpm",
-        "description": "estável, variação de 3 bpm"
+        "title": "FC de repouso {{bpm}} bpm",
+        "titleNone": "Sem dados de frequência cardíaca nesta semana",
+        "stable": "estável, variação de {{range}} bpm",
+        "higher": "{{bpm}} bpm acima da semana anterior",
+        "lower": "{{bpm}} bpm abaixo da semana anterior"
       },
       "pace": {
-        "title": "Ritmo de corrida 5:36 /km",
-        "description": "4 s mais rápido em corridas parecidas"
+        "title": "Ritmo de corrida {{pace}} /km",
+        "titleNone": "Nenhuma corrida nesta semana",
+        "faster": "{{seconds}} s mais rápido que na semana anterior",
+        "slower": "{{seconds}} s mais lento que na semana anterior",
+        "same": "mesmo ritmo da semana anterior",
+        "none": "sem corridas na semana anterior para comparar"
       }
     },
     "highlights": "Destaques",
     "highlight": {
-      "bench": "Supino reto com barra · 60 kg × 8",
-      "squat": "Agachamento livre · 80 kg × 6",
-      "run": "Corrida de 8,2 km · maior distância do mês"
+      "record": "{{name}} · {{kg}} kg × {{reps}}",
+      "recordBodyweight": "{{name}} · × {{reps}}",
+      "runMonth": "Corrida de {{km}} km · maior distância do mês",
+      "runWeek": "Corrida de {{km}} km · maior distância da semana",
+      "none": "Bata um recorde ou registre uma corrida para ver destaques aqui."
     },
     "goals": "Metas da semana",
     "goal": {
       "workouts": "Treinos",
-      "workoutsValue": "5 de {{goal}}",
+      "workoutsValue": "{{done}} de {{goal}}",
       "steps": "Passos ({{goal}})",
-      "stepsValue": "3 de 7 dias",
+      "stepsValue": "{{done}} de {{total}} dias",
       "sleep": "Sono ({{goal}})",
-      "sleepValue": "3 de 7 noites"
+      "sleepValue": "{{done}} de {{total}} noites"
     },
     "preview": {
-      "big": "5 treinos · 13,3 km",
-      "active": "4h 12 ativo",
-      "records": "2 recordes",
-      "days": "5 de 7 dias",
-      "note": "Prévia do cartão · sem dados de saúde"
+      "big": "{{workouts}} · {{km}} km",
+      "active": "{{time}} ativo",
+      "days": "{{count}} de 7 dias",
+      "note": "Prévia do cartão · sem dados de saúde",
+      "records_one": "{{count}} recorde",
+      "records_other": "{{count}} recordes"
     },
     "share": "Compartilhar resumo",
-    "note": "Comparações com {{range}}. Descrevemos tendências, sem afirmar causas."
+    "note": "Comparações com {{range}}. Descrevemos tendências, sem afirmar causas.",
+    "rangeCross": "{{from}} {{fromMonth}} – {{to}} {{toMonth}}",
+    "headlineBelow": "Semana mais leve",
+    "homeWorkouts_one": "{{count}} treino",
+    "homeWorkouts_other": "{{count}} treinos",
+    "homeRecords_one": "{{count}} recorde",
+    "homeRecords_other": "{{count}} recordes",
+    "subMet_one": "{{count}} treino em 7 dias, batendo sua meta de {{goal}}.",
+    "subMet_other": "{{count}} treinos em 7 dias, batendo sua meta de {{goal}}.",
+    "subBelow_one": "{{count}} treino em 7 dias, sua meta é {{goal}}.",
+    "subBelow_other": "{{count}} treinos em 7 dias, sua meta é {{goal}}.",
+    "restNote_one": "Um dia de descanso — ele faz parte do treino.",
+    "restNote_other": "{{count}} dias de descanso — eles fazem parte do treino.",
+    "highlightTag": {
+      "pr": "PR",
+      "km": "KM"
+    }
   },
   "sleep": {
     "title": "Sono · noite passada",
@@ -114,7 +148,8 @@
     "duration": "{{hours}}h {{minutes}}",
     "goal": "de {{goal}} de meta",
     "window": "{{start}} → {{end}}",
-    "regularity": "horário regular · ±{{minutes}} min"
+    "regularity": "horário regular · ±{{minutes}} min",
+    "empty": "Nenhum sono registrado na última noite"
   },
   "move": {
     "title": "Movimento",
@@ -125,12 +160,16 @@
     "activity": "Atividade",
     "km": "{{value}} km",
     "kcal": "{{value}} kcal",
-    "min": "{{value}} min"
+    "min": "{{value}} min",
+    "deltaDown": "{{percent}}% vs. ontem neste horário",
+    "empty": "Nenhum passo sincronizado hoje ainda"
   },
   "hr": {
     "title": "FC de repouso ›",
     "unit": "bpm",
-    "note": "{{delta}} abaixo da média de 7 dias"
+    "note": "{{delta}} abaixo da média de 7 dias",
+    "noteAbove": "{{delta}} acima da média de 7 dias",
+    "noteSame": "na média dos últimos 7 dias"
   },
   "week": {
     "title": "Treinos na semana",

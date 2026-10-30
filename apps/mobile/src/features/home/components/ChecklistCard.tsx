@@ -15,6 +15,7 @@ import {
 
 import { useTranslation } from '@/shared/i18n';
 
+import { useHomeHealth } from '../api/useHomeHealth';
 import { homeIds } from '../home.testids';
 import { checklistSteps } from '../model/home.mock';
 
@@ -24,7 +25,8 @@ import type { HomeChecklistStepId } from '../model/home.mock';
 function pushStep(router: ReturnType<typeof useRouter>, id: HomeChecklistStepId) {
   switch (id) {
     case 'health':
-      router.push('/health');
+      // Connecting Health lives in the connections screen (settings mode: back + "Done").
+      router.push('/connect?mode=settings');
       return;
     case 'workout':
       router.push('/workouts');
@@ -39,21 +41,23 @@ function pushStep(router: ReturnType<typeof useRouter>, id: HomeChecklistStepId)
 export function ChecklistCard() {
   const router = useRouter();
   const { t } = useTranslation('home');
-  const done = checklistSteps.filter((s) => s.done).length;
+  const { connected } = useHomeHealth();
+  const steps = checklistSteps.map((s) => (s.id === 'health' ? { ...s, done: connected } : s));
+  const done = steps.filter((s) => s.done).length;
 
   return (
     <Card testID={homeIds.checklistCard} gap="md">
       <HStack gap="sm" justify="space-between" align="baseline">
         <Text variant="cardTitle">{t('checklist.title')}</Text>
         <Text testID={homeIds.checklistProgress} variant="caption" color="text2">
-          {t('checklist.progress', { done, total: checklistSteps.length })}
+          {t('checklist.progress', { done, total: steps.length })}
         </Text>
       </HStack>
       <Text variant="secondary" color="text2">
         {t('checklist.description')}
       </Text>
       <VStack testID={homeIds.checklistSteps} gap="none">
-        {checklistSteps.map((step) => (
+        {steps.map((step) => (
           <Pressable
             key={step.id}
             testID={`${homeIds.checklistSteps}.${step.id}`}

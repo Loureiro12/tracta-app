@@ -1,5 +1,6 @@
 /**
- * Mock data for the share cards (prototype `shareVals()`), kg only.
+ * Mock data for the today/run cards and the evolution chart (prototype `shareVals()`), kg only.
+ * Week, month and record cards read the backend (see ../hooks/useShareCardContent).
  * Health data (sleep, heart rate) is never part of a card.
  */
 export const shareTemplates = ['today', 'evo', 'pr', 'week', 'run', 'month'] as const;
@@ -54,26 +55,6 @@ export const evoMock = {
   deltaKg: 12.5,
   deltaPct: 18,
   workouts: 64,
-  streakDays: 12,
-};
-
-export const prMock = {
-  kg: 82.5,
-  reps: 6,
-  deltaKg: 2.5,
-  recordsThisMonth: 3,
-  sinceStartKg: 22.5,
-  sinceStartPct: 37,
-};
-
-export const weekMock = {
-  done: 4,
-  goal: 4,
-  /** Indices (Mon..Sun) with an activity. */
-  activeDays: [0, 2, 3, 5],
-  strengthWorkouts: 3,
-  runKm: 18,
-  streakDays: 12,
 };
 
 export const runMock = {
@@ -82,14 +63,6 @@ export const runMock = {
   pace: '5:34',
   /** Pace per 2 km split (min/km). */
   splits: [5.52, 5.4, 5.36, 5.31, 5.28, 5.2],
-};
-
-export const monthMock = {
-  workouts: 16,
-  moreThanPrevious: 4,
-  runKm: 58,
-  volumeTons: 42.2,
-  records: 3,
 };
 
 /** Bar heights (px) for the 6-month evolution chart, as in the prototype. */

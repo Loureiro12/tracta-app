@@ -1,9 +1,5 @@
 import { create } from 'zustand';
 
-import { PROGRESS_PHOTOS, TODAY_PHOTO } from './profile.mock';
-
-import type { ProgressPhoto } from './profile.types';
-
 /**
  * Local UI state for the Profile tab. Account data (name, e-mail, goals and preferences) is
  * server state: see `useAccount()` and `../api`.
@@ -11,45 +7,42 @@ import type { ProgressPhoto } from './profile.types';
 type ProfileState = {
   /** iOS-level permission; false shows the "notifications are off" warning (device only). */
   systemNotificationsAllowed: boolean;
-  /** Apple Health connection (device only, no HealthKit integration yet). */
-  healthConnected: boolean;
-  photos: ProgressPhoto[];
-  /** Indexes into `photos` for the side-by-side comparison. */
+  /**
+   * Indexes into the photo list (newest first) for the side-by-side comparison. Clamped to the
+   * list length when read, so `OLDEST` always means the last photo.
+   */
   compareA: number;
   compareB: number;
 
   allowSystemNotifications: () => void;
-  disconnectHealth: () => void;
-  addTodayPhoto: () => void;
-  cycleCompare: (slot: 'a' | 'b') => void;
+  /** A photo was added at the top: A shows it, B keeps pointing at the same picture. */
+  photoAdded: () => void;
+  /** Next photo in a slot, wrapping around a list of `count` photos. */
+  cycleCompare: (slot: 'a' | 'b', count: number) => void;
   /** Back to the initial state (sign-out / account deletion). */
   reset: () => void;
 };
 
+/** Compare slot sentinel for "the oldest photo". */
+export const OLDEST = Number.MAX_SAFE_INTEGER;
+
 const initial = {
   systemNotificationsAllowed: false,
-  healthConnected: true,
-  photos: [...PROGRESS_PHOTOS],
   compareA: 0,
-  compareB: 5,
+  compareB: OLDEST,
 };
 
 export const useProfileStore = create<ProfileState>((set) => ({
   ...initial,
 
   allowSystemNotifications: () => set({ systemNotificationsAllowed: true }),
-  disconnectHealth: () => set({ healthConnected: false }),
-  addTodayPhoto: () =>
-    set((s) => ({
-      photos: [{ id: `new-${s.photos.length}`, ...TODAY_PHOTO }, ...s.photos],
-      compareA: 0,
-      compareB: Math.min(s.compareB + 1, s.photos.length),
-    })),
-  cycleCompare: (slot) =>
+  photoAdded: () =>
+    set((s) => ({ compareA: 0, compareB: s.compareB === OLDEST ? OLDEST : s.compareB + 1 })),
+  cycleCompare: (slot, count) =>
     set((s) => {
-      const n = s.photos.length;
-      if (slot === 'a') return { compareA: (Math.min(s.compareA, n - 1) + 1) % n };
-      return { compareB: (Math.min(s.compareB, n - 1) + 1) % n };
+      if (count < 1) return {};
+      const next = (i: number) => (Math.min(i, count - 1) + 1) % count;
+      return slot === 'a' ? { compareA: next(s.compareA) } : { compareB: next(s.compareB) };
     }),
-  reset: () => set({ ...initial, photos: [...PROGRESS_PHOTOS] }),
+  reset: () => set(initial),
 }));

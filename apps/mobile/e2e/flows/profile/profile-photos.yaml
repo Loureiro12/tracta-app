@@ -3,6 +3,10 @@ name: profile-photos
 tags:
   - profile
 ---
+# Demo photos are seeded rows (supabase/seeds/60_photos.sql: Sep 27 … Jun 1, no file, so the
+# frame shows the placeholder). E2E builds replace the camera/library with a bundled sample
+# image that is really uploaded to the private bucket; its weight is the latest weigh-in
+# (78.1 kg on Oct 25) and its day is the frozen "today" (Oct 26).
 - runFlow: ../../subflows/launch.yaml
 - tapOn:
     id: "app.tab.profile"
@@ -21,7 +25,18 @@ tags:
     id: "profile.photos.add.label"
     text: "Log today's photo"
 - assertVisible:
+    id: "profile.photos.add-library.label"
+    text: "Choose from library"
+- assertVisible:
     id: "profile.photos.grid"
+- extendedWaitUntil:
+    visible:
+      id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f1.date"
+      text: "Sep 27"
+    timeout: 10000
+- assertVisible:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f1.weight"
+    text: "79.8 kg"
 - tapOn:
     id: "profile.photos.add"
 - assertVisible:
@@ -30,37 +45,69 @@ tags:
 # Compare: newest (today) vs oldest, with the weight difference
 - tapOn:
     id: "profile.photos.tabs.compare"
-- assertVisible:
-    id: "profile.photos.swap-a.label"
-    text: "27 out · swap"
+- extendedWaitUntil:
+    visible:
+      id: "profile.photos.swap-a.label"
+      text: "Oct 26 · swap"
+    timeout: 10000
 - assertVisible:
     id: "profile.photos.swap-b.label"
-    text: "1 jun · swap"
+    text: "Jun 1 · swap"
 - assertVisible:
     id: "profile.photos.diff"
 - assertVisible:
     id: "profile.photos.diff.value"
-    text: "-5.2"
+    text: "-5.4"
 - assertVisible:
     id: "profile.photos.span"
-    text: "From 1 jun to 27 out · weight logged on the day of the photo"
+    text: "From Jun 1 to Oct 26 · weight logged on the day of the photo"
 - tapOn:
     id: "profile.photos.swap-a"
 - assertVisible:
     id: "profile.photos.swap-a.label"
-    text: "26 out · swap"
+    text: "Sep 27 · swap"
 - assertVisible:
     id: "profile.photos.diff.value"
-    text: "-5.1"
+    text: "-3.7"
 - tapOn:
     id: "profile.photos.swap-b"
 - assertVisible:
     id: "profile.photos.swap-b.label"
-    text: "27 out · swap"
+    text: "Oct 26 · swap"
+- assertVisible:
+    id: "profile.photos.diff.value"
+    text: "-1.7"
 - tapOn:
     id: "profile.photos.tabs.list"
 - assertVisible:
     id: "profile.photos.add"
+# Library: a second photo for today
+- tapOn:
+    id: "profile.photos.add-library"
+- assertVisible:
+    id: "app.toast.message"
+    text: "New frame added to the timeline"
+# Deleting a photo takes two taps on its tile
+- scrollUntilVisible:
+    element:
+      id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5.date"
+    text: "Jun 1"
+- tapOn:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5"
+- assertVisible:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5.date"
+    text: "Tap again to delete"
+- tapOn:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Photo deleted"
+- assertNotVisible:
+    id: "profile.photos.grid.00000000-0000-4000-b000-0000000000f5"
 - tapOn:
     id: "profile.photos.back"
 - assertVisible:

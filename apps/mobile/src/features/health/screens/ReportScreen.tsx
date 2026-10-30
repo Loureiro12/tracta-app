@@ -18,13 +18,14 @@ import {
 } from '@tracta/design-system';
 
 import { useFeedbackStore } from '@/shared/feedback';
-import { useTranslation } from '@/shared/i18n';
+import { formatDate, useTranslation } from '@/shared/i18n';
 
+import { useRecordDates } from '../api/useHealth';
 import { StatCell, StatGrid } from '../components/StatGrid';
 import { healthIds as ids } from '../health.testids';
-import { reportTotals } from '../lib/derive';
+import { useHealthData } from '../hooks/useHealthData';
+import { addDays, keyToDate, reportTotals } from '../lib/derive';
 import { dayLabel, dec1, hm, num } from '../lib/format';
-import { GOALS } from '../model/health.mock';
 import { useHealthStore } from '../model/health.store';
 
 import type { ReportPeriod } from '../model/health.types';
@@ -52,19 +53,30 @@ export function ReportScreen() {
   const adjustFrom = useHealthStore((s) => s.adjustReportFrom);
   const adjustTo = useHealthStore((s) => s.adjustReportTo);
 
-  const [a, b] = period === '7' ? [20, 26] : period === '30' ? [1, 26] : [from, to];
-  const c = useMemo(() => reportTotals(a, b), [a, b]);
-  const len = b - a + 1;
-  const prev = useMemo(() => reportTotals(a - len, a - 1), [a, len]);
-  const extra = period === '30' ? 2 : 0;
-  const total = c.total + extra;
-  const prevTotal = prev.n ? prev.total : null;
+  const { get, todayKey, goals: targets, entries } = useHealthData();
+  const prDates = useRecordDates().data;
+  const todayDate = keyToDate(todayKey);
+  const monthKey = todayKey.slice(0, 8);
+  const pad = (d: number) => String(d).padStart(2, '0');
+  const [a, b] =
+    period === '7'
+      ? [addDays(todayKey, -6), todayKey]
+      : period === '30'
+        ? [addDays(todayKey, -29), todayKey]
+        : [`${monthKey}${pad(from)}`, `${monthKey}${pad(Math.min(to, todayDate.getDate()))}`];
+  const len = Math.round((keyToDate(b).getTime() - keyToDate(a).getTime()) / 86_400_000) + 1;
+  const c = reportTotals(a, b, get, entries, prDates ?? [], targets);
+  const prev = reportTotals(addDays(a, -len), addDays(a, -1), get, entries, prDates ?? [], targets);
+  const total = c.total;
+  const prevHasData = prev.total > 0 || prev.steps != null;
+  const prevTotal = prevHasData ? prev.total : null;
   const perWeek = total / Math.max(1, len / 7);
-  const oct = t('month.oct');
+  const monthShort = formatDate(todayDate, { month: 'short' }).replace('.', '');
+  const shortDate = (k: string) => formatDate(keyToDate(k), { day: 'numeric', month: 'short' });
 
   const mods = (
     [
-      ['strength', c.strength + extra],
+      ['strength', c.strength],
       ['run', c.runs],
       ['walk', c.walks],
       ['other', c.others],
@@ -93,16 +105,10 @@ export function ReportScreen() {
           : t('report.compare.same');
 
   const stats = [
-    {
-      key: 'volume',
-      value: t('report.stat.volumeValue', { value: dec1((c.vol + extra * 9000) / 1000) }),
-    },
-    {
-      key: 'distance',
-      value: t('report.stat.distanceValue', { value: dec1(c.km + (period === '30' ? 5 : 0)) }),
-    },
-    { key: 'steps', value: num(c.steps / Math.max(1, c.n)) },
-    { key: 'sleep', value: hm(c.sleep / Math.max(1, c.n)) },
+    { key: 'volume', value: t('report.stat.volumeValue', { value: dec1(c.vol / 1000) }) },
+    { key: 'distance', value: t('report.stat.distanceValue', { value: dec1(c.km) }) },
+    { key: 'steps', value: c.steps == null ? t('report.stat.none') : num(c.steps) },
+    { key: 'sleep', value: c.sleep == null ? t('report.stat.none') : hm(c.sleep) },
     { key: 'frequency', value: t('report.stat.frequencyValue', { value: dec1(perWeek) }) },
     { key: 'records', value: String(c.prs) },
   ] as const;
@@ -110,21 +116,21 @@ export function ReportScreen() {
   const goals = [
     {
       key: 'steps',
-      label: t('report.goals.steps', { goal: num(GOALS.steps) }),
+      label: t('report.goals.steps', { goal: num(targets.steps) }),
       value: t('report.goals.stepsValue', { hit: c.stepHit, total: c.n }),
       p: c.stepHit / Math.max(1, c.n),
     },
     {
       key: 'sleep',
-      label: t('report.goals.sleep', { goal: hm(GOALS.sleep) }),
+      label: t('report.goals.sleep', { goal: hm(targets.sleepMinutes) }),
       value: t('report.goals.sleepValue', { hit: c.sleepHit, total: c.n }),
       p: c.sleepHit / Math.max(1, c.n),
     },
     {
       key: 'workouts',
-      label: t('report.goals.workouts', { goal: GOALS.workouts }),
-      value: t('report.goals.workoutsValue', { value: dec1(perWeek), goal: GOALS.workouts }),
-      p: Math.min(1, perWeek / GOALS.workouts),
+      label: t('report.goals.workouts', { goal: targets.workouts }),
+      value: t('report.goals.workoutsValue', { value: dec1(perWeek), goal: targets.workouts }),
+      p: Math.min(1, perWeek / targets.workouts),
     },
   ] as const;
 
@@ -141,9 +147,7 @@ export function ReportScreen() {
     >
       <Box gap="xs">
         <Text variant="secondary" color="text2">
-          {period === '30'
-            ? t('report.range30')
-            : t('report.range', { from: dayLabel(a, oct), to: dayLabel(b, oct) })}
+          {t('report.range', { from: shortDate(a), to: shortDate(b) })}
         </Text>
         <Text testID={ids.reportTitle} variant="overlayTitle">
           {t('report.title')}
@@ -163,7 +167,7 @@ export function ReportScreen() {
             </Text>
             <Stepper
               testID={ids.reportFrom}
-              valueLabel={dayLabel(from, oct)}
+              valueLabel={dayLabel(from, monthShort)}
               onDecrement={() => adjustFrom(-1)}
               onIncrement={() => adjustFrom(1)}
               decrementLabel={t('report.decrement')}
@@ -176,9 +180,9 @@ export function ReportScreen() {
             </Text>
             <Stepper
               testID={ids.reportTo}
-              valueLabel={dayLabel(to, oct)}
-              onDecrement={() => adjustTo(-1)}
-              onIncrement={() => adjustTo(1)}
+              valueLabel={dayLabel(Math.min(to, todayDate.getDate()), monthShort)}
+              onDecrement={() => adjustTo(-1, todayDate.getDate())}
+              onIncrement={() => adjustTo(1, todayDate.getDate())}
               decrementLabel={t('report.decrement')}
               incrementLabel={t('report.increment')}
             />

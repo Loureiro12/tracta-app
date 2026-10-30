@@ -11,6 +11,8 @@ export const profileIds = {
   headerEdit: testId('profile', 'header', 'edit'),
   goalsGroup: testId('profile', 'goals-list'),
   sourcesCard: testId('profile', 'sources', 'card'),
+  /** Apple Health status in the Sources card ("Connected" / "Not connected"). */
+  sourcesAppleStatus: testId('profile', 'sources', 'apple-status'),
   achievements: testId('profile', 'nav', 'achievements'),
   photos: testId('profile', 'nav', 'photos'),
   social: testId('profile', 'nav', 'social'),
@@ -42,6 +44,7 @@ export const profileIds = {
   photosTabList: testId('profile', 'photos', 'tabs', 'list'),
   photosTabCompare: testId('profile', 'photos', 'tabs', 'compare'),
   photosAdd: testId('profile', 'photos', 'add'),
+  photosAddLibrary: testId('profile', 'photos', 'add-library'),
   photosGrid: testId('profile', 'photos', 'grid'),
   photosSwapA: testId('profile', 'photos', 'swap-a'),
   photosSwapB: testId('profile', 'photos', 'swap-b'),

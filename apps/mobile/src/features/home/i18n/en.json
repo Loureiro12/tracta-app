@@ -29,17 +29,17 @@
     }
   },
   "sync": {
-    "line": "Apple Health · synced at {{time}}"
+    "line": "{{source}} · synced at {{time}}",
+    "never": "{{source}} · waiting for the first sync",
+    "off": "Health not connected"
   },
   "weekly": {
     "eyebrow": "Weekly summary · {{range}}",
-    "range": "Oct 19–25",
-    "previousRange": "Oct 12–18",
+    "range": "{{month}} {{from}}–{{to}}",
     "headline": "A consistent week",
-    "homeLine": "5 workouts · 35 min more sleep · 2 records",
+    "homeLine": "{{workouts}} · {{records}}",
     "view": "View",
     "back": "Home",
-    "sub": "5 workouts in 7 days, above your goal of {{goal}}.",
     "stats": {
       "workouts": "Workouts",
       "workoutsSub": "goal {{goal}} per week",
@@ -63,50 +63,84 @@
       "sat": "Sat",
       "sun": "Sun"
     },
-    "restNote": "Two rest days — they are part of training.",
     "changes": "What changed",
     "change": {
       "sleep": {
-        "title": "Average sleep 7h 20",
-        "description": "35 min more than the previous week"
+        "title": "Average sleep {{duration}}",
+        "titleNone": "No sleep data this week",
+        "more": "{{minutes}} min more than the previous week",
+        "less": "{{minutes}} min less than the previous week",
+        "same": "same as the previous week",
+        "none": "no previous week to compare"
       },
       "steps": {
         "title": "Average steps {{value}}",
-        "description": "8% more · goal reached on 3 days"
+        "titleNone": "No step data this week",
+        "more": "{{percent}}% more",
+        "less": "{{percent}}% fewer",
+        "same": "same as the previous week",
+        "goal_one": "goal reached on {{count}} day",
+        "goal_other": "goal reached on {{count}} days"
       },
       "hr": {
-        "title": "Resting HR 60 bpm",
-        "description": "stable, 3 bpm variation"
+        "title": "Resting HR {{bpm}} bpm",
+        "titleNone": "No heart rate data this week",
+        "stable": "stable, {{range}} bpm variation",
+        "higher": "{{bpm}} bpm higher than the previous week",
+        "lower": "{{bpm}} bpm lower than the previous week"
       },
       "pace": {
-        "title": "Running pace 5:36 /km",
-        "description": "4 s faster on similar runs"
+        "title": "Running pace {{pace}} /km",
+        "titleNone": "No runs this week",
+        "faster": "{{seconds}} s faster than the previous week",
+        "slower": "{{seconds}} s slower than the previous week",
+        "same": "same pace as the previous week",
+        "none": "no runs the previous week to compare"
       }
     },
     "highlights": "Highlights",
     "highlight": {
-      "bench": "Barbell bench press · 60 kg × 8",
-      "squat": "Back squat · 80 kg × 6",
-      "run": "8.2 km run · longest of the month"
+      "record": "{{name}} · {{kg}} kg × {{reps}}",
+      "recordBodyweight": "{{name}} · × {{reps}}",
+      "runMonth": "{{km}} km run · longest of the month",
+      "runWeek": "{{km}} km run · longest of the week",
+      "none": "Beat a record or log a run to see highlights here."
     },
     "goals": "Weekly goals",
     "goal": {
       "workouts": "Workouts",
-      "workoutsValue": "5 of {{goal}}",
+      "workoutsValue": "{{done}} of {{goal}}",
       "steps": "Steps ({{goal}})",
-      "stepsValue": "3 of 7 days",
+      "stepsValue": "{{done}} of {{total}} days",
       "sleep": "Sleep ({{goal}})",
-      "sleepValue": "3 of 7 nights"
+      "sleepValue": "{{done}} of {{total}} nights"
     },
     "preview": {
-      "big": "5 workouts · 13.3 km",
-      "active": "4h 12 active",
-      "records": "2 records",
-      "days": "5 of 7 days",
-      "note": "Card preview · no health data"
+      "big": "{{workouts}} · {{km}} km",
+      "active": "{{time}} active",
+      "days": "{{count}} of 7 days",
+      "note": "Card preview · no health data",
+      "records_one": "{{count}} record",
+      "records_other": "{{count}} records"
     },
     "share": "Share summary",
-    "note": "Compared with {{range}}. We describe trends without claiming causes."
+    "note": "Compared with {{range}}. We describe trends without claiming causes.",
+    "rangeCross": "{{fromMonth}} {{from}} – {{toMonth}} {{to}}",
+    "headlineBelow": "A lighter week",
+    "homeWorkouts_one": "{{count}} workout",
+    "homeWorkouts_other": "{{count}} workouts",
+    "homeRecords_one": "{{count}} record",
+    "homeRecords_other": "{{count}} records",
+    "subMet_one": "{{count}} workout in 7 days, reaching your goal of {{goal}}.",
+    "subMet_other": "{{count}} workouts in 7 days, reaching your goal of {{goal}}.",
+    "subBelow_one": "{{count}} workout in 7 days, your goal is {{goal}}.",
+    "subBelow_other": "{{count}} workouts in 7 days, your goal is {{goal}}.",
+    "restNote_one": "One rest day — it is part of training.",
+    "restNote_other": "{{count}} rest days — they are part of training.",
+    "highlightTag": {
+      "pr": "PR",
+      "km": "KM"
+    }
   },
   "sleep": {
     "title": "Sleep · last night",
@@ -114,7 +148,8 @@
     "duration": "{{hours}}h {{minutes}}",
     "goal": "of {{goal}} goal",
     "window": "{{start}} → {{end}}",
-    "regularity": "regular schedule · ±{{minutes}} min"
+    "regularity": "regular schedule · ±{{minutes}} min",
+    "empty": "No sleep recorded last night"
   },
   "move": {
     "title": "Movement",
@@ -125,12 +160,16 @@
     "activity": "Activity",
     "km": "{{value}} km",
     "kcal": "{{value}} kcal",
-    "min": "{{value}} min"
+    "min": "{{value}} min",
+    "deltaDown": "{{percent}}% vs. yesterday at this time",
+    "empty": "No steps synced today yet"
   },
   "hr": {
     "title": "Resting HR ›",
     "unit": "bpm",
-    "note": "{{delta}} below the 7-day average"
+    "note": "{{delta}} below the 7-day average",
+    "noteAbove": "{{delta}} above the 7-day average",
+    "noteSame": "in line with the 7-day average"
   },
   "week": {
     "title": "Workouts this week",

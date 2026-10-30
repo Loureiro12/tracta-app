@@ -195,7 +195,9 @@
     "allow_other": "Allow {{count}} data types",
     "allowNone": "Select at least one",
     "allowNoneToast": "Turn on at least one data type",
-    "connectedToast": "Apple Health connected"
+    "connectedToast": "Apple Health connected",
+    "deniedToast": "Health access was not allowed. You can change it in the Health app.",
+    "failedToast": "Couldn't import your health data. Try again."
   },
   "errors": {
     "network": "No connection. Check your internet and try again.",

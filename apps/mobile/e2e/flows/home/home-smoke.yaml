@@ -19,10 +19,11 @@ tags:
     id: "home.nav.inbox.badge"
 - assertVisible:
     id: "home.nav.profile"
-# Apple Health sync line and the dark weekly teaser
+# Apple Health sync line (the E2E build syncs its fake Health store on launch, so the time is
+# either the seeded 16:12 or the moment of that sync) and the dark weekly teaser
 - assertVisible:
     id: "home.sync.line"
-    text: "Apple Health · synced at 16:12"
+    text: "Apple Health · synced at [0-9]{2}:[0-9]{2}"
 - assertVisible:
     id: "home.weekly.card"
 - assertVisible:

@@ -5,13 +5,13 @@
   },
   "recapCard": {
     "eyebrow": "Recap",
-    "title": "Your October in 5 screens",
-    "line": "16 workouts · 58 km · 3 records",
+    "title": "Your {{month}} in 5 screens",
+    "line": "{{workouts}} workouts · {{km}} km · {{records}} records",
     "cta": "View"
   },
   "achievementsCard": {
     "title": "Records & achievements",
-    "sub": "3 records and 1 achievement in October"
+    "sub": "{{records}} records in {{month}} · {{earned}} of {{total}} achievements"
   },
   "calendar": {
     "month": "{{month}} {{year}}",
@@ -126,7 +126,7 @@
       "hr": "Avg HR"
     },
     "minutes": "{{minutes}} min",
-    "mapLabel": "GPS route · illustrative map",
+    "mapLabel": "GPS route",
     "splits": "Splits",
     "splitKm": "Km {{km}}",
     "splitPartial": "{{km}} km",
@@ -155,101 +155,74 @@
     "deleteError": "Couldn't delete the session. Try again."
   },
   "recap": {
-    "brand": "Tracta · October 2026",
+    "brand": "Tracta · {{month}}",
     "close": "Close",
     "prev": "Previous",
     "share": "Share",
+    "none": "—",
+    "km": "{{value}} km",
+    "tons": "{{value}} t",
     "slides": {
       "0": {
-        "kicker": "In October you trained",
-        "title": "times — 4 more than in September.",
-        "rows": {
-          "0": {
-            "label": "Strength",
-            "value": "11 sessions"
-          },
-          "1": {
-            "label": "Running",
-            "value": "5 runs"
-          },
-          "2": {
-            "label": "Favorite day",
-            "value": "Monday"
-          }
-        }
+        "kicker": "In {{month}} you trained",
+        "titleMore": "times — {{count}} more than in {{previous}}.",
+        "titleFewer": "times — {{count}} fewer than in {{previous}}.",
+        "titleSame": "times — same as in {{previous}}.",
+        "strength": "Strength",
+        "strengthValue_one": "{{count}} session",
+        "strengthValue_other": "{{count}} sessions",
+        "running": "Running",
+        "runningValue_one": "{{count}} run",
+        "runningValue_other": "{{count}} runs",
+        "favorite": "Favorite day"
       },
       "1": {
         "kicker": "You ran",
-        "title": "across 5 runs, faster every time.",
-        "rows": {
-          "0": {
-            "label": "Average pace",
-            "value": "5:36 /km"
-          },
-          "1": {
-            "label": "Longest",
-            "value": "12,4 km"
-          },
-          "2": {
-            "label": "Best 5 km",
-            "value": "27:41"
-          }
-        }
+        "title_one": "in {{count}} run this month.",
+        "title_other": "across {{count}} runs this month.",
+        "pace": "Average pace",
+        "paceValue": "{{pace}} /km",
+        "longest": "Longest",
+        "best5k": "Best 5 km"
       },
       "2": {
         "kicker": "You lifted",
-        "title": "of total volume, with bench press on top.",
-        "rows": {
-          "0": {
-            "label": "Most trained",
-            "value": "Chest & Triceps"
-          },
-          "1": {
-            "label": "Sets",
-            "value": "238"
-          },
-          "2": {
-            "label": "Average duration",
-            "value": "54 min"
-          }
-        }
+        "title": "of total volume, with {{exercise}} on top.",
+        "titleNone": "of total volume.",
+        "focus": "Most trained",
+        "sets": "Sets",
+        "duration": "Average duration",
+        "durationValue": "{{minutes}} min"
       },
       "3": {
         "kicker": "New records",
         "title": "personal bests broken this month.",
-        "rows": {
-          "0": {
-            "label": "Bench press",
-            "value": "82,5 kg × 6"
-          },
-          "1": {
-            "label": "Squat",
-            "value": "100 kg × 5"
-          },
-          "2": {
-            "label": "5 km",
-            "value": "27:41"
-          }
-        }
+        "empty": "Beat a previous best to see it here.",
+        "value": "{{kg}} kg × {{reps}}",
+        "valueBodyweight": "× {{reps}}"
       },
       "4": {
         "kicker": "And you rested",
-        "title": "of sleep per night on average — 18 min more.",
-        "rows": {
-          "0": {
-            "label": "Nights on target",
-            "value": "19 of 31"
-          },
-          "1": {
-            "label": "Average bedtime",
-            "value": "23:41"
-          },
-          "2": {
-            "label": "Current streak",
-            "value": "12 days"
-          }
-        }
+        "title": "of sleep per night on average — {{minutes}} min more.",
+        "titleLess": "of sleep per night on average — {{minutes}} min less.",
+        "titleSame": "of sleep per night on average — same as last month.",
+        "titleNone": "No sleep data this month yet.",
+        "nights": "Nights on target",
+        "nightsValue": "{{done}} of {{total}}",
+        "bedtime": "Average bedtime",
+        "streak": "Current streak",
+        "streakValue_one": "{{count}} day",
+        "streakValue_other": "{{count}} days"
       }
+    },
+    "weekdays": {
+      "0": "Monday",
+      "1": "Tuesday",
+      "2": "Wednesday",
+      "3": "Thursday",
+      "4": "Friday",
+      "5": "Saturday",
+      "6": "Sunday"
     }
   },
   "achievements": {
@@ -296,39 +269,46 @@
     "badges": {
       "streak12": {
         "name": "12-day streak",
-        "description": "trained or walked 12 days in a row"
+        "description": "trained or walked 12 days in a row",
+        "progress": "{{current}} of {{target}} days"
       },
       "workouts50": {
         "name": "50 workouts",
-        "description": "since you started on Tracta"
+        "description": "since you started on Tracta",
+        "progress": "{{current}} of {{target}}"
       },
       "first5k": {
         "name": "First 5 km",
-        "description": "ran 5 km without stopping"
+        "description": "a run of 5 km or more",
+        "progress": "longest: {{km}} km",
+        "progressNone": "no run yet"
       },
       "oneTon": {
         "name": "One ton",
-        "description": "1,000 kg of volume in one workout"
+        "description": "1,000 kg of volume in one workout",
+        "progress": "best: {{kg}} kg",
+        "progressNone": "no workout yet"
       },
       "perfectMonth": {
         "name": "Perfect month",
-        "description": "hit the weekly goal every week",
-        "progress": "3 of 4 weeks"
+        "description": "hit the weekly goal every week of a month",
+        "progress": "{{current}} of {{target}} weeks"
       },
       "tenKSub55": {
         "name": "10 km under 55 min",
-        "description": "goal for your December race",
-        "progress": "best: 58:12"
+        "description": "10 km in less than 55 minutes",
+        "progress": "best: {{time}}",
+        "progressNone": "no 10 km yet"
       },
       "streak30": {
         "name": "30-day streak",
         "description": "a bit of movement every day",
-        "progress": "12 of 30 days"
+        "progress": "{{current}} of {{target}} days"
       },
       "workouts100": {
         "name": "100 workouts",
         "description": "keep the pace",
-        "progress": "64 of 100"
+        "progress": "{{current}} of {{target}}"
       }
     },
     "recordDetail": {

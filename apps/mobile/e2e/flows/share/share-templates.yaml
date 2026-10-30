@@ -24,7 +24,7 @@ tags:
     text: "New personal record"
 - assertVisible:
     id: "share.card.big"
-    text: "82.5 kg"
+    text: "160 kg"
 - tapOn:
     id: "share.nav.next"
 - assertVisible:
@@ -34,7 +34,7 @@ tags:
     id: "share.card.dots"
 - assertVisible:
     id: "share.card.big"
-    text: "4/4"
+    text: "5/4"
 - tapOn:
     id: "share.nav.next"
 - assertVisible:
@@ -52,7 +52,7 @@ tags:
     text: "October 2026"
 - assertVisible:
     id: "share.card.big"
-    text: "16"
+    text: "14"
 - tapOn:
     id: "share.nav.next"
 - assertVisible:

@@ -67,6 +67,17 @@ tags:
 - assertVisible:
     id: "history.achievements.badges.perfectMonth.progress"
     text: "3 of 4 weeks"
+- assertVisible:
+    id: "history.achievements.badges.tenKSub55.progress"
+    text: "best: 58:12"
+- scrollUntilVisible:
+    element:
+      id: "history.achievements.badges.workouts100.progress"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: "history.achievements.badges.workouts100.progress"
+    text: "64 of 100"
 - scrollUntilVisible:
     element:
       id: "history.achievements.back"

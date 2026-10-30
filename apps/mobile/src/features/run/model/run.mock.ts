@@ -32,29 +32,10 @@ export const SWIM_MIN_M = 25;
 export const SWIM_MAX_M = 10000;
 export const SWIM_DEFAULT_M = 1000;
 
-/** Demo clock: one real second counts as 12 activity seconds (the prototype's `fastSim`). */
-export const SIM_FACTOR = 12;
-
-/** Route placeholder canvas (matches the prototype's 358×230 SVG viewBox). */
+/** Drawn-route canvas (the prototype's 358×230 SVG viewBox), used when no native map is available. */
 export const ROUTE_WIDTH = 358;
 export const ROUTE_HEIGHT = 230;
 export const ROUTE_GRID = 28;
-
-/** A closed loop of 81 points drawn by the prototype's `ROUTE` generator. */
-export const ROUTE_POINTS: readonly (readonly [number, number])[] = Array.from(
-  { length: 81 },
-  (_, i) => {
-    const t = (i / 80) * Math.PI * 2 - Math.PI / 2;
-    return [
-      179 + 118 * Math.cos(t) + 26 * Math.cos(3 * t),
-      115 + 74 * Math.sin(t) + 16 * Math.sin(2 * t),
-    ] as const;
-  },
-);
-
-/** Distance (km) that completes the mock loop once. */
-export const LOOP_KM: Partial<Record<ModalityId, number>> = { walk: 2.5 };
-export const DEFAULT_LOOP_KM = 5;
 
 export function isModalityId(value: string | undefined): value is ModalityId {
   return value !== undefined && value in modalities;

@@ -62,6 +62,22 @@ tags:
 - assertVisible:
     id: "profile.privacy.out.apple-health.value"
     text: "Disconnected"
+# Synced health days can be deleted from the server too (also needs a second tap)
+- scrollUntilVisible:
+    element:
+      id: "profile.privacy.actions.health-data"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "profile.privacy.actions.health-data"
+- assertVisible:
+    id: "profile.privacy.actions.health-data.label"
+    text: "Tap again to confirm"
+- tapOn:
+    id: "profile.privacy.actions.health-data"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Synced health data deleted"
 - scrollUntilVisible:
     element:
       id: "profile.privacy.actions.account"
@@ -92,3 +108,24 @@ tags:
     id: "profile.privacy.done"
 - assertVisible:
     id: "profile.screen"
+# The Sources card and Home's sync line follow the (now removed) connection
+- scrollUntilVisible:
+    element:
+      id: "profile.sources.apple-status"
+    direction: UP
+    centerElement: true
+- assertVisible:
+    id: "profile.sources.apple-status"
+    text: "Not connected"
+- tapOn:
+    id: "app.tab.home"
+- assertVisible:
+    id: "home.sync.line"
+    text: "Health not connected"
+- scrollUntilVisible:
+    element:
+      id: "home.move.value"
+    centerElement: true
+- assertVisible:
+    id: "home.move.value"
+    text: "—"

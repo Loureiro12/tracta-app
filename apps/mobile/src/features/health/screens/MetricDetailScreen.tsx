@@ -14,22 +14,33 @@ import {
   VStack,
 } from '@tracta/design-system';
 
-import { useTranslation } from '@/shared/i18n';
+import { formatDate, useTranslation } from '@/shared/i18n';
 
+import { useBodyRange } from '../api/useBody';
 import { BarChart } from '../components/BarChart';
 import { StatCell, StatGrid } from '../components/StatGrid';
 import { healthIds as ids } from '../health.testids';
-import { metricSeries, metricStats } from '../lib/derive';
+import { useHealthData } from '../hooks/useHealthData';
+import {
+  addDays,
+  keyToDate,
+  metricSeries,
+  metricStats,
+  nightRange,
+  sleepAxis,
+  sleepWeek,
+  weekdayOf,
+} from '../lib/derive';
 import { dec1, hm, num } from '../lib/format';
-import { HOURS_AXIS, METRIC_KEYS, METRIC_MONTH_AXIS, SLEEP_GOAL_MIN } from '../model/health.mock';
+import { HOURS_AXIS, METRIC_KEYS } from '../model/health.constants';
 import { metricColor } from '../model/health.palette';
 import { useHealthStore } from '../model/health.store';
 
 import type { ChartBar } from '../components/BarChart';
+import type { MetricContext } from '../lib/derive';
 import type { MetricKey, MetricPeriod } from '../model/health.types';
 
 const PERIODS: readonly MetricPeriod[] = ['D', 'W', 'M'];
-const DAYS7 = ['tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'mon'] as const;
 
 type Props = { metricKey: string | undefined };
 
@@ -45,11 +56,24 @@ export function MetricDetailScreen({ metricKey }: Props) {
   const period = useHealthStore((s) => s.metricPeriod);
   const setPeriod = useHealthStore((s) => s.setMetricPeriod);
 
-  const series = useMemo(() => metricSeries(key, period), [key, period]);
-  const { big, stats } = useMemo(() => metricStats(key, period), [key, period]);
+  const data = useHealthData();
+  const body = useBodyRange();
+  const weights = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const m of body.data ?? []) if (m.weightKg != null) map.set(m.measuredOn, m.weightKg);
+    return map;
+  }, [body.data]);
+  const { get, todayKey, currentHour, goals, entries } = data;
+  const ctx = useMemo<MetricContext>(
+    () => ({ get, todayKey, currentHour, goals, weights, entries }),
+    [get, todayKey, currentHour, goals, weights, entries],
+  );
+  const series = useMemo(() => metricSeries(key, period, ctx), [key, period, ctx]);
+  const { big, stats } = useMemo(() => metricStats(key, period, ctx), [key, period, ctx]);
   const color = metricColor(key);
   const nn = series.values.filter((v): v is number => v != null);
-  const max = Math.max(...nn, series.goal ?? 0) * 1.08;
+  const max = Math.max(1, ...nn, series.goal ?? 0) * 1.08;
+  const today = get(todayKey);
 
   const bars: ChartBar[] = series.values.map((v, i) => {
     if (v == null || (series.futureFrom != null && i >= series.futureFrom))
@@ -57,14 +81,17 @@ export function MetricDetailScreen({ metricKey }: Props) {
     return i === series.highlight ? { value: v, color } : { value: v, color, opacity: 0.4 };
   });
 
+  const shortDate = (k: string) => formatDate(keyToDate(k), { day: 'numeric', month: 'short' });
   const axis =
     period === 'D'
       ? key === 'sleep'
-        ? ['23:48', '02h', '04h', '07:00']
-        : HOURS_AXIS
+        ? sleepAxis(today)
+        : key === 'weight'
+          ? []
+          : HOURS_AXIS
       : period === 'W'
-        ? DAYS7.map((d) => t(`weekday.${d}`))
-        : METRIC_MONTH_AXIS;
+        ? series.keys.map((k) => t(`weekday.${weekdayOf(k)}`))
+        : [0, 10, 20, 29].map((i) => shortDate(addDays(todayKey, i - 29)));
 
   const fmt = (v: number) => {
     if (key === 'sleep') return hm(v);
@@ -81,12 +108,34 @@ export function MetricDetailScreen({ metricKey }: Props) {
       return `${s.value > 0 && s.key === 'change' ? '+' : ''}${dec1(s.value)} ${t('metric.unit.weight')}`;
     return fmt(s.value);
   };
-  const insightCount =
-    key === 'hr'
+  const insightCount = !nn.length
+    ? 0
+    : key === 'hr'
       ? Math.max(...nn) - Math.min(...nn)
       : key === 'sleep'
-        ? nn.filter((v) => v >= SLEEP_GOAL_MIN).length
-        : nn.filter((v) => v >= 10000).length;
+        ? nn.filter((v) => v >= goals.sleepMinutes).length
+        : nn.filter((v) => v >= goals.steps).length;
+  const peakHour = (today?.stepsHourly ?? []).reduce(
+    (best, v, i, all) => (v > (all[best] ?? 0) ? i : best),
+    0,
+  );
+  const week = sleepWeek(get, todayKey, goals.sleepMinutes);
+  const prevWeek = sleepWeek(get, addDays(todayKey, -7), goals.sleepMinutes);
+  const params = {
+    count: insightCount,
+    time: data.syncTime ?? '—',
+    source: data.sourceName,
+    total: num((today?.activeKcal ?? 0) + (today?.restKcal ?? 0)),
+    night: nightRange(todayKey, formatDate),
+    hour: peakHour,
+    min: today?.hrMin ?? 0,
+    max: today?.hrMax ?? 0,
+    slept: hm(today?.sleepMinutes ?? 0),
+    goal: hm(goals.sleepMinutes),
+    wakeups: today?.wakeups ?? 0,
+    avg: key === 'sleep' ? hm(week.avg ?? 0) : num(big ?? 0),
+    previous: hm(prevWeek.avg ?? 0),
+  };
 
   return (
     <Screen
@@ -111,13 +160,13 @@ export function MetricDetailScreen({ metricKey }: Props) {
       />
       <Box gap="xxs">
         <Text testID={ids.metricBig} variant="heroLg">
-          {fmt(big)}
+          {big == null ? t('metric.empty') : fmt(big)}
           <Text variant="cardTitle" color="text2">
             {` ${t(`metric.unit.${key}`)}`}
           </Text>
         </Text>
         <Text variant="secondary" color="text2">
-          {t(`metric.bigSub.${key}.${period}`)}
+          {t(`metric.bigSub.${key}.${period}`, params)}
         </Text>
       </Box>
       <Card testID={ids.metricChart} gap="sm">
@@ -149,7 +198,7 @@ export function MetricDetailScreen({ metricKey }: Props) {
         ))}
       </StatGrid>
       <Card testID={ids.metricInsight} px="xl" py="lg">
-        <Text variant="body">{t(`metric.insight.${key}.${period}`, { count: insightCount })}</Text>
+        <Text variant="body">{t(`metric.insight.${key}.${period}`, params)}</Text>
       </Card>
       <Card px="xl" py="lg" gap="sm">
         <Text variant="bodySemibold">{t('metric.about.title')}</Text>
@@ -172,7 +221,9 @@ export function MetricDetailScreen({ metricKey }: Props) {
         />
         <VStack py="md" gap="none">
           <Text variant="caption" color="text2">
-            {t('metric.updated')}
+            {data.syncTime
+              ? t('metric.updated', { time: data.syncTime, source: data.sourceName })
+              : t('metric.notSynced')}
           </Text>
         </VStack>
       </ListGroup>

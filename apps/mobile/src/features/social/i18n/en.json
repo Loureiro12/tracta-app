@@ -46,7 +46,9 @@
     "privacyLine_other": "{{count}} items shared · never health",
     "dev": {
       "noFriends": "Simulate no friends"
-    }
+    },
+    "revoke": "Cancel",
+    "revoked": "Invite cancelled"
   },
   "detail": {
     "back": "Friends",
@@ -127,7 +129,16 @@
     "contactInvite": "Invite",
     "contactSent": "Sent",
     "noContacts": "All your contacts have already been invited.",
-    "note": "Friends only see what you choose in \"What your friends see\". Health data is never shared."
+    "note": "Friends only see what you choose in \"What your friends see\". Health data is never shared.",
+    "rateLimited": "You've sent many invites today. Try again tomorrow.",
+    "shareSubject": "Let's train together on Tracta",
+    "shareMessage": "Train with me on Tracta! Add me: {{link}}"
+  },
+  "add": {
+    "title": "Add friend",
+    "subtitle": "You opened an invite link. Friends see each other's training days and create challenges together.",
+    "send": "Add {{name}}",
+    "notFound": "This invite link is no longer valid."
   },
   "newChallenge": {
     "title": "New challenge",

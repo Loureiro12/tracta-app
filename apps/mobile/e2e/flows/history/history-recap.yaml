@@ -19,21 +19,27 @@ tags:
     text: "In October you trained"
 - assertVisible:
     id: "history.recap.big"
-    text: "16"
+    text: "14"
 - assertVisible:
     id: "history.recap.title"
-    text: "times — 4 more than in September."
+    text: "times — same as in September."
 # Tap advances, "Previous" goes back, the fifth tap closes the recap.
 - tapOn:
     id: "history.recap.next"
 - assertVisible:
     id: "history.recap.kicker"
     text: "You ran"
+- assertVisible:
+    id: "history.recap.big"
+    text: "38.4 km"
 - tapOn:
     id: "history.recap.next"
 - assertVisible:
     id: "history.recap.kicker"
     text: "You lifted"
+- assertVisible:
+    id: "history.recap.big"
+    text: "58.9 t"
 - tapOn:
     id: "history.recap.prev"
 - assertVisible:
@@ -48,7 +54,7 @@ tags:
     text: "New records"
 - assertVisible:
     id: "history.recap.big"
-    text: "3"
+    text: "11"
 - tapOn:
     id: "history.recap.next"
 - assertVisible:
@@ -56,7 +62,9 @@ tags:
     text: "And you rested"
 - assertVisible:
     id: "history.recap.big"
-    text: "7h 02"
+    text: "7h 05"
+# October nights so far against the four synced September nights (seeds/50_health.sql)
+- assertVisible: ".*9 min less\\."
 - tapOn:
     id: "history.recap.next"
 - assertVisible:

@@ -16,6 +16,7 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { useHealthConnection } from '@/features/health';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
@@ -37,7 +38,9 @@ export function ConnectionsScreen({ mode }: Props) {
   const router = useRouter();
   const { t } = useTranslation('auth');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const health = useAuthStore((s) => s.health);
+  const healthBusy = useAuthStore((s) => s.healthBusy);
+  const { data: connection } = useHealthConnection();
+  const health = healthBusy ? 'busy' : connection ? 'on' : 'off';
   const googleNotify = useAuthStore((s) => s.googleNotify);
   const gps = useAuthStore((s) => s.gps);
   const notifications = useAuthStore((s) => s.notifications);

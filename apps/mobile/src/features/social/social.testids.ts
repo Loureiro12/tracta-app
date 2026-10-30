@@ -3,7 +3,8 @@ import { testId } from '@tracta/design-system';
 /**
  * Single source of truth for Social test IDs. Flows live in e2e/flows/social.
  * Dynamic rows derive from their container id: `${socialIds.friends}.<friendId>` (row),
- * `${socialIds.friends}.<friendId>.cheer` (button), `${socialIds.privacyRows}.<key>.switch`.
+ * `${socialIds.friends}.<friendId>.cheer` (button), `${socialIds.privacyRows}.<key>.switch`,
+ * `${socialIds.pending}.<email>.revoke` (cancel an e-mail invite).
  */
 export const socialIds = {
   // Hub overlay
@@ -44,6 +45,13 @@ export const socialIds = {
   inviteSend: testId('social', 'invite', 'send'),
   contacts: testId('social', 'invite', 'contacts'),
   noContacts: testId('social', 'invite', 'no-contacts'),
+
+  // Add-by-link overlay (tracta://social/add/<handle>, opened from an invite link)
+  addScreen: testId('social', 'add', 'screen'),
+  addBack: testId('social', 'add', 'back'),
+  addPerson: testId('social', 'add', 'person'),
+  addSend: testId('social', 'add', 'send'),
+  addNotFound: testId('social', 'add', 'not-found'),
 
   // New challenge overlay
   newScreen: testId('social', 'new-challenge', 'screen'),

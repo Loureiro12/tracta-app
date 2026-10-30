@@ -9,14 +9,22 @@ import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 import { useAccount } from '@/shared/session';
 
+import { useInviteByEmail } from '../api/useEmailInvites';
 import { useSendInvite, useSuggestions } from '../api/useInvite';
 import { PeopleCard } from '../components/PeopleCard';
 import { PersonRow } from '../components/PersonRow';
 import { SheetHeader } from '../components/SheetHeader';
-import { INVITE_LINK_BASE, avatarColor, shareTargets } from '../model/social.constants';
+import { shareInvite } from '../lib/shareInvite';
+import {
+  INVITE_LINK_BASE,
+  INVITE_URL_BASE,
+  avatarColor,
+  shareTargets,
+} from '../model/social.constants';
 import { firstName } from '../model/social.ranking';
-import { useSocialStore } from '../model/social.store';
 import { socialIds } from '../social.testids';
+
+import type { ShareTarget } from '../model/social.constants';
 
 const HANDLE_RE = /^@[\w.]{3,}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,12 +37,13 @@ export function InviteScreen() {
   const account = useAccount();
   const suggestions = useSuggestions();
   const sendInvite = useSendInvite();
-  const inviteEmail = useSocialStore((s) => s.inviteEmail);
+  const inviteByEmail = useInviteByEmail();
   const [linkCopied, setLinkCopied] = useState(false);
   const [query, setQuery] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const inviteLink = `${INVITE_LINK_BASE}${account.data?.profile.handle ?? ''}`;
+  const handle = account.data?.profile.handle ?? '';
+  const inviteLink = `${INVITE_LINK_BASE}${handle}`;
   const contacts = (suggestions.data ?? []).filter((c) => c.handle);
   const allInvited = suggestions.isSuccess && contacts.every((c) => c.invited);
 
@@ -45,10 +54,19 @@ export function InviteScreen() {
       return;
     }
     if (!q.startsWith('@')) {
-      inviteEmail(q);
-      setQuery('');
-      setError(undefined);
-      showToast(t('invite.sent'));
+      inviteByEmail.mutate(q, {
+        onSuccess: () => {
+          setQuery('');
+          setError(undefined);
+          showToast(t('invite.sent'));
+        },
+        onError: (e) => {
+          if (e instanceof ApiError && e.code === 'validation') setError(t('invite.error'));
+          else if (e instanceof ApiError && e.code === 'rate_limited')
+            showToast(t('invite.rateLimited'));
+          else showToast(t('actionError'));
+        },
+      });
       return;
     }
     sendInvite.mutate(q, {
@@ -62,6 +80,16 @@ export function InviteScreen() {
           setError(t('invite.notFound'));
         else showToast(t('actionError'));
       },
+    });
+  };
+
+  const onShare = (target: ShareTarget) => {
+    showToast(t('invite.opening', { target: t(`invite.share.${target}`) }));
+    void shareInvite(target, {
+      subject: t('invite.shareSubject'),
+      message: t('invite.shareMessage', { link: `${INVITE_URL_BASE}${handle}` }),
+    }).then((outcome) => {
+      if (outcome === 'failed') showToast(t('actionError'));
     });
   };
 
@@ -109,9 +137,7 @@ export function InviteScreen() {
               size="sm"
               shape="rounded"
               fullWidth
-              onPress={() =>
-                showToast(t('invite.opening', { target: t(`invite.share.${target}`) }))
-              }
+              onPress={() => onShare(target)}
             />
           </Box>
         ))}
@@ -135,7 +161,12 @@ export function InviteScreen() {
             onSubmitEditing={onSend}
           />
         </Box>
-        <Button testID={socialIds.inviteSend} label={t('invite.send')} onPress={onSend} />
+        <Button
+          testID={socialIds.inviteSend}
+          label={t('invite.send')}
+          loading={sendInvite.isPending || inviteByEmail.isPending}
+          onPress={onSend}
+        />
       </HStack>
 
       <Text variant="secondarySemibold">{t('invite.contacts')}</Text>

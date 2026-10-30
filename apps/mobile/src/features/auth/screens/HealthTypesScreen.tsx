@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { Box, Button, Card, HStack, Screen, Text, VStack } from '@tracta/design-system';
 
+import { HealthPermissionDenied, useConnectHealth } from '@/features/health';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
@@ -11,7 +12,7 @@ import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthTitle } from '../components/AuthTitle';
 import { ToggleRow } from '../components/ToggleRow';
-import { READ_TYPES, WRITE_TYPES } from '../model/auth.mock';
+import { HEALTH_IMPORT_MS, READ_TYPES, WRITE_TYPES } from '../model/auth.mock';
 import { useAuthStore } from '../model/auth.store';
 
 /** Apple Health permission sheet: one switch per data type, read and write authorized separately. */
@@ -22,7 +23,8 @@ export function HealthTypesScreen() {
   const permissions = useAuthStore((s) => s.permissions);
   const togglePermission = useAuthStore((s) => s.togglePermission);
   const setAllRead = useAuthStore((s) => s.setAllRead);
-  const connectHealth = useAuthStore((s) => s.connectHealth);
+  const setHealthBusy = useAuthStore((s) => s.setHealthBusy);
+  const connect = useConnectHealth();
 
   const allRead = READ_TYPES.every((type) => permissions[`read.${type}`]);
   const count = Object.values(permissions).filter(Boolean).length;
@@ -32,8 +34,29 @@ export function HealthTypesScreen() {
       showToast(t('health.allowNoneToast'));
       return;
     }
-    connectHealth(() => showToast(t('health.connectedToast')));
+    const started = Date.now();
+    setHealthBusy(true);
     router.back();
+    // mutateAsync: going back unmounts this screen, which would drop mutate callbacks.
+    connect
+      .mutateAsync({
+        read: READ_TYPES.filter((type) => permissions[`read.${type}`]),
+        write: WRITE_TYPES.filter((type) => permissions[`write.${type}`]),
+      })
+      .then(
+        () => t('health.connectedToast'),
+        (e: unknown) =>
+          e instanceof HealthPermissionDenied ? t('health.deniedToast') : t('health.failedToast'),
+      )
+      .then((message) => {
+        setTimeout(
+          () => {
+            setHealthBusy(false);
+            showToast(message);
+          },
+          Math.max(0, HEALTH_IMPORT_MS - (Date.now() - started)),
+        );
+      });
   };
 
   const footer = (

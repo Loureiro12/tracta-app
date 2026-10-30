@@ -4,36 +4,54 @@ import { useRouter } from 'expo-router';
 
 import { BackHeader, Button, Card, ListGroup, ListRow, Screen, Text } from '@tracta/design-system';
 
+import { useDeleteHealthData, useDisconnectHealth, useHealthConnection } from '@/features/health';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
 import { useDeleteAccount, useDeleteHistory } from '../api/useAccountActions';
+import { useDataExport } from '../api/useDataExport';
 import { profileRoutes } from '../model/profile.routes';
-import { useProfileStore } from '../model/profile.store';
 import { profileIds as ids } from '../profile.testids';
 
-type PrivacyAction = 'export' | 'health' | 'history' | 'account';
+type PrivacyAction = 'export' | 'health' | 'health-data' | 'history' | 'account';
 
 export function PrivacyScreen() {
   const router = useRouter();
   const { t } = useTranslation('profile');
   const showToast = useFeedbackStore((s) => s.showToast);
-  const healthConnected = useProfileStore((s) => s.healthConnected);
-  const disconnectHealth = useProfileStore((s) => s.disconnectHealth);
+  const { data: connection } = useHealthConnection();
+  const healthConnected = connection != null;
+  const disconnectHealth = useDisconnectHealth();
+  const deleteHealthData = useDeleteHealthData();
   const deleteHistory = useDeleteHistory();
   const deleteAccount = useDeleteAccount();
+  const dataExport = useDataExport();
   const [armed, setArmed] = useState<PrivacyAction | null>(null);
   const onError = () => showToast(t('state.saveFailed'));
 
   const run = (action: PrivacyAction) => {
     switch (action) {
       case 'export':
-        // No export backend yet: the file is not generated.
-        showToast(t('privacy.exportToast'));
+        if (dataExport.isPending) return;
+        dataExport.mutate(undefined, {
+          onSuccess: () => showToast(t('privacy.exportToast')),
+          onError: () => showToast(t('privacy.exportFailed')),
+        });
         return;
       case 'health':
-        disconnectHealth();
-        showToast(t('privacy.disconnectHealthToast'));
+        disconnectHealth.mutate(
+          {},
+          {
+            onSuccess: () => showToast(t('privacy.disconnectHealthToast')),
+            onError,
+          },
+        );
+        return;
+      case 'health-data':
+        deleteHealthData.mutate(undefined, {
+          onSuccess: () => showToast(t('privacy.deleteHealthDataToast')),
+          onError,
+        });
         return;
       case 'history':
         deleteHistory.mutate(undefined, {
@@ -68,6 +86,11 @@ export function PrivacyScreen() {
       key: 'health',
       label: t('privacy.disconnectHealth'),
       description: t('privacy.disconnectHealthDescription'),
+    },
+    {
+      key: 'health-data',
+      label: t('privacy.deleteHealthData'),
+      description: t('privacy.deleteHealthDataDescription'),
     },
     {
       key: 'history',

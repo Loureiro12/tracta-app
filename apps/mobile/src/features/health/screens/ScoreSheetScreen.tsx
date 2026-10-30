@@ -5,13 +5,41 @@ import { Box, Card, Divider, HStack, Sheet, Text, VStack } from '@tracta/design-
 import { useTranslation } from '@/shared/i18n';
 
 import { healthIds as ids } from '../health.testids';
+import { useHealthData } from '../hooks/useHealthData';
+import { sleepScore } from '../lib/derive';
 import { hm } from '../lib/format';
-import { SLEEP_FACTORS, SLEEP_GOAL_MIN, SLEEP_LAST_NIGHT_MIN } from '../model/health.mock';
+import { SLEEP_FACTOR_KEYS, SLEEP_FACTOR_MAX } from '../model/health.constants';
+
+import type { SleepFactorKey } from '../model/health.constants';
 
 /** "Como calculamos" sheet: the four score factors with their weights and tonight's points. */
 export function ScoreSheetScreen() {
   const { t } = useTranslation('health');
   const router = useRouter();
+  const { get, todayKey, goals } = useHealthData();
+  const score = sleepScore(get, todayKey, goals.sleepMinutes);
+  const now = (key: SleepFactorKey) => {
+    if (!score) return t('calc.empty');
+    const pts = score.factors.find((f) => f.key === key)?.pts ?? 0;
+    switch (key) {
+      case 'duration':
+        return t('calc.row.duration.now', {
+          slept: hm(score.slept),
+          goal: hm(goals.sleepMinutes),
+          pts,
+        });
+      case 'regularity':
+        return t('calc.row.regularity.now', { value: score.regularityMin, pts });
+      case 'interruptions':
+        return t('calc.row.interruptions.now', {
+          count: score.wakeups,
+          minutes: score.awakeMinutes,
+          pts,
+        });
+      case 'consistency':
+        return t('calc.row.consistency.now', { count: score.nights, pts });
+    }
+  };
   return (
     <Sheet
       testID={ids.scoreSheet}
@@ -21,28 +49,21 @@ export function ScoreSheetScreen() {
     >
       <Text variant="body">{t('calc.intro')}</Text>
       <Card testID={ids.scoreRow} variant="outline" px="xl" py="xxs" gap="none">
-        {SLEEP_FACTORS.map((f, i) => (
-          <Box key={f.key}>
-            <VStack testID={`${ids.scoreRow}.${f.key}`} gap="xs" py="ml">
+        {SLEEP_FACTOR_KEYS.map((key, i) => (
+          <Box key={key}>
+            <VStack testID={`${ids.scoreRow}.${key}`} gap="xs" py="ml">
               <HStack justify="space-between" gap="sm">
-                <Text variant="bodySemibold">{t(`sleep.score.factor.${f.key}`)}</Text>
+                <Text variant="bodySemibold">{t(`sleep.score.factor.${key}`)}</Text>
                 <Text variant="secondaryBold" color="sleep">
-                  {t('calc.upTo', { value: f.max })}
+                  {t('calc.upTo', { value: SLEEP_FACTOR_MAX[key] })}
                 </Text>
               </HStack>
               <Text variant="secondary" color="text2">
-                {t(`calc.row.${f.key}.description`)}
+                {t(`calc.row.${key}.description`)}
               </Text>
-              <Text variant="captionSemibold">
-                {t('calc.tonight', {
-                  value: t(`calc.row.${f.key}.now`, {
-                    slept: hm(SLEEP_LAST_NIGHT_MIN),
-                    goal: hm(SLEEP_GOAL_MIN),
-                  }),
-                })}
-              </Text>
+              <Text variant="captionSemibold">{t('calc.tonight', { value: now(key) })}</Text>
             </VStack>
-            {i < SLEEP_FACTORS.length - 1 ? <Divider /> : null}
+            {i < SLEEP_FACTOR_KEYS.length - 1 ? <Divider /> : null}
           </Box>
         ))}
       </Card>

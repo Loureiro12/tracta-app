@@ -24,6 +24,7 @@ import { useTranslation } from '@/shared/i18n';
 
 import { useChallenges } from '../api/useChallenges';
 import { useCheers, useToggleCheer } from '../api/useCheers';
+import { useEmailInvites, useRevokeEmailInvite } from '../api/useEmailInvites';
 import { useFriendRequests, useRespondRequest } from '../api/useFriendRequests';
 import { useFriends } from '../api/useFriends';
 import { usePrivacy } from '../api/usePrivacy';
@@ -57,7 +58,8 @@ export function SocialHubScreen() {
   const toggleCheer = useToggleCheer();
   const respond = useRespondRequest();
   const privacy = usePrivacy();
-  const emailInvites = useSocialStore((s) => s.emailInvites);
+  const emailInvitesQuery = useEmailInvites();
+  const revokeInvite = useRevokeEmailInvite();
   const simulateNoFriends = useSocialStore((s) => s.simulateNoFriends);
   const setSimulateNoFriends = useSocialStore((s) => s.setSimulateNoFriends);
   const startDraft = useSocialStore((s) => s.startDraft);
@@ -70,12 +72,13 @@ export function SocialHubScreen() {
   const challenges = simulateNoFriends ? [] : (challengesQuery.data ?? []);
   const incoming = simulateNoFriends ? [] : (requestsQuery.data?.incoming ?? []);
   const outgoing = simulateNoFriends ? [] : (requestsQuery.data?.outgoing ?? []);
+  const emailInvites = simulateNoFriends ? [] : (emailInvitesQuery.data ?? []);
   const cheers = cheersQuery.data ?? [];
   const doneCount = friends.filter((f) => f.done).length;
   const sharedCount = PRIVACY_KEYS.filter((k) => privacy[k]).length;
   const loading = friendsQuery.isPending || challengesQuery.isPending;
   const failed = friendsQuery.isError || challengesQuery.isError || requestsQuery.isError;
-  const pendingCount = outgoing.length + (simulateNoFriends ? 0 : emailInvites.length);
+  const pendingCount = outgoing.length + emailInvites.length;
 
   const retry = () => {
     void friendsQuery.refetch();
@@ -257,15 +260,29 @@ export function SocialHubScreen() {
                 last={i === pendingCount - 1}
               />
             ))}
-            {emailInvites.map((email, i) => (
+            {emailInvites.map((invite, i) => (
               <PersonRow
-                key={email}
-                testID={`${socialIds.pending}.${email}`}
-                name={email}
+                key={invite.id}
+                testID={`${socialIds.pending}.${invite.email}`}
+                name={invite.email}
                 color={theme.colors.text2}
                 subtitle={t('hub.pendingStatusSignup')}
                 minHeight={60}
                 last={outgoing.length + i === pendingCount - 1}
+                trailing={
+                  <Button
+                    testID={`${socialIds.pending}.${invite.email}.revoke`}
+                    label={t('hub.revoke')}
+                    variant="secondary"
+                    size="xs"
+                    onPress={() =>
+                      revokeInvite.mutate(invite.id, {
+                        onSuccess: () => showToast(t('hub.revoked')),
+                        onError: () => showToast(t('actionError')),
+                      })
+                    }
+                  />
+                }
               />
             ))}
           </PeopleCard>

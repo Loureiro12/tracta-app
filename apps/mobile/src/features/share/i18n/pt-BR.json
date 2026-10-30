@@ -86,21 +86,24 @@
     "pr": {
       "kicker": "Novo recorde pessoal",
       "bigReps": "× {{reps}}",
-      "line": "Supino reto × {{reps}} · +{{delta}} kg sobre o anterior",
-      "lineNoLoads": "Supino reto · melhor marca até hoje",
-      "month": "Recordes em outubro",
+      "line": "{{name}} × {{reps}} · +{{delta}} kg sobre o anterior",
+      "lineNoLoads": "{{name}} · melhor marca até hoje",
+      "month": "Recordes em {{month}}",
       "since": "Desde o início",
       "sinceKg": "+{{value}} kg",
-      "sincePct": "+{{value}}%"
+      "sincePct": "+{{value}}%",
+      "lineNone": "Supere uma marca anterior para compartilhar."
     },
     "week": {
-      "kicker": "Semana · 19 a 25 out",
+      "kicker": "Semana · {{range}}",
       "big": "{{done}}/{{goal}}",
-      "line": "Meta semanal batida. {{days}} dias seguidos em movimento.",
       "strength": "Musculação",
       "strengthValue_one": "{{count}} treino",
       "strengthValue_other": "{{count}} treinos",
-      "run": "Corrida"
+      "run": "Corrida",
+      "lineMet": "Meta semanal batida.",
+      "lineBelow": "Todo treino conta.",
+      "streak": "{{days}} dias seguidos em movimento."
     },
     "run": {
       "kicker": "Corrida · 25 out",
@@ -113,12 +116,15 @@
       "distance": "Distância"
     },
     "month": {
-      "kicker": "Outubro 2026",
-      "line": "treinos — {{more}} a mais que em setembro.",
+      "kicker": "{{month}}",
       "run": "Corrida",
       "volume": "Volume",
-      "records": "Recordes"
-    }
+      "records": "Recordes",
+      "lineMore": "treinos — {{count}} a mais que em {{previous}}.",
+      "lineFewer": "treinos — {{count}} a menos que em {{previous}}.",
+      "lineSame": "treinos — o mesmo que em {{previous}}."
+    },
+    "none": "—"
   },
   "nudge": {
     "create": "Criar cartão",

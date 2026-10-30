@@ -48,7 +48,12 @@
     "googleDescription": "Still testing which workout types show up there. We will enable it only after confirming.",
     "miBand": "Mi Band 8",
     "miBandStatus": "via Apple Health",
-    "miBandDescription": "Provides sleep with stages and HR. Does not provide HRV or temperature."
+    "miBandDescription": "Provides sleep with stages and HR. Does not provide HRV or temperature.",
+    "appleStatusOff": "Not connected",
+    "healthConnect": "Health Connect",
+    "healthConnectStatus": "Connected",
+    "healthConnectDescription": "Reads: steps, distance, energy, heart rate, sleep. Writes: workout summaries.",
+    "lastSync": "Last sync {{time}}"
   },
   "actions": {
     "achievements": "Achievements",
@@ -122,8 +127,18 @@
     "diffValue": "{{value}}",
     "spanSame": "Choose two different dates to compare.",
     "span": "From {{from}} to {{to}} · weight logged on the day of the photo",
-    "localTitle": "Photos stay on this iPhone only",
-    "localDescription": "They do not go to backup, friends or Apple Health. Optional reminder every 4 weeks — same time and same light make comparing easier."
+    "addLibrary": "Choose from library",
+    "addFailed": "Could not upload the photo. Try again.",
+    "noWeight": "no weight",
+    "loading": "Loading your photos…",
+    "loadFailed": "Could not load your photos. Go back and try again.",
+    "empty": "No photos yet. Log the first one today.",
+    "compareEmpty": "Add at least two photos to compare.",
+    "deleteArmed": "Tap again to delete",
+    "deleteHint": "Tap twice to delete this photo",
+    "deletedToast": "Photo deleted",
+    "privateTitle": "Photos are private to you",
+    "privateDescription": "Kept in a private backup only your account can open. They never go to friends or Apple Health. Optional reminder every 4 weeks — same time and same light make comparing easier."
   },
   "notifications": {
     "title": "Notifications",
@@ -187,7 +202,7 @@
     "dataSection": "Your data",
     "confirmAgain": "Tap again to confirm",
     "export": "Export my data",
-    "exportDescription": "workouts, sets and activities as CSV and JSON",
+    "exportDescription": "everything in your account as a JSON file",
     "exportToast": "Export file prepared",
     "disconnectHealth": "Disconnect Apple Health",
     "disconnectHealthDescription": "stops reading and writing; history stays in Tracta",
@@ -198,7 +213,11 @@
     "deleteAccount": "Delete account",
     "deleteAccountDescription": "deletes account and backup; cannot be undone",
     "deleteAccountToast": "Account deleted",
-    "footnote": "We never log health data. Deleting in Tracta does not erase what was already written to Apple Health."
+    "footnote": "We never log health data. Deleting in Tracta does not erase what was already written to Apple Health.",
+    "exportFailed": "Could not export your data. Try again.",
+    "deleteHealthData": "Delete synced health data",
+    "deleteHealthDataDescription": "removes sleep, steps and heart rate copied to your account; Health keeps its own",
+    "deleteHealthDataToast": "Synced health data deleted"
   },
   "state": {
     "loading": "Loading your account…",

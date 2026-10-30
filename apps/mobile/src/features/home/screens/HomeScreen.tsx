@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { Avatar, IconButton, Pressable, Screen, ScreenHeader } from '@tracta/design-system';
 
+import { useAutoHealthSync } from '@/features/health';
 import { useInboxUnreadCount } from '@/features/inbox';
 import { now } from '@/shared/clock';
 import { env } from '@/shared/config/env';
@@ -45,6 +46,8 @@ export function HomeScreen() {
   const { weekDone, doneToday, last } = summarize(entries ?? []);
   const unread = useInboxUnreadCount();
   const detailed = density === 'detailed';
+  // Home lives for the whole session (tab): sync Health after sign-in and on every foreground.
+  useAutoHealthSync();
 
   const renderCard = (key: HomeCardKey) => {
     switch (key) {

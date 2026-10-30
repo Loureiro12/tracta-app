@@ -4,3 +4,6 @@ export { WeeklyScreen } from './screens/WeeklyScreen';
 export { useHomeStore } from './model/home.store';
 export { homeIds } from './home.testids';
 export { homeTranslations } from './i18n';
+export { useWeeklySummary } from './api/useWeeklySummary';
+export { previousWeekStart } from './lib/week';
+export { useWeekRange } from './hooks/useWeekRange';

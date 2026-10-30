@@ -21,6 +21,12 @@ tags:
     id: "auth.connect.eyebrow"
 - assertNotVisible:
     id: "auth.connect.skip"
+# The demo account already has Apple Health connected (server state)
+- assertVisible:
+    id: "auth.connect.health.status"
+    text: "Connected"
+- assertVisible:
+    id: "auth.connect.health.found"
 - tapOn:
     id: "auth.connect.back"
 - assertVisible:

@@ -1,0 +1,43 @@
+appId: com.tracta.mobile
+name: social-add-friend
+tags:
+  - social
+---
+# Invite link landing: tracta://social/add/<handle> shows the person and sends a friend request.
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://social/add/diego?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.add.screen"
+- assertVisible:
+    id: "social.add.person"
+- assertVisible:
+    id: "social.add.person.name"
+    text: "Diego Melo"
+- assertVisible:
+    id: "social.add.person.status"
+    text: "@diego"
+- tapOn:
+    id: "social.add.send"
+- assertVisible:
+    id: "app.toast.message"
+    text: "Invite sent to Diego"
+- assertVisible:
+    id: "social.screen"
+- scrollUntilVisible:
+    element:
+      id: "social.hub.pending.diego"
+    centerElement: true
+- assertVisible:
+    id: "social.hub.pending.diego.status"
+    text: "Invite sent · waiting"
+# An unknown handle (expired or mistyped link)
+- openLink: "tracta://social/add/nobody_here?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "social.add.not-found"
+    text: "This invite link is no longer valid."
+- tapOn:
+    id: "social.add.back"
+- assertVisible:
+    id: "social.screen"

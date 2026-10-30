@@ -28,14 +28,15 @@
     "body": "Usada só durante atividades para registrar percurso, distância e ritmo. A precisão depende do sinal e do ambiente.",
     "allow": "Permitir durante o uso",
     "once": "Permitir uma vez",
-    "deny": "Continuar sem GPS"
+    "deny": "Continuar sem GPS",
+    "deniedToast": "Localização não permitida · registrando sem GPS"
   },
   "live": {
     "minimize": "Minimizar",
     "gpsGood": "GPS · sinal bom",
     "gpsOff": "Sem GPS",
     "gpsNotNeeded": "Sem GPS · não necessário",
-    "mapCaption": "Percurso por GPS · mapa ilustrativo",
+    "mapCaption": "Percurso por GPS",
     "noGpsTitle": "GPS desativado",
     "noGpsSubtitle": "Registrando só a duração.",
     "noGpsModality": "Registro por tempo. {{description}}.",
@@ -60,7 +61,8 @@
     "splitHintTimeOnly": "Pause para encerrar e adicionar observações.",
     "pause": "Pausar",
     "resume": "Retomar",
-    "end": "Encerrar"
+    "end": "Encerrar",
+    "gpsSearching": "GPS · procurando…"
   },
   "interval": {
     "warmup": "Aquecimento",
@@ -121,5 +123,9 @@
     "toastSaved": "Atividade salva",
     "toastDiscarded": "Atividade descartada",
     "toastSaveError": "Não foi possível salvar a atividade. Tente de novo."
+  },
+  "tracking": {
+    "title": "Registrando sua atividade",
+    "body": "O Tracta está usando o GPS para medir distância e ritmo."
   }
 }

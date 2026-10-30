@@ -6,8 +6,11 @@ import { useSession } from './session.store';
 
 /** Routes reachable without an account. */
 const PUBLIC_ROOTS = new Set(['(auth)', 'design-system', 'settings']);
-/** (auth) routes that stay available after signing in (onboarding / settings). */
-const AUTH_ROUTES_FOR_SIGNED_IN = new Set(['connect', 'e2e-sign-in']);
+/**
+ * (auth) routes that stay available after signing in (onboarding / settings). `signup` is here
+ * because the session starts before the screen pushes `/connect`; redirecting would race it.
+ */
+const AUTH_ROUTES_FOR_SIGNED_IN = new Set(['connect', 'e2e-sign-in', 'signup']);
 
 /**
  * Keeps signed-out users on the auth screens and signed-in users out of them.

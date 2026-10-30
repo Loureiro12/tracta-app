@@ -18,16 +18,17 @@ import {
 
 import { useTranslation } from '@/shared/i18n';
 
+import { useAchievements } from '../api/useAchievements';
 import { useRecords } from '../api/useHistory';
 import { BadgeCard } from '../components/BadgeCard';
 import { QueryState } from '../components/QueryState';
 import { historyIds as ids } from '../history.testids';
 import { useBackToHistory } from '../hooks/useBackToHistory';
+import { badgeRows } from '../lib/badges';
 import { formatShortDate } from '../lib/dates';
 import { itemId } from '../lib/ids';
 import { RECORD_SLUGS, runRows, strengthRows } from '../lib/records';
 import { historyHrefs } from '../lib/routes';
-import { badges } from '../model/history.mock';
 
 import type { RecordRow as RecordRowData } from '../lib/records';
 import type { ViewStyle } from 'react-native';
@@ -101,12 +102,9 @@ export function AchievementsScreen({ tab }: Props) {
         : null,
     [records.data],
   );
-  const earned = badges.filter((b) => b.earned).length;
-  const badgeRows = useMemo(() => {
-    const rows: (typeof badges)[number][][] = [];
-    for (let i = 0; i < badges.length; i += 2) rows.push(badges.slice(i, i + 2));
-    return rows;
-  }, []);
+  const badges = useAchievements();
+  const earned = (badges.data ?? []).filter((b) => b.earnedOn !== null).length;
+  const rows = useMemo(() => badgeRows(badges.data ?? []), [badges.data]);
 
   return (
     <Screen
@@ -159,11 +157,19 @@ export function AchievementsScreen({ tab }: Props) {
         </VStack>
       ) : (
         <VStack gap="md">
-          <Text testID={ids.achievementsCount} variant="small" color="text2">
-            {t('achievements.count', { earned, total: badges.length })}
-          </Text>
+          {badges.data ? (
+            <Text testID={ids.achievementsCount} variant="small" color="text2">
+              {t('achievements.count', { earned, total: badges.data.length })}
+            </Text>
+          ) : (
+            <QueryState
+              testID={ids.achievementsBadges}
+              error={badges.isError}
+              onRetry={() => void badges.refetch()}
+            />
+          )}
           <VStack testID={ids.achievementsBadges} gap="sm">
-            {badgeRows.map((row, i) => (
+            {rows.map((row, i) => (
               <HStack key={i} gap="sm" align="stretch">
                 {row.map((badge) => (
                   <Box key={badge.id} flex={1}>
