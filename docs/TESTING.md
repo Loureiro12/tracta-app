@@ -52,7 +52,7 @@ Regras aplicadas por `check-flows`:
 
 ## O que `check-tests` exige de um commit
 
-Backend: mudou `supabase/migrations/*` → algum `supabase/tests/database/*.test.sql` muda junto; mudou `packages/api/src/domains/<d>.ts` → `packages/api/tests/<d>.test.ts` muda junto (mesmo trailer `E2E-Skip:` para exceções).
+Backend: mudou `supabase/migrations/*` → algum `supabase/tests/database/*.test.sql` muda junto; mudou `supabase/functions/<fn>/**` → algum `packages/api/tests/*.test.ts` muda junto (as funções são testadas pela API, com `functions.invoke`); mudou `packages/api/src/domains/<d>.ts` → `packages/api/tests/<d>.test.ts` muda junto (mesmo trailer `E2E-Skip:` para exceções).
 
 App:
 
