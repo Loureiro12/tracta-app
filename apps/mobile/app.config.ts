@@ -13,6 +13,8 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: APP_ID,
     supportsTablet: false,
+    // Only HTTPS/TLS from the OS: answers App Store Connect's export-compliance question up front.
+    config: { usesNonExemptEncryption: false },
     // Runs keep recording GPS with the screen locked.
     infoPlist: { UIBackgroundModes: ['location'] },
   },
@@ -20,7 +22,7 @@ const config: ExpoConfig = {
   android: {
     package: APP_ID,
     adaptiveIcon: {
-      backgroundColor: '#F2EEE6',
+      backgroundColor: '#1A1A17',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',

@@ -11,3 +11,5 @@ CHANGELOG.md
 design_handoff_tracta_app
 # Go templates for Supabase Auth e-mails (prettier would split {{ }} actions)
 supabase/templates
+# Supabase CLI state (created by `supabase link`, ignored by supabase/.gitignore)
+supabase/.temp
