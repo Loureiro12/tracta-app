@@ -7,6 +7,7 @@ import {
   buildFreeSession,
   buildSession,
   buildSummary,
+  countSeconds,
   suggestionFor,
   warmupSets,
 } from './session.logic';
@@ -91,6 +92,22 @@ function hasPending(e: SessionExercise): boolean {
   return e.sets.some((s) => !s.done);
 }
 
+/** Brings a timer up to `now`: the session counts up, the rest counts down to zero. */
+function counted<T extends ActiveSession | RestState>(timer: T, now: number): T {
+  if (timer.paused) return timer;
+  const { sec, countedAt } = countSeconds(timer.countedAt, now);
+  if (sec === 0) return timer;
+  return 'elapsedSec' in timer
+    ? { ...timer, elapsedSec: timer.elapsedSec + sec, countedAt }
+    : { ...timer, remainingSec: Math.max(0, timer.remainingSec - sec), countedAt };
+}
+
+/** Pausing counts the time so far; resuming restarts the count from `now`. */
+function setPaused<T extends ActiveSession | RestState>(timer: T, paused: boolean, now: number): T {
+  if (paused === timer.paused) return timer;
+  return paused ? { ...counted(timer, now), paused } : { ...timer, paused, countedAt: now };
+}
+
 export const useSessionStore = create<SessionState>((set, get) => ({
   session: null,
   rest: null,
@@ -108,6 +125,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     if (get().session) return;
     const session = buildSession(plan, Date.now() - 14 * 60 * 1000);
     session.elapsedSec = 14 * 60 + 12;
+    session.countedAt = Date.now();
     session.paused = true;
     session.exerciseIndex = 1;
     session.exercises[0]?.sets.forEach((s) => {
@@ -121,22 +139,18 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   endSession: () => set({ session: null, rest: null, summary: null }),
 
   tick: () =>
-    set((state) =>
-      state.session && !state.session.paused
-        ? { session: { ...state.session, elapsedSec: state.session.elapsedSec + 1 } }
-        : {},
-    ),
+    set((state) => (state.session ? { session: counted(state.session, Date.now()) } : {})),
 
   togglePause: () =>
     set((state) =>
-      state.session ? { session: { ...state.session, paused: !state.session.paused } } : {},
+      state.session ? { session: setPaused(state.session, !state.session.paused, Date.now()) } : {},
     ),
 
   pause: () =>
-    set((state) => (state.session ? { session: { ...state.session, paused: true } } : {})),
+    set((state) => (state.session ? { session: setPaused(state.session, true, Date.now()) } : {})),
 
   resume: () =>
-    set((state) => (state.session ? { session: { ...state.session, paused: false } } : {})),
+    set((state) => (state.session ? { session: setPaused(state.session, false, Date.now()) } : {})),
 
   selectExercise: (index) =>
     set((state) =>
@@ -246,7 +260,12 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     const done = allSetsDone(session);
     const rest =
       !done && !supersetSkip && exercise.restSec > 0
-        ? { remainingSec: exercise.restSec, totalSec: exercise.restSec, paused: false }
+        ? {
+            remainingSec: exercise.restSec,
+            totalSec: exercise.restSec,
+            countedAt: Date.now(),
+            paused: false,
+          }
         : null;
     set({ session, rest });
     if (done) return 'all-done';
@@ -301,12 +320,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       }),
     })),
 
-  restTick: () =>
-    set((state) =>
-      state.rest && !state.rest.paused
-        ? { rest: { ...state.rest, remainingSec: Math.max(0, state.rest.remainingSec - 1) } }
-        : {},
-    ),
+  restTick: () => set((state) => (state.rest ? { rest: counted(state.rest, Date.now()) } : {})),
 
   restAdjust: (deltaSec) =>
     set((state) =>
@@ -322,7 +336,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     ),
 
   restTogglePause: () =>
-    set((state) => (state.rest ? { rest: { ...state.rest, paused: !state.rest.paused } } : {})),
+    set((state) =>
+      state.rest ? { rest: setPaused(state.rest, !state.rest.paused, Date.now()) } : {},
+    ),
 
   clearRest: () => set({ rest: null }),
 

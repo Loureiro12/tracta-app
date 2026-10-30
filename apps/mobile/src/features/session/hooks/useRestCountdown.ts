@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 
 import { useSessionStore } from '../model/session.store';
 
-/** Decrements the rest countdown every second and fires `onDone` when it reaches zero. */
+/**
+ * Re-counts the rest countdown from the wall clock every second and fires `onDone` when it
+ * reaches zero, also when it ran out while the phone was locked.
+ */
 export function useRestCountdown(onDone: () => void) {
   const counting = useSessionStore((s) => !!s.rest && !s.rest.paused && s.rest.remainingSec > 0);
   const finished = useSessionStore((s) => !!s.rest && s.rest.remainingSec === 0);

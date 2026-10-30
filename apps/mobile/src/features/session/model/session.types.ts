@@ -34,10 +34,18 @@ export type ActiveSession = {
   exercises: SessionExercise[];
   exerciseIndex: number;
   elapsedSec: number;
+  /** Wall-clock ms up to which `elapsedSec` is counted; ticks add the whole seconds since then. */
+  countedAt: number;
   paused: boolean;
 };
 
-export type RestState = { remainingSec: number; totalSec: number; paused: boolean };
+export type RestState = {
+  remainingSec: number;
+  totalSec: number;
+  /** Wall-clock ms up to which `remainingSec` is counted down (see ActiveSession.countedAt). */
+  countedAt: number;
+  paused: boolean;
+};
 
 export type SummaryRow = { name: string; sets: { kg: number | null; reps: number }[] };
 

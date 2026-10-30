@@ -33,6 +33,16 @@ export function clock(totalSec: number): string {
   return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
 }
 
+/**
+ * Whole seconds elapsed between `countedAt` and `now`, plus the new mark (the sub-second rest
+ * carries over). Timers count from the wall clock so time spent with the phone locked, when JS
+ * intervals are suspended, is caught up on the next tick.
+ */
+export function countSeconds(countedAt: number, now: number): { sec: number; countedAt: number } {
+  const sec = Math.max(0, Math.floor((now - countedAt) / 1000));
+  return { sec, countedAt: countedAt + sec * 1000 };
+}
+
 /** Session from a routine with its prescription and the sets of the last time (`routines` api). */
 export function buildSession(routine: routines.Routine, startedAt: number): ActiveSession {
   return {
@@ -42,6 +52,7 @@ export function buildSession(routine: routines.Routine, startedAt: number): Acti
     startedAt,
     exerciseIndex: 0,
     elapsedSec: 0,
+    countedAt: startedAt,
     paused: false,
     exercises: routine.exercises.map((e, i) => {
       const prev: PrevSet[] = e.lastSets.map((p) => [p.kg, p.reps] as const);
@@ -100,6 +111,7 @@ export function buildFreeSession(startedAt: number): ActiveSession {
     startedAt,
     exerciseIndex: 0,
     elapsedSec: 0,
+    countedAt: startedAt,
     paused: false,
     exercises: [],
   };
