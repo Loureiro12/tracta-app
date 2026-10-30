@@ -12,6 +12,7 @@ import { DotGallery } from '../components/Dot/Dot.gallery';
 import { FloatingBarGallery } from '../components/FloatingBar/FloatingBar.gallery';
 import { IconGallery } from '../components/Icon/Icon.gallery';
 import { IconButtonGallery } from '../components/IconButton/IconButton.gallery';
+import { ImageGallery } from '../components/Image/Image.gallery';
 import { ListRowGallery } from '../components/ListRow/ListRow.gallery';
 import { LogoGallery } from '../components/Logo/Logo.gallery';
 import { PressableGallery } from '../components/Pressable/Pressable.gallery';
@@ -77,6 +78,7 @@ export const galleryRegistry: readonly GalleryEntry[] = [
   { slug: 'screen-header', name: 'ScreenHeader', Gallery: ScreenHeaderGallery },
   { slug: 'tab-bar', name: 'TabBar', Gallery: TabBarGallery },
   { slug: 'logo', name: 'Logo', Gallery: LogoGallery },
+  { slug: 'image', name: 'Image', Gallery: ImageGallery },
 ];
 
 export function findGallery(slug: string): GalleryEntry | undefined {

@@ -1,0 +1,22 @@
+appId: com.tracta.mobile
+name: ds-image
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: image
+- assertVisible:
+    id: "ds.image.gallery"
+- assertVisible:
+    id: "ds.image.placeholder"
+- assertVisible:
+    id: "ds.image.photo"
+- assertVisible:
+    id: "ds.image.photo.image"
+- assertVisible:
+    id: "ds.image.caption"
+- assertVisible:
+    id: "ds.image.caption.caption"
+    text: "Photo from Oct 26"

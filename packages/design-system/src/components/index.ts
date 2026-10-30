@@ -29,3 +29,4 @@ export * from './Sheet';
 export * from './ScreenHeader';
 export * from './TabBar';
 export * from './Logo';
+export * from './Image';
