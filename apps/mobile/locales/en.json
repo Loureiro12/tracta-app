@@ -1,0 +1,8 @@
+{
+  "NSHealthShareUsageDescription": "Tracta reads steps, distance, energy, heart rate, sleep and workouts to show your day.",
+  "NSHealthUpdateUsageDescription": "Tracta saves the workouts and runs you record so they appear in Apple Health.",
+  "NSLocationWhenInUseUsageDescription": "Tracta uses your location to map and measure your runs.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Tracta keeps measuring your run while the screen is locked.",
+  "NSPhotoLibraryUsageDescription": "Tracta lets you pick progress photos from your library.",
+  "NSCameraUsageDescription": "Tracta uses the camera to take progress photos."
+}

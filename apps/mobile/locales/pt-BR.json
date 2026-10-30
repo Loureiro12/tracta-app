@@ -1,0 +1,8 @@
+{
+  "NSHealthShareUsageDescription": "O Tracta lê passos, distância, energia, frequência cardíaca, sono e treinos para mostrar o seu dia.",
+  "NSHealthUpdateUsageDescription": "O Tracta salva os treinos e corridas que você registra para aparecerem no Apple Health.",
+  "NSLocationWhenInUseUsageDescription": "O Tracta usa sua localização para mapear e medir suas corridas.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "O Tracta continua medindo sua corrida com a tela bloqueada.",
+  "NSPhotoLibraryUsageDescription": "O Tracta permite escolher fotos de progresso da sua galeria.",
+  "NSCameraUsageDescription": "O Tracta usa a câmera para tirar fotos de progresso."
+}
