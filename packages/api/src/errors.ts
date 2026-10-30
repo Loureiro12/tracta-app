@@ -8,6 +8,7 @@ export type ApiErrorCode =
   | 'forbidden'
   | 'validation'
   | 'conflict'
+  | 'rate_limited'
   | 'network'
   | 'unknown';
 

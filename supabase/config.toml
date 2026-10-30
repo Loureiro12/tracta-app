@@ -246,9 +246,12 @@ otp_expiry = 3600
 # sender_name = "Admin"
 
 # Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Friend invites (edge function invite-friend → auth.admin.inviteUserByEmail). The button leads to
+# the app's sign-up ({{ .RedirectTo }}), not to the confirmation link: signing up with the invited
+# address links the invite. Copy follows the inviter's locale (user metadata `locale`).
+[auth.email.template.invite]
+subject = "Convite para treinar no Tracta · You're invited to Tracta"
+content_path = "./supabase/templates/invite.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]

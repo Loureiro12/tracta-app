@@ -2,11 +2,15 @@
 import { z } from 'zod';
 
 import { ApiError, unwrap, unwrapOne } from '../errors';
+import { decodePolyline, encodePolyline } from '../polyline';
 import { idSchema, notesInput, parse, rangeInput, listOf, requireUser } from './sessions';
 
 import type { Range } from './sessions';
 import type { TractaClient } from '../client';
 import type { Database } from '../database.types';
+import type { LatLng } from '../polyline';
+
+export type { LatLng } from '../polyline';
 
 type ActivityRow = Database['public']['Tables']['activities']['Row'];
 
@@ -41,6 +45,8 @@ export type Activity = {
   splits: Split[];
   intervals: IntervalPlan | null;
   avgHeartRate: number | null;
+  /** Recorded GPS track ([lat, lng], ~1 m precision); null when nothing was recorded. */
+  route: LatLng[] | null;
   notes: string;
 };
 
@@ -55,23 +61,39 @@ const intervalSchema = z.object({
   warmSec: z.number().int().min(0).max(3600),
 });
 
-export const saveActivityInput = z.object({
-  kind: z.enum(ACTIVITY_KINDS),
-  startedAt: z.iso.datetime({ offset: true }),
-  durationSeconds: z.number().int().min(1).max(172800),
-  distanceM: z.number().int().min(0).max(1_000_000).nullable().optional(),
-  gps: z.boolean().optional(),
-  splits: z.array(splitSchema).max(1000).optional(),
-  intervals: intervalSchema.nullable().optional(),
-  avgHeartRate: z.number().int().min(30).max(250).nullable().optional(),
-  notes: notesInput.optional(),
-});
+const latLngSchema = z.tuple([z.number().min(-90).max(90), z.number().min(-180).max(180)]);
+/** Up to 20k points (~11 h at one point every 2 s); stored as an encoded polyline. */
+const routeSchema = z.array(latLngSchema).min(2).max(20000);
+
+export const saveActivityInput = z
+  .object({
+    kind: z.enum(ACTIVITY_KINDS),
+    startedAt: z.iso.datetime({ offset: true }),
+    durationSeconds: z.number().int().min(1).max(172800),
+    distanceM: z.number().int().min(0).max(1_000_000).nullable().optional(),
+    gps: z.boolean().optional(),
+    splits: z.array(splitSchema).max(1000).optional(),
+    intervals: intervalSchema.nullable().optional(),
+    avgHeartRate: z.number().int().min(30).max(250).nullable().optional(),
+    route: routeSchema.nullable().optional(),
+    notes: notesInput.optional(),
+  })
+  .refine((a) => !a.route || a.gps === true, {
+    message: 'a route needs a GPS activity',
+    path: ['route'],
+  });
 
 export type SaveActivityInput = z.input<typeof saveActivityInput>;
 
 function asSplits(value: ActivityRow['splits']): Split[] {
   const parsed = z.array(splitSchema.loose()).safeParse(value);
   return parsed.success ? parsed.data.map((s) => ({ km: s.km, seconds: s.seconds })) : [];
+}
+
+function asRoute(value: ActivityRow['route']): LatLng[] | null {
+  if (!value) return null;
+  const points = decodePolyline(value);
+  return points.length >= 2 ? points : null;
 }
 
 function asIntervals(value: ActivityRow['intervals']): IntervalPlan | null {
@@ -90,6 +112,7 @@ export function toActivity(r: ActivityRow): Activity {
     splits: asSplits(r.splits),
     intervals: asIntervals(r.intervals),
     avgHeartRate: r.avg_heart_rate,
+    route: asRoute(r.route),
     notes: r.notes,
   };
 }
@@ -112,6 +135,7 @@ export async function saveActivity(
         splits: a.splits ?? [],
         intervals: a.intervals ?? null,
         avg_heart_rate: a.avgHeartRate ?? null,
+        route: a.route ? encodePolyline(a.route) : null,
         notes: a.notes ?? '',
       })
       .select('*')

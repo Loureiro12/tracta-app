@@ -9,6 +9,7 @@ export type { AuthUser, SignInInput, SignUpInput } from './domains/auth';
 export * as account from './domains/account';
 export type {
   Account,
+  DataExport,
   Goals,
   NotificationKey,
   Profile,
@@ -30,5 +31,9 @@ export * as sessions from './domains/sessions';
 export * as activities from './domains/activities';
 export * as body from './domains/body';
 export * as history from './domains/history';
+export * as achievements from './domains/achievements';
 export * as social from './domains/social';
 export * as notifications from './domains/notifications';
+export * as health from './domains/health';
+export * as photos from './domains/photos';
+export * as invites from './domains/invites';

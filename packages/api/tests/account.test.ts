@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { account } from '../src';
+import { account, photos } from '../src';
 import { adminClient, anonClient, createTestUser, uniqueHandle } from './helpers';
 
 import type { TestUser } from './helpers';
@@ -150,10 +150,17 @@ describe('account', () => {
     expect(res.data).toEqual([]);
   });
 
-  it('deletes the account and everything it owns', async () => {
+  it('deletes the account and everything it owns, photo files included', async () => {
     const user = await createTestUser('Goodbye');
+    await photos.uploadPhoto(user.client, {
+      takenOn: '2026-10-26',
+      contentType: 'image/jpeg',
+      data: new Uint8Array([0xff, 0xd8, 0xff, 0xd9]),
+    });
     await account.deleteAccount(user.client);
     const admin = adminClient();
+    const objects = await admin.storage.from(photos.PHOTOS_BUCKET).list(user.id);
+    expect(objects.data ?? []).toEqual([]);
     const { data } = await admin.auth.admin.getUserById(user.id);
     expect(data.user).toBeNull();
     const { count } = await admin
@@ -248,5 +255,50 @@ describe('account', () => {
       .select('id');
     expect(res.data).toEqual([]);
     expect(await countOwned('workout_sessions', owner.id)).toBe(1);
+  });
+
+  it('exports everything the user owns as one JSON document, and nothing else', async () => {
+    await expect(account.exportData(anonClient())).rejects.toMatchObject({
+      code: 'not_authenticated',
+    });
+    const owner = await createTestUser('Exporter');
+    const other = await createTestUser('Bystander');
+    await logHistory(owner);
+    await logHistory(other);
+    await account.updateGoals(owner.client, { steps: 12000 });
+    const photo = await photos.uploadPhoto(owner.client, {
+      takenOn: '2026-10-26',
+      contentType: 'image/jpeg',
+      weightKg: 78.1,
+      data: new Uint8Array([0xff, 0xd8, 0xff, 0xd9]),
+    });
+
+    const data = await account.exportData(owner.client);
+    expect(data).toMatchObject({
+      format: 'tracta-export',
+      version: 1,
+      user_id: owner.id,
+      email: owner.email,
+      profile: { id: owner.id, name: 'Exporter' },
+    });
+    const t = data.tables;
+    expect(t.goals).toEqual([expect.objectContaining({ steps: 12000 })]);
+    expect(t.user_settings).toHaveLength(1);
+    expect(t.workout_sessions).toEqual([
+      expect.objectContaining({ title: 'Treino A', sets: [expect.objectContaining({ reps: 8 })] }),
+    ]);
+    expect(t.activities).toHaveLength(1);
+    expect(t.progress_photos).toEqual([
+      expect.objectContaining({ id: photo.id, taken_on: '2026-10-26', weight_kg: 78.1 }),
+    ]);
+    for (const key of [
+      'routines',
+      'body_measurements',
+      'friend_requests',
+      'challenges',
+      'notifications',
+    ])
+      expect(Array.isArray(t[key])).toBe(true);
+    expect(JSON.stringify(data)).not.toContain(other.id);
   });
 });

@@ -40,6 +40,10 @@ export async function signUp(client: TractaClient, input: SignUpInput): Promise<
     throw new ApiError('email_taken', 'E-mail already registered');
   const user = toAuthUser(data.session);
   if (!user) throw new ApiError('not_authenticated', 'Sign-up needs e-mail confirmation');
+  // An address invited by a friend already has an (unconfirmed) account whose metadata has no
+  // name, and Auth keeps that metadata: store the chosen name on the profile explicitly.
+  const named = await client.from('profiles').update({ name: parsed.data.name }).eq('id', user.id);
+  if (named.error) throw toApiError(named.error);
   return user;
 }
 

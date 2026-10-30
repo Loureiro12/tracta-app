@@ -15,6 +15,7 @@ export type Database = {
           kind: Database['public']['Enums']['activity_kind'];
           notes: string;
           owner_id: string;
+          route: string | null;
           splits: NonNullable<Json>;
           started_at: string;
         };
@@ -30,6 +31,7 @@ export type Database = {
           kind: Database['public']['Enums']['activity_kind'];
           notes?: string;
           owner_id?: string;
+          route?: string | null;
           splits?: NonNullable<Json>;
           started_at: string;
         };
@@ -44,6 +46,7 @@ export type Database = {
           kind?: Database['public']['Enums']['activity_kind'];
           notes?: string;
           owner_id?: string;
+          route?: string | null;
           splits?: NonNullable<Json>;
           started_at?: string;
         };
@@ -200,6 +203,43 @@ export type Database = {
         };
         Relationships: [];
       };
+      email_invites: {
+        Row: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          email: string;
+          id: string;
+          inviter_id: string;
+          last_sent_at: string;
+          status: Database['public']['Enums']['email_invite_status'];
+          token: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          created_at?: string;
+          email: string;
+          id?: string;
+          inviter_id?: string;
+          last_sent_at?: string;
+          status?: Database['public']['Enums']['email_invite_status'];
+          token?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          inviter_id?: string;
+          last_sent_at?: string;
+          status?: Database['public']['Enums']['email_invite_status'];
+          token?: string;
+        };
+        Relationships: [];
+      };
       exercise_prefs: {
         Row: {
           exercise_id: string;
@@ -341,6 +381,110 @@ export type Database = {
         };
         Relationships: [];
       };
+      health_connections: {
+        Row: {
+          connected_at: string;
+          last_synced_at: string | null;
+          read_types: string[];
+          source: string;
+          user_id: string;
+          write_types: string[];
+        };
+        ComputedFields: never;
+        Insert: {
+          connected_at?: string;
+          last_synced_at?: string | null;
+          read_types?: string[];
+          source: string;
+          user_id?: string;
+          write_types?: string[];
+        };
+        Update: {
+          connected_at?: string;
+          last_synced_at?: string | null;
+          read_types?: string[];
+          source?: string;
+          user_id?: string;
+          write_types?: string[];
+        };
+        Relationships: [];
+      };
+      health_days: {
+        Row: {
+          active_kcal: number | null;
+          active_minutes: number | null;
+          awake_minutes: number | null;
+          bedtime: string | null;
+          day: string;
+          distance_m: number | null;
+          hr_hourly: number[] | null;
+          hr_max: number | null;
+          hr_min: number | null;
+          in_bed_minutes: number | null;
+          intense_minutes: number | null;
+          rest_kcal: number | null;
+          resting_hr: number | null;
+          sleep_minutes: number | null;
+          sleep_stages: Json | null;
+          source: string;
+          steps: number | null;
+          steps_hourly: number[] | null;
+          synced_at: string;
+          user_id: string;
+          wake_time: string | null;
+          wakeups: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          active_kcal?: number | null;
+          active_minutes?: number | null;
+          awake_minutes?: number | null;
+          bedtime?: string | null;
+          day: string;
+          distance_m?: number | null;
+          hr_hourly?: number[] | null;
+          hr_max?: number | null;
+          hr_min?: number | null;
+          in_bed_minutes?: number | null;
+          intense_minutes?: number | null;
+          rest_kcal?: number | null;
+          resting_hr?: number | null;
+          sleep_minutes?: number | null;
+          sleep_stages?: Json | null;
+          source: string;
+          steps?: number | null;
+          steps_hourly?: number[] | null;
+          synced_at?: string;
+          user_id?: string;
+          wake_time?: string | null;
+          wakeups?: number | null;
+        };
+        Update: {
+          active_kcal?: number | null;
+          active_minutes?: number | null;
+          awake_minutes?: number | null;
+          bedtime?: string | null;
+          day?: string;
+          distance_m?: number | null;
+          hr_hourly?: number[] | null;
+          hr_max?: number | null;
+          hr_min?: number | null;
+          in_bed_minutes?: number | null;
+          intense_minutes?: number | null;
+          rest_kcal?: number | null;
+          resting_hr?: number | null;
+          sleep_minutes?: number | null;
+          sleep_stages?: Json | null;
+          source?: string;
+          steps?: number | null;
+          steps_hourly?: number[] | null;
+          synced_at?: string;
+          user_id?: string;
+          wake_time?: string | null;
+          wakeups?: number | null;
+        };
+        Relationships: [];
+      };
       notifications: {
         Row: {
           body: string;
@@ -470,6 +614,34 @@ export type Database = {
           tag?: string;
           week_titles?: string[];
           weeks?: number;
+        };
+        Relationships: [];
+      };
+      progress_photos: {
+        Row: {
+          created_at: string;
+          id: string;
+          owner_id: string;
+          storage_path: string;
+          taken_on: string;
+          weight_kg: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          owner_id?: string;
+          storage_path: string;
+          taken_on?: string;
+          weight_kg?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          owner_id?: string;
+          storage_path?: string;
+          taken_on?: string;
+          weight_kg?: number | null;
         };
         Relationships: [];
       };
@@ -851,6 +1023,26 @@ export type Database = {
       };
     };
     Functions: {
+      achievement_entries: {
+        Args: { p_today: string };
+        Returns: {
+          day: string;
+          distance_m: number;
+          kind: string;
+          started_at: string;
+          volume_kg: number;
+        }[];
+      };
+      achievements: {
+        Args: { p_today: string };
+        Returns: {
+          current: number;
+          earned_on: string;
+          id: string;
+          progress: number;
+          target: number;
+        }[];
+      };
       activity_label: {
         Args: { p_kind: Database['public']['Enums']['activity_kind'] };
         Returns: string;
@@ -882,8 +1074,18 @@ export type Database = {
         };
         Returns: string;
       };
+      create_email_invite: {
+        Args: { p_email: string; p_inviter: string };
+        Returns: {
+          invite_id: string;
+          send: boolean;
+          token: string;
+        }[];
+      };
+      current_streak: { Args: { p_day: string }; Returns: number };
       delete_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       e2e_reset_demo: { Args: Record<PropertyKey, never>; Returns: undefined };
+      export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
       find_profile: {
         Args: { p_handle: string };
         Returns: {
@@ -930,7 +1132,18 @@ export type Database = {
         }[];
       };
       local_day: { Args: { p_at: string }; Returns: string };
+      monthly_recap: { Args: { p_today: string }; Returns: Json };
       refresh_daily_summary: { Args: { p_day: string; p_user: string }; Returns: undefined };
+      request_friendship: { Args: { p_from: string; p_to: string }; Returns: undefined };
+      revoke_email_invite: { Args: { p_id: string }; Returns: undefined };
+      run_windows: {
+        Args: { p_from: string; p_size: number; p_to: string };
+        Returns: {
+          activity_id: string;
+          day: string;
+          seconds: number;
+        }[];
+      };
       save_routine: { Args: { payload: Json }; Returns: string };
       save_workout_session: { Args: { payload: Json }; Returns: string };
       send_friend_request: {
@@ -950,6 +1163,20 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      strength_records: {
+        Args: { p_from: string; p_to: string };
+        Returns: {
+          achieved_at: string;
+          exercise_id: string;
+          first_kg: number;
+          kg: number;
+          name: string;
+          previous_kg: number;
+          previous_reps: number;
+          reps: number;
+          slug: string;
+        }[];
+      };
       suggested_friends: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -959,6 +1186,8 @@ export type Database = {
           user_id: string;
         }[];
       };
+      upsert_health_days: { Args: { p_days: Json; p_source: string }; Returns: string };
+      weekly_summary: { Args: { p_week_start: string }; Returns: Json };
     };
     Enums: {
       activity_kind:
@@ -974,6 +1203,7 @@ export type Database = {
         | 'yoga';
       challenge_kind: 'day' | 'minutes' | 'steps';
       data_source: 'manual' | 'health';
+      email_invite_status: 'pending' | 'accepted' | 'expired';
       exercise_kind: 'load_reps' | 'reps' | 'time';
       friend_status: 'pending' | 'accepted';
       notification_kind: 'workout' | 'social' | 'sync' | 'weekly' | 'record' | 'goal';
@@ -1106,6 +1336,7 @@ export const Constants = {
       ],
       challenge_kind: ['day', 'minutes', 'steps'],
       data_source: ['manual', 'health'],
+      email_invite_status: ['pending', 'accepted', 'expired'],
       exercise_kind: ['load_reps', 'reps', 'time'],
       friend_status: ['pending', 'accepted'],
       notification_kind: ['workout', 'social', 'sync', 'weekly', 'record', 'goal'],

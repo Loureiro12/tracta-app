@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
 import { ApiError, toApiError, unwrap, unwrapOne } from '../errors';
+import { removeAllPhotoObjects } from './photos';
 
 import type { TractaClient } from '../client';
-import type { Database } from '../database.types';
+import type { Database, Json } from '../database.types';
 
 type SettingsRow = Database['public']['Tables']['user_settings']['Row'];
 type GoalsRow = Database['public']['Tables']['goals']['Row'];
@@ -237,8 +238,12 @@ export async function updateGoals(
   );
 }
 
-/** Permanently deletes the account and every owned row (cascade). Signs out locally afterwards. */
+/**
+ * Permanently deletes the account: first the progress photo files (Storage bytes cannot be
+ * removed from SQL), then the user and every owned row (cascade). Signs out locally afterwards.
+ */
 export async function deleteAccount(client: TractaClient): Promise<void> {
+  await removeAllPhotoObjects(client);
   unwrap(await client.rpc('delete_account'));
   await client.auth.signOut({ scope: 'local' });
 }
@@ -258,4 +263,22 @@ export async function deleteHistory(client: TractaClient): Promise<DeletedHistor
     await client.from('activities').delete().eq('owner_id', me.id).select('id'),
   );
   return { sessions: sessions?.length ?? 0, activities: activities?.length ?? 0 };
+}
+
+/** Personal data export (`export_my_data`): one JSON document with everything the user owns. */
+export type DataExport = {
+  format: 'tracta-export';
+  version: number;
+  exported_at: string;
+  user_id: string;
+  email: string | null;
+  profile: { [key: string]: Json | undefined } | null;
+  /** One array per table (snake_case rows as stored); sessions nest `sets`, routines `exercises`. */
+  tables: { [table: string]: Json[] };
+};
+
+export async function exportData(client: TractaClient): Promise<DataExport> {
+  await requireUserId(client);
+  const data = unwrapOne(await client.rpc('export_my_data'), 'export');
+  return data as unknown as DataExport;
 }

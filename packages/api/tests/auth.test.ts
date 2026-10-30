@@ -25,6 +25,21 @@ describe('auth', () => {
     await adminClient().auth.admin.deleteUser(user.id);
   });
 
+  it('signs up an address a friend invited by e-mail, keeping the chosen name', async () => {
+    const email = `${randomUUID()}@test.local`;
+    const { data, error } = await adminClient().auth.admin.inviteUserByEmail(email, {
+      data: { invited_by: randomUUID() },
+    });
+    if (error) throw error;
+
+    const client = anonClient();
+    const user = await auth.signUp(client, { name: 'Nina Invited', email, password: 'Tracta2026' });
+    expect(user.id).toBe(data.user.id);
+    expect((await account.getAccount(client)).profile.name).toBe('Nina Invited');
+
+    await adminClient().auth.admin.deleteUser(user.id);
+  });
+
   it('rejects weak passwords and invalid e-mails before calling the server', async () => {
     const client = anonClient();
     await expect(

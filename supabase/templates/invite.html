@@ -1,0 +1,13 @@
+{{ if eq (printf "%v" .Data.locale) "en" }}
+<h2>{{ if .Data.invited_by_name }}{{ .Data.invited_by_name }} invited you to train together{{ else }}You're invited to train together{{ end }}</h2>
+<p>Tracta is where friends see each other's training days and run small challenges. No feed, no likes: just showing up.</p>
+<p><a href="{{ .RedirectTo }}">Create my account</a></p>
+<p>Sign up with this e-mail address and the invite{{ if .Data.invited_by_handle }} from @{{ .Data.invited_by_handle }}{{ end }} will be waiting for you.</p>
+<p>Not expecting this? You can ignore this e-mail.</p>
+{{ else }}
+<h2>{{ if .Data.invited_by_name }}{{ .Data.invited_by_name }} convidou você para treinar junto{{ else }}Você foi convidado para treinar junto{{ end }}</h2>
+<p>No Tracta, amigos veem os dias de treino um do outro e criam pequenos desafios. Sem feed, sem curtidas: só aparecer.</p>
+<p><a href="{{ .RedirectTo }}">Criar minha conta</a></p>
+<p>Cadastre-se com este e-mail e o convite{{ if .Data.invited_by_handle }} de @{{ .Data.invited_by_handle }}{{ end }} estará esperando por você.</p>
+<p>Não esperava este e-mail? Pode ignorá-lo.</p>
+{{ end }}
