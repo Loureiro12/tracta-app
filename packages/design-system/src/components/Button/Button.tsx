@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '../../theme/ThemeProvider';
 import { Icon } from '../Icon/Icon';
 import { Pressable } from '../Pressable/Pressable';
+import { Spinner } from '../Spinner/Spinner';
 import { Text } from '../Text/Text';
 
 import type { Testable } from '../../testing/test-id';
@@ -120,22 +121,24 @@ export function Button({
       accessibilityState={{ disabled: isInactive, busy: loading }}
       style={[styles.base, containerStyle]}
     >
+      {/* The label stays laid out (hidden) while loading so the button keeps its width. */}
+      <View style={[styles.content, loading && styles.hidden]}>
+        {icon ? <Icon name={icon} size={18} color={colors.fg} /> : null}
+        <Text
+          testID={`${testID}.label`}
+          variant={sizing.variant}
+          color={colors.fg}
+          align="center"
+          numberOfLines={1}
+        >
+          {label}
+        </Text>
+      </View>
       {loading ? (
-        <ActivityIndicator testID={`${testID}.loading`} color={theme.colors[colors.fg]} />
-      ) : (
-        <>
-          {icon ? <Icon name={icon} size={18} color={colors.fg} /> : null}
-          <Text
-            testID={`${testID}.label`}
-            variant={sizing.variant}
-            color={colors.fg}
-            align="center"
-            numberOfLines={1}
-          >
-            {label}
-          </Text>
-        </>
-      )}
+        <View style={styles.spinner}>
+          <Spinner testID={`${testID}.loading`} color={colors.fg} />
+        </View>
+      ) : null}
     </Pressable>
   );
 }
@@ -143,10 +146,21 @@ export function Button({
 const styles = StyleSheet.create({
   base: {
     borderWidth: 1,
-    flexDirection: 'row',
-    gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 36,
+  },
+  content: {
+    flexDirection: 'row',
+    flexShrink: 1,
+    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  hidden: { opacity: 0 },
+  spinner: {
+    ...StyleSheet.absoluteFill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

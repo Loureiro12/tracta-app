@@ -173,6 +173,7 @@ export function RunSummaryScreen() {
         <Box px="screen" pt="ml" pb="3xl" bg="bg" style={footerStyle}>
           <Button
             testID={runIds.summarySave}
+            loading={saving === 1}
             label={
               saving === 2
                 ? t('summary.savedCta')

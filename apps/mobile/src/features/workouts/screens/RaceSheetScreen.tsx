@@ -99,6 +99,7 @@ export function RaceSheetScreen() {
       footer={
         <Button
           testID={ids.raceSave}
+          loading={saveRace.isPending}
           label={race ? t('race.save') : t('race.set')}
           size="lg"
           fullWidth
@@ -157,6 +158,7 @@ export function RaceSheetScreen() {
         <VStack align="center">
           <Button
             testID={ids.raceRemove}
+            loading={deleteRace.isPending}
             label={t('race.remove')}
             variant="dangerText"
             size="sm"

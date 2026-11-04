@@ -1,0 +1,15 @@
+appId: com.tracta.mobile
+name: ds-spinner
+tags:
+  - design-system
+---
+- runFlow:
+    file: ../../subflows/open-gallery.yaml
+    env:
+      SLUG: spinner
+- assertVisible:
+    id: "ds.spinner.gallery"
+- assertVisible:
+    id: "ds.spinner.default"
+- assertVisible:
+    id: "ds.spinner.danger"

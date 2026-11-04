@@ -23,6 +23,7 @@ import { ScreenHeaderGallery } from '../components/ScreenHeader/ScreenHeader.gal
 import { SectionLabelGallery } from '../components/SectionLabel/SectionLabel.gallery';
 import { SegmentedGallery } from '../components/Segmented/Segmented.gallery';
 import { SheetGallery } from '../components/Sheet/Sheet.gallery';
+import { SpinnerGallery } from '../components/Spinner/Spinner.gallery';
 import { StackGallery } from '../components/Stack/Stack.gallery';
 import { StepperGallery } from '../components/Stepper/Stepper.gallery';
 import { SwitchGallery } from '../components/Switch/Switch.gallery';
@@ -79,6 +80,7 @@ export const galleryRegistry: readonly GalleryEntry[] = [
   { slug: 'tab-bar', name: 'TabBar', Gallery: TabBarGallery },
   { slug: 'logo', name: 'Logo', Gallery: LogoGallery },
   { slug: 'image', name: 'Image', Gallery: ImageGallery },
+  { slug: 'spinner', name: 'Spinner', Gallery: SpinnerGallery },
 ];
 
 export function findGallery(slug: string): GalleryEntry | undefined {

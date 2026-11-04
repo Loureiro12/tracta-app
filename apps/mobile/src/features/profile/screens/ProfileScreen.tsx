@@ -266,6 +266,7 @@ function ProfileBody({ account }: { account: Account }) {
         testID={ids.logout}
         label={t('actions.logout')}
         tone="danger"
+        loading={signOut.isPending}
         onPress={() => void logout()}
       />
     </>

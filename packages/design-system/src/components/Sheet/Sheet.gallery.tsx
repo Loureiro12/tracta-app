@@ -34,6 +34,18 @@ export function SheetGallery() {
           <Text testID={`${ID}.demo.body`}>Sheet content</Text>
         </Sheet>
       </Card>
+      <Card padding="none" radius="sheet">
+        <Sheet
+          testID={`${ID}.saving`}
+          title="Salvando"
+          rightLabel="Concluir"
+          rightLoading
+          onPressRight={() => setClosed((n) => n + 1)}
+          onClose={() => {}}
+        >
+          <Text>Sheet content</Text>
+        </Sheet>
+      </Card>
     </VStack>
   );
 }

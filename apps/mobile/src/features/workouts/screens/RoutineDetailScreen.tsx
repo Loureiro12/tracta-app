@@ -135,6 +135,7 @@ export function RoutineDetailScreen({ id }: { id: string }) {
         <Box flex={1}>
           <Button
             testID={ids.detailDuplicate}
+            loading={duplicateRoutine.isPending}
             label={t('detail.duplicate')}
             variant="secondary"
             fullWidth

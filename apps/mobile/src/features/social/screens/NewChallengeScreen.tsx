@@ -152,6 +152,7 @@ export function NewChallengeScreen() {
               <Box flex={1}>
                 <Button
                   testID={socialIds.newBack}
+                  disabled={create.isPending}
                   label={t('newChallenge.back')}
                   variant="surface"
                   size="lg"
@@ -163,6 +164,7 @@ export function NewChallengeScreen() {
             <Box flex={2}>
               <Button
                 testID={socialIds.newNext}
+                loading={create.isPending}
                 label={step < 4 ? t('newChallenge.next') : t('newChallenge.create')}
                 size="lg"
                 fullWidth

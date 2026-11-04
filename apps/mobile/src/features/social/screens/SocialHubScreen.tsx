@@ -96,6 +96,7 @@ export function SocialHubScreen() {
     router.push(socialRoutes.newChallenge);
   };
 
+  const responding = respond.isPending ? respond.variables : undefined;
   const onRespond = (requestId: string, name: string, accept: boolean) =>
     respond.mutate(
       { requestId, accept },
@@ -228,12 +229,16 @@ export function SocialHubScreen() {
                         label={t('hub.decline')}
                         variant="secondary"
                         size="xs"
+                        loading={responding?.requestId === r.id && !responding.accept}
+                        disabled={responding?.requestId === r.id}
                         onPress={() => onRespond(r.id, r.person.name, false)}
                       />
                       <Button
                         testID={`${socialIds.requests}.${key}.accept`}
                         label={t('hub.accept')}
                         size="xs"
+                        loading={responding?.requestId === r.id && responding.accept}
+                        disabled={responding?.requestId === r.id}
                         onPress={() => onRespond(r.id, r.person.name, true)}
                       />
                     </HStack>
@@ -275,6 +280,7 @@ export function SocialHubScreen() {
                     label={t('hub.revoke')}
                     variant="secondary"
                     size="xs"
+                    loading={revokeInvite.isPending && revokeInvite.variables === invite.id}
                     onPress={() =>
                       revokeInvite.mutate(invite.id, {
                         onSuccess: () => showToast(t('hub.revoked')),

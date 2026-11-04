@@ -30,3 +30,4 @@ export * from './ScreenHeader';
 export * from './TabBar';
 export * from './Logo';
 export * from './Image';
+export * from './Spinner';

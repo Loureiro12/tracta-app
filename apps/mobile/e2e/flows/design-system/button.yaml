@@ -57,6 +57,9 @@ tags:
     id: "ds.button.disabled"
 - assertVisible:
     id: "ds.button.loading.loading"
+# The label is hidden while loading (it stays laid out to keep the button's width).
+- assertNotVisible:
+    id: "ds.button.loading.label"
 - tapOn:
     id: "ds.button.loading"
 - scrollUntilVisible:

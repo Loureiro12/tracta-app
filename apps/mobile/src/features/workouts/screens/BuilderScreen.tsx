@@ -149,6 +149,7 @@ export function BuilderScreen({ id }: { id?: string | undefined }) {
         <Box px="screen" pt="md" pb="2xl" bg="bg" borderColor="divider" style={styles.footer}>
           <Button
             testID={ids.builderSave}
+            loading={saveRoutine.isPending}
             label={id ? t('builder.saveChanges') : t('builder.create')}
             variant={valid ? 'primary' : 'secondary'}
             size="xl"

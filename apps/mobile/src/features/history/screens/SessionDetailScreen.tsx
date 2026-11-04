@@ -299,6 +299,7 @@ export function SessionDetailScreen({ id }: Props) {
 
       <Button
         testID={ids.sessionDelete}
+        loading={deleteEntry.isPending}
         label={armed ? t('detail.deleteConfirm') : t('detail.delete')}
         variant="dangerText"
         shape="rounded"

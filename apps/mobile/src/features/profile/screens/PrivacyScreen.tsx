@@ -27,6 +27,13 @@ export function PrivacyScreen() {
   const deleteAccount = useDeleteAccount();
   const dataExport = useDataExport();
   const [armed, setArmed] = useState<PrivacyAction | null>(null);
+  const pending: Record<PrivacyAction, boolean> = {
+    export: dataExport.isPending,
+    health: disconnectHealth.isPending,
+    'health-data': deleteHealthData.isPending,
+    history: deleteHistory.isPending,
+    account: deleteAccount.isPending,
+  };
   const onError = () => showToast(t('state.saveFailed'));
 
   const run = (action: PrivacyAction) => {
@@ -168,6 +175,7 @@ export function PrivacyScreen() {
             labelColor={action.key === 'export' ? 'text' : 'danger'}
             description={action.description}
             last={i === actions.length - 1}
+            loading={pending[action.key]}
             onPress={() => press(action.key)}
           />
         ))}

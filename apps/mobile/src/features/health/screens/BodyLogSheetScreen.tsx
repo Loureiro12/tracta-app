@@ -116,7 +116,8 @@ export function BodyLogSheetScreen() {
             label={t('bodyLog.save')}
             size="lg"
             fullWidth
-            disabled={!valid || logBody.isPending}
+            disabled={!valid}
+            loading={logBody.isPending}
             onPress={save}
           />
           <Text variant="caption" color="text2" align="center">

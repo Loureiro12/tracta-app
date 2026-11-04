@@ -239,6 +239,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
           <Box flex={1}>
             <Button
               testID={ids.exerciseDelete}
+              loading={deleteExercise.isPending}
               label={armed ? t('exercise.confirmDelete') : t('exercise.delete')}
               variant="dangerText"
               size="lg"

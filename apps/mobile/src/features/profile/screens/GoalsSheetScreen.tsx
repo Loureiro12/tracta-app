@@ -43,6 +43,7 @@ export function GoalsSheetScreen() {
       title={t('goals.title')}
       rightLabel={t('nav.done')}
       onPressRight={done}
+      rightLoading={updateGoals.isPending}
       onClose={() => router.back()}
       maxHeight={0.75}
     >

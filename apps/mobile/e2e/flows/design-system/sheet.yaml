@@ -26,3 +26,14 @@ tags:
 - assertVisible:
     id: "ds.sheet.closed"
     text: "Closed 3 times"
+# While the right button is loading it shows a spinner and ignores taps (the count stays at 3).
+- scrollUntilVisible:
+    element:
+      id: "ds.sheet.saving.right.loading"
+- assertVisible:
+    id: "ds.sheet.saving"
+- tapOn:
+    id: "ds.sheet.saving.right"
+- assertVisible:
+    id: "ds.sheet.closed"
+    text: "Closed 3 times"

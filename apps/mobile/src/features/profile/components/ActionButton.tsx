@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Pressable, Text, useTheme } from '@tracta/design-system';
+import { Pressable, Spinner, Text, useTheme } from '@tracta/design-system';
 
 import type { ViewStyle } from 'react-native';
 
@@ -12,6 +12,8 @@ type ActionButtonProps = {
   tone?: 'default' | 'danger';
   /** Hide the 1px outline (default: outlined). */
   outlined?: boolean;
+  /** Waiting on the action: spinner instead of the label, taps ignored. */
+  loading?: boolean;
 };
 
 /** 50px white button with 16px radius and a hairline: the handoff's full-width profile actions. */
@@ -21,8 +23,10 @@ export function ActionButton({
   onPress,
   tone = 'default',
   outlined = tone !== 'danger',
+  loading = false,
 }: ActionButtonProps) {
   const theme = useTheme();
+  const labelColor = tone === 'danger' ? 'danger' : 'text';
   const style = useMemo<ViewStyle>(
     () => ({
       height: 50,
@@ -37,15 +41,21 @@ export function ActionButton({
     [theme, outlined],
   );
   return (
-    <Pressable testID={testID} onPress={onPress} style={style} accessibilityLabel={label}>
-      <Text
-        testID={`${testID}.label`}
-        variant="bodyBold"
-        color={tone === 'danger' ? 'danger' : 'text'}
-        numberOfLines={1}
-      >
-        {label}
-      </Text>
+    <Pressable
+      testID={testID}
+      onPress={onPress}
+      disabled={loading}
+      style={style}
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: loading, busy: loading }}
+    >
+      {loading ? (
+        <Spinner testID={`${testID}.loading`} color={labelColor} />
+      ) : (
+        <Text testID={`${testID}.label`} variant="bodyBold" color={labelColor} numberOfLines={1}>
+          {label}
+        </Text>
+      )}
     </Pressable>
   );
 }

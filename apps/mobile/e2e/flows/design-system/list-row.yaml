@@ -30,6 +30,17 @@ tags:
 - assertVisible:
     id: "ds.list-row.taps"
     text: "Row taps: 2"
+# A loading row shows the spinner and ignores taps (the count stays at 2).
+- scrollUntilVisible:
+    element:
+      id: "ds.list-row.loading"
+- assertVisible:
+    id: "ds.list-row.loading.loading"
+- tapOn:
+    id: "ds.list-row.loading"
+- assertVisible:
+    id: "ds.list-row.taps"
+    text: "Row taps: 2"
 - assertVisible:
     id: "ds.list-row.description.description"
     text: "Cargas e recordes ficam ocultos"

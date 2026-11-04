@@ -4,6 +4,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Box } from '../Box/Box';
 import { Icon } from '../Icon/Icon';
 import { Pressable } from '../Pressable/Pressable';
+import { Spinner } from '../Spinner/Spinner';
 import { Text } from '../Text/Text';
 
 import type { MaybeTestable, Testable } from '../../testing/test-id';
@@ -23,6 +24,8 @@ export type ListRowProps = Testable & {
   /** Custom left element (icon, letter badge). */
   leading?: ReactNode;
   chevron?: boolean;
+  /** Waiting on the action started by the row: spinner on the right, taps ignored. */
+  loading?: boolean;
   onPress?: NonNullable<PressableProps['onPress']>;
   /** Hide the bottom hairline (ListGroup sets this on the last row). */
   last?: boolean;
@@ -38,6 +41,7 @@ export function ListRow({
   trailing,
   leading,
   chevron = false,
+  loading = false,
   onPress,
   last = false,
   testID,
@@ -73,13 +77,20 @@ export function ListRow({
           {value}
         </Text>
       ) : null}
-      {trailing}
-      {chevron ? <Icon name="chevron-right" size={16} color="text3" /> : null}
+      {loading ? <Spinner testID={`${testID}.loading`} /> : trailing}
+      {chevron && !loading ? <Icon name="chevron-right" size={16} color="text3" /> : null}
     </>
   );
   if (onPress) {
     return (
-      <Pressable testID={testID} onPress={onPress} style={style} accessibilityLabel={label}>
+      <Pressable
+        testID={testID}
+        onPress={onPress}
+        disabled={loading}
+        style={style}
+        accessibilityLabel={label}
+        accessibilityState={{ disabled: loading, busy: loading }}
+      >
         {content}
       </Pressable>
     );

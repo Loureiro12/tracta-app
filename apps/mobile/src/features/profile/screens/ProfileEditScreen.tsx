@@ -160,6 +160,7 @@ function ProfileEditForm({ account }: { account: Account }) {
       />
       <Button
         testID={ids.editSave}
+        loading={saving}
         label={t('edit.save')}
         size="lg"
         fullWidth
@@ -210,6 +211,7 @@ function ProfileEditForm({ account }: { account: Account }) {
       </VStack>
       <Button
         testID={ids.editChangePassword}
+        loading={changePasswordMutation.isPending}
         label={t('edit.changePassword')}
         variant="surface"
         size="lg"

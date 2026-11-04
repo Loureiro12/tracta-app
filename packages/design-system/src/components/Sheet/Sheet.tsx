@@ -24,6 +24,8 @@ export type SheetProps = Testable & {
   /** Right text button, e.g. "Fechar" / "Salvar". */
   rightLabel?: string;
   onPressRight?: () => void;
+  /** The right button started a request: spinner on it, taps ignored. */
+  rightLoading?: boolean;
   /** Fixed area below the scrolling content (CTAs). */
   footer?: ReactNode;
   /** Max height as a fraction of the screen. Default 0.9. */
@@ -41,6 +43,7 @@ export function Sheet({
   leftLabel,
   rightLabel,
   onPressRight,
+  rightLoading = false,
   footer,
   maxHeight = 0.9,
   testID,
@@ -106,6 +109,7 @@ export function Sheet({
                 label={rightLabel}
                 variant="ghost"
                 size="sm"
+                loading={rightLoading}
                 onPress={onPressRight ?? onClose}
               />
             ) : null}

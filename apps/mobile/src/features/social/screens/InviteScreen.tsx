@@ -164,7 +164,10 @@ export function InviteScreen() {
         <Button
           testID={socialIds.inviteSend}
           label={t('invite.send')}
-          loading={sendInvite.isPending || inviteByEmail.isPending}
+          loading={
+            inviteByEmail.isPending ||
+            (sendInvite.isPending && sendInvite.variables.startsWith('@'))
+          }
           onPress={onSend}
         />
       </HStack>
@@ -189,6 +192,7 @@ export function InviteScreen() {
                   label={sent ? t('invite.contactSent') : t('invite.contactInvite')}
                   variant={sent ? 'secondary' : 'primary'}
                   size="xs"
+                  loading={sendInvite.isPending && sendInvite.variables === c.handle}
                   onPress={() => {
                     if (sent || !c.handle) return;
                     sendInvite.mutate(c.handle, {

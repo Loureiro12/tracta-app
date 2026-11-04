@@ -184,6 +184,7 @@ export function ProgramsScreen({ id }: { id?: string | undefined }) {
       </Text>
       <Button
         testID={ids.programCta}
+        loading={enroll.isPending || endEnrollment.isPending}
         label={
           isActive ? t('programs.end') : activeProgram ? t('programs.switch') : t('programs.start')
         }

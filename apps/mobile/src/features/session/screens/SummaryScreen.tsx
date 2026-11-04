@@ -117,6 +117,7 @@ export function SummaryScreen() {
         <Box style={footerStyle}>
           <Button
             testID={sessionIds.summarySave}
+            loading={saveSession.isPending}
             label={t('session:summary.save')}
             size="xl"
             icon="check"

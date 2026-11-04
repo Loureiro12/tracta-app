@@ -14,6 +14,7 @@ import {
   Pressable,
   Screen,
   Segmented,
+  Spinner,
   Text,
   VStack,
 } from '@tracta/design-system';
@@ -50,6 +51,7 @@ export function PhotosScreen() {
   const query = useProgressPhotos();
   const addPhoto = useAddPhoto();
   const deletePhoto = useDeletePhoto();
+  const deleting = deletePhoto.isPending ? deletePhoto.variables : null;
   const [tab, setTab] = useState<PhotosTab>('list');
   const [armed, setArmed] = useState<string | null>(null);
   const photos = query.data ?? [];
@@ -231,13 +233,18 @@ export function PhotosScreen() {
                 testID={`${ids.photosGrid}.${photo.id}`}
                 style={styles.tile}
                 accessibilityHint={t('photos.deleteHint')}
+                disabled={deleting === photo.id}
                 onPress={() => onTile(photo)}
               >
                 <VStack gap="xs">
                   <Image uri={photo.url} height={140} />
-                  <Text testID={`${ids.photosGrid}.${photo.id}.date`} variant="captionSemibold">
-                    {armed === photo.id ? t('photos.deleteArmed') : dayLabel(photo.takenOn)}
-                  </Text>
+                  {deleting === photo.id ? (
+                    <Spinner testID={`${ids.photosGrid}.${photo.id}.deleting`} />
+                  ) : (
+                    <Text testID={`${ids.photosGrid}.${photo.id}.date`} variant="captionSemibold">
+                      {armed === photo.id ? t('photos.deleteArmed') : dayLabel(photo.takenOn)}
+                    </Text>
+                  )}
                   <Text
                     testID={`${ids.photosGrid}.${photo.id}.weight`}
                     variant="micro"

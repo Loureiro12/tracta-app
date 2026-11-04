@@ -49,6 +49,13 @@ export function ListRowGallery() {
           chevron
           onPress={() => setTaps((n) => n + 1)}
         />
+        <ListRow
+          testID={`${ID}.loading`}
+          label="Exportar dados"
+          chevron
+          loading
+          onPress={() => setTaps((n) => n + 1)}
+        />
       </ListGroup>
     </VStack>
   );

@@ -248,6 +248,7 @@ function ExerciseForm({ name, edit, from, library }: Props & { library: LibraryE
         <Box px="screen" pt="md" pb="2xl" bg="bg" borderColor="divider" style={styles.footer}>
           <Button
             testID={ids.formSave}
+            loading={pending}
             label={t('form.save')}
             variant={valid ? 'primary' : 'secondary'}
             size="xl"
