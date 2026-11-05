@@ -84,4 +84,33 @@ describe('body', () => {
     );
     expect((await body.latestBody(stranger.client)).weight).toBeNull();
   });
+
+  it('imports one reading per day that a manual entry still beats', async () => {
+    const user = await createTestUser();
+    await body.logBody(user.client, { measuredOn: '2026-10-26', weightKg: 80 });
+    await body.importBody(user.client, [
+      { measuredOn: '2026-10-25', weightKg: 79.456, waistCm: 85.55 },
+      { measuredOn: '2026-10-26', weightKg: 81 },
+    ]);
+    await body.importBody(user.client, [{ measuredOn: '2026-10-25', weightKg: 79 }]);
+
+    const rows = await body.listBody(user.client, { from: '2026-10-25', to: '2026-10-26' });
+    expect(rows.map((r) => [r.measuredOn, r.source, r.weightKg])).toEqual([
+      ['2026-10-25', 'health', 79],
+      ['2026-10-26', 'manual', 80],
+      ['2026-10-26', 'health', 81],
+    ]);
+    const latest = await body.latestBody(user.client);
+    expect(latest.weight).toMatchObject({ value: 80, source: 'manual' });
+  });
+
+  it('refuses a reading with nothing in it, or out of range', async () => {
+    const user = await createTestUser();
+    await expect(
+      body.importBody(user.client, [{ measuredOn: '2026-10-25' }]),
+    ).rejects.toMatchObject({ code: 'validation' });
+    await expect(
+      body.importBody(user.client, [{ measuredOn: '2026-10-25', weightKg: 900 }]),
+    ).rejects.toMatchObject({ code: 'validation' });
+  });
 });

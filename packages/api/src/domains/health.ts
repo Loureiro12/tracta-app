@@ -6,6 +6,7 @@
 import { z } from 'zod';
 
 import { ApiError, unwrap, unwrapOne } from '../errors';
+import { ACTIVITY_KINDS } from './activities';
 import { listOf, parse, requireUser } from './sessions';
 
 import type { TractaClient } from '../client';
@@ -199,10 +200,16 @@ export async function disconnect(
   if (options.deleteData) await deleteHealthData(client);
 }
 
-/** Deletes every synced health day (steps also leave the friends' feed). */
+/**
+ * Deletes every synced health day (steps also leave the friends' feed) and the imported body
+ * readings. Imported workouts stay: they are part of the training history.
+ */
 export async function deleteHealthData(client: TractaClient): Promise<void> {
   const userId = await requireUser(client);
   unwrap(await client.from('health_days').delete().eq('user_id', userId));
+  unwrap(
+    await client.from('body_measurements').delete().eq('owner_id', userId).eq('source', 'health'),
+  );
 }
 
 /** Upserts the given days (replacing stored ones) and returns the sync instant. */
@@ -235,6 +242,55 @@ export async function syncDays(client: TractaClient, input: SyncInput): Promise<
   );
   if (!syncedAt) throw new ApiError('unknown', 'sync returned no timestamp');
   return syncedAt;
+}
+
+export const importedWorkoutInput = z
+  .object({
+    /** The store's own id of the workout, stable between syncs. */
+    id: z.string().min(1).max(200),
+    kind: z.enum([...ACTIVITY_KINDS, 'strength']),
+    startedAt: z.iso.datetime({ offset: true }),
+    endedAt: z.iso.datetime({ offset: true }),
+    distanceM: z.number().int().min(0).max(1_000_000).nullable().optional(),
+    avgHeartRate: z.number().int().min(30).max(250).nullable().optional(),
+  })
+  .refine((w) => {
+    const seconds = (Date.parse(w.endedAt) - Date.parse(w.startedAt)) / 1000;
+    return seconds >= 1 && seconds <= 172800;
+  }, 'a workout lasts between 1 second and 48 hours');
+export type ImportedWorkoutInput = z.input<typeof importedWorkoutInput>;
+
+export const importWorkoutsInput = z.object({
+  source: sourceSchema,
+  workouts: z.array(importedWorkoutInput).max(500),
+});
+
+/**
+ * Adds the workouts Tracta doesn't have yet (not the ones the user deleted, nor the same workout
+ * recorded twice) and returns how many. They count like any other workout.
+ */
+export async function importWorkouts(
+  client: TractaClient,
+  input: z.input<typeof importWorkoutsInput>,
+): Promise<number> {
+  await requireUser(client);
+  const i = parse(importWorkoutsInput, input);
+  if (i.workouts.length === 0) return 0;
+  const workouts = i.workouts.map((w) => ({
+    id: w.id,
+    kind: w.kind,
+    started_at: w.startedAt,
+    ended_at: w.endedAt,
+    distance_m: w.distanceM ?? null,
+    avg_heart_rate: w.avgHeartRate ?? null,
+  }));
+  const added = unwrap(
+    await client.rpc('import_health_workouts', {
+      p_source: i.source,
+      p_workouts: workouts as Json,
+    }),
+  );
+  return added ?? 0;
 }
 
 /** Stored days between two calendar days (inclusive), oldest first. */

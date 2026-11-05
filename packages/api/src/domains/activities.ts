@@ -48,6 +48,8 @@ export type Activity = {
   /** Recorded GPS track ([lat, lng], ~1 m precision); null when nothing was recorded. */
   route: LatLng[] | null;
   notes: string;
+  /** The Health source it was imported from; null when recorded in Tracta. */
+  externalSource: string | null;
 };
 
 const splitSchema = z.object({
@@ -116,6 +118,7 @@ export function toActivity(r: ActivityRow): Activity {
     avgHeartRate: r.avg_heart_rate,
     route: asRoute(r.route),
     notes: r.notes,
+    externalSource: r.external_source,
   };
 }
 

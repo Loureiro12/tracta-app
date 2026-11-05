@@ -146,6 +146,8 @@ export type SessionExercise = {
 export type SessionDetail = SessionListItem & {
   pausedSeconds: number;
   notes: string;
+  /** The Health source it was imported from (no sets); null when recorded in Tracta. */
+  externalSource: string | null;
   exercises: SessionExercise[];
 };
 
@@ -204,6 +206,7 @@ export async function getSession(client: TractaClient, id: string): Promise<Sess
     endedAt: s.ended_at,
     pausedSeconds: s.paused_seconds,
     notes: s.notes,
+    externalSource: s.external_source,
     durationSeconds: durationOf(s.started_at, s.ended_at, s.paused_seconds),
     sets: working.length,
     reps: working.reduce((a, x) => a + x.reps, 0),

@@ -79,6 +79,42 @@ export async function logBody(client: TractaClient, input: LogBodyInput): Promis
   return toMeasurement(saved);
 }
 
+export const importBodyInput = z.array(
+  z
+    .object({
+      measuredOn: day,
+      weightKg: z.number().min(20).max(400).nullable().optional(),
+      waistCm: z.number().min(30).max(250).nullable().optional(),
+    })
+    .refine((b) => b.weightKg != null || b.waistCm != null, { message: 'nothing to import' }),
+);
+
+export type ImportBodyInput = z.input<typeof importBodyInput>;
+
+/**
+ * Readings from the Health source, at most one per day (syncing again replaces it). A manual entry
+ * of the same day is a separate row and still wins on the screens.
+ */
+export async function importBody(
+  client: TractaClient,
+  readings: z.input<typeof importBodyInput>,
+): Promise<void> {
+  const userId = await requireUser(client);
+  const rows = parse(importBodyInput, readings).map((b) => ({
+    owner_id: userId,
+    measured_on: b.measuredOn,
+    source: 'health' as const,
+    weight_kg: b.weightKg == null ? null : Math.round(b.weightKg * 100) / 100,
+    waist_cm: b.waistCm == null ? null : Math.round(b.waistCm * 10) / 10,
+  }));
+  if (rows.length === 0) return;
+  unwrap(
+    await client.from('body_measurements').upsert(rows, {
+      onConflict: 'owner_id,measured_on,source',
+    }),
+  );
+}
+
 export const bodyRangeInput = z
   .object({ from: day, to: day })
   .refine((r) => r.from <= r.to, { message: '`from` must not be after `to`' });

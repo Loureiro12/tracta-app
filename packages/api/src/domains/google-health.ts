@@ -5,13 +5,17 @@
  */
 import { ApiError } from '../errors';
 
+import type { ActivityKind } from './activities';
+
 const BASE = 'https://health.googleapis.com/v4/users/me';
 const SCOPE = 'https://www.googleapis.com/auth/googlehealth';
 
-/** Read-only, and only what the Health screens show. */
+/** What the Health screens show, plus writing back the workouts and weight logged in Tracta. */
 export const SCOPES = [
   `${SCOPE}.activity_and_fitness.readonly`,
+  `${SCOPE}.activity_and_fitness.writeonly`,
   `${SCOPE}.health_metrics_and_measurements.readonly`,
+  `${SCOPE}.health_metrics_and_measurements.writeonly`,
   `${SCOPE}.sleep.readonly`,
 ] as const;
 
@@ -22,6 +26,8 @@ const HOUR_WINDOW = '3600s';
 export type GoogleHealthContext = {
   /** A valid access token; `forceRefresh` after the API rejected the previous one. */
   getToken: (forceRefresh?: boolean) => Promise<string>;
+  /** This app's OAuth client: what it wrote to Google must not come back as an import. */
+  clientId?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -49,6 +55,17 @@ export type HeartRateData = {
   samples: { at: Date; bpm: number }[];
   resting: { day: string; bpm: number }[];
 };
+export type WorkoutKind = ActivityKind | 'strength';
+export type Workout = {
+  id: string;
+  kind: WorkoutKind;
+  start: Date;
+  end: Date;
+  distanceM: number | null;
+  avgHeartRate: number | null;
+};
+export type WeightReading = { at: Date; weightKg: number };
+export type WorkoutToWrite = { kind: WorkoutKind; start: Date; end: Date; distanceM?: number };
 
 type CivilDate = { year: number; month: number; day: number };
 type DailyPoint = {
@@ -74,6 +91,18 @@ type SleepPoint = {
 };
 type RestingPoint = { dailyRestingHeartRate?: { date: CivilDate; beatsPerMinute: string } };
 type ListPage<T> = { dataPoints?: T[]; nextPageToken?: string };
+type PointSource = { dataSource?: { application?: { googleWebClientId?: string } } };
+type ExercisePoint = PointSource & {
+  name?: string;
+  exercise?: {
+    interval: { startTime: string; endTime: string };
+    exerciseType?: string;
+    metricsSummary?: { distanceMillimeters?: number; averageHeartRateBeatsPerMinute?: string };
+  };
+};
+type WeightPoint = PointSource & {
+  weight?: { sampleTime: { physicalTime: string }; weightGrams: number };
+};
 
 const STAGES: Record<string, SleepStage> = {
   AWAKE: 'awake',
@@ -82,6 +111,94 @@ const STAGES: Record<string, SleepStage> = {
   ASLEEP: 'light',
   DEEP: 'deep',
   REM: 'rem',
+};
+
+/** Google's exercise types that map to something else than a generic workout ('functional'). */
+const EXERCISE_KINDS: Record<string, WorkoutKind> = {
+  ...Object.fromEntries(
+    ['RUNNING', 'TRAIL_RUN', 'TREADMILL', 'INCLINE_RUN', 'TRACK_AND_FIELD'].map((t) => [t, 'run']),
+  ),
+  ...Object.fromEntries(
+    [
+      'WALKING',
+      'HIKING',
+      'INCLINE_WALK',
+      'NORDIC_WALKING',
+      'POWER_WALKING',
+      'RUCKING',
+      'STROLLER_WALK',
+      'TREADMILL_WALK',
+      'WALK_WITH_WEIGHTS',
+    ].map((t) => [t, 'walk']),
+  ),
+  ...Object.fromEntries(
+    [
+      'BIKING',
+      'OUTDOOR_BIKE',
+      'MOUNTAIN_BIKE',
+      'STATIONARY_BIKE',
+      'SPINNING',
+      'ASSAULT_BIKE',
+      'ELECTRIC_BIKE',
+      'HAND_CYCLING',
+    ].map((t) => [t, 'bike']),
+  ),
+  ...Object.fromEntries(
+    ['SWIMMING', 'SWIMMING_OPEN_WATER', 'SWIMMING_POOL'].map((t) => [t, 'swim']),
+  ),
+  ...Object.fromEntries(
+    ['YOGA', 'YOGA_BIKRAM', 'YOGA_HATHA', 'YOGA_POWER', 'YOGA_VINYASA'].map((t) => [t, 'yoga']),
+  ),
+  ...Object.fromEntries(
+    [
+      'STRENGTH_TRAINING',
+      'WEIGHTLIFTING',
+      'WEIGHTS',
+      'FREE_WEIGHTS',
+      'WEIGHT_MACHINES',
+      'POWERLIFTING',
+      'RESISTANCE_BANDS',
+      'BODY_WEIGHT',
+      'CALISTHENICS',
+    ].map((t) => [t, 'strength']),
+  ),
+  SOCCER: 'soccer',
+  BASKETBALL: 'basket',
+  TENNIS: 'tennis',
+  STRETCHING: 'stretch',
+};
+/** Logged in Google Health, but not training. */
+const NOT_A_WORKOUT: ReadonlySet<string> = new Set([
+  'BILLIARDS',
+  'CARPENTRY',
+  'CLEANING',
+  'ELECTRIC_SCOOTER',
+  'FISHING',
+  'GARDENING',
+  'HOEING',
+  'HOUSEHOLD_CHORES',
+  'MEDITATE',
+  'MOTORCYCLE',
+  'MOWING_LAWN',
+  'MUSICAL_PERFORMANCE',
+  'PAINTING',
+  'SHOVELING',
+  'SNOWMOBILING',
+  'WEEDING',
+]);
+/** Written back: one type per kind, the one Google's app shows for it. */
+const EXERCISE_TYPES: Record<WorkoutKind, string> = {
+  run: 'RUNNING',
+  walk: 'WALKING',
+  bike: 'BIKING',
+  swim: 'SWIMMING',
+  soccer: 'SOCCER',
+  basket: 'BASKETBALL',
+  tennis: 'TENNIS',
+  functional: 'FUNCTIONAL_STRENGTH_TRAINING',
+  stretch: 'STRETCHING',
+  yoga: 'YOGA',
+  strength: 'STRENGTH_TRAINING',
 };
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -335,4 +452,85 @@ export async function readHeartRate(
       r ? [{ day: civilKey(r.date), bpm: Number(r.beatsPerMinute) }] : [],
     ),
   };
+}
+
+const isOwnWrite = (ctx: GoogleHealthContext, point: PointSource) =>
+  Boolean(ctx.clientId) && point.dataSource?.application?.googleWebClientId === ctx.clientId;
+
+/** Workouts that started in the range, without the ones this app wrote and the non-training ones. */
+export async function readWorkouts(ctx: GoogleHealthContext, range: Range): Promise<Workout[]> {
+  const filter = `exercise.interval.civil_start_time >= "${localKey(range.from)}" AND exercise.interval.civil_start_time < "${localKey(range.to)}"`;
+  const points = await ifGranted(list<ExercisePoint>(ctx, 'exercise', filter));
+  return points.flatMap((point) => {
+    const e = point.exercise;
+    const type = e?.exerciseType ?? 'OTHER';
+    if (!e || !point.name || isOwnWrite(ctx, point) || NOT_A_WORKOUT.has(type)) return [];
+    const millimeters = e.metricsSummary?.distanceMillimeters;
+    const heart = e.metricsSummary?.averageHeartRateBeatsPerMinute;
+    return [
+      {
+        id: point.name.split('/').pop() ?? point.name,
+        kind: EXERCISE_KINDS[type] ?? 'functional',
+        start: new Date(e.interval.startTime),
+        end: new Date(e.interval.endTime),
+        distanceM: millimeters ? millimeters / 1000 : null,
+        avgHeartRate: heart ? Number(heart) : null,
+      },
+    ];
+  });
+}
+
+/** Weigh-ins in the range, without the ones this app wrote. */
+export async function readWeight(ctx: GoogleHealthContext, range: Range): Promise<WeightReading[]> {
+  const filter = `weight.sample_time.physical_time >= "${range.from.toISOString()}" AND weight.sample_time.physical_time < "${range.to.toISOString()}"`;
+  const points = await ifGranted(list<WeightPoint>(ctx, 'weight', filter));
+  return points.flatMap((point) =>
+    point.weight && !isOwnWrite(ctx, point)
+      ? [
+          {
+            at: new Date(point.weight.sampleTime.physicalTime),
+            weightKg: point.weight.weightGrams / 1000,
+          },
+        ]
+      : [],
+  );
+}
+
+/** Google wants the offset as a duration in seconds ("-10800s"). */
+const utcOffset = (d: Date) => `${-d.getTimezoneOffset() * 60}s`;
+
+/** False when Google accepted the request but reports the write as failed. */
+function operationSucceeded(operation: unknown): boolean {
+  return !(operation as { error?: unknown } | null)?.error;
+}
+
+export async function writeWorkout(ctx: GoogleHealthContext, w: WorkoutToWrite): Promise<boolean> {
+  const operation = await send(ctx, '/dataTypes/exercise/dataPoints', {
+    exercise: {
+      interval: {
+        startTime: w.start.toISOString(),
+        startUtcOffset: utcOffset(w.start),
+        endTime: w.end.toISOString(),
+        endUtcOffset: utcOffset(w.end),
+      },
+      exerciseType: EXERCISE_TYPES[w.kind],
+      displayName: 'Tracta',
+      metricsSummary: w.distanceM ? { distanceMillimeters: w.distanceM * 1000 } : {},
+    },
+  });
+  return operationSucceeded(operation);
+}
+
+export async function writeWeight(
+  ctx: GoogleHealthContext,
+  at: Date,
+  weightKg: number,
+): Promise<boolean> {
+  const operation = await send(ctx, '/dataTypes/weight/dataPoints', {
+    weight: {
+      sampleTime: { physicalTime: at.toISOString(), utcOffset: utcOffset(at) },
+      weightGrams: Math.round(weightKg * 1000),
+    },
+  });
+  return operationSucceeded(operation);
 }

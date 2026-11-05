@@ -244,4 +244,141 @@ describe('googleHealth', () => {
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ code: 'network' });
   });
+
+  it('reads workouts from other apps and maps their types', async () => {
+    const { calls, fetch } = stub(() => ({
+      json: {
+        dataPoints: [
+          {
+            name: 'users/1/dataTypes/exercise/dataPoints/abc',
+            exercise: {
+              interval: { startTime: '2026-10-26T09:00:00Z', endTime: '2026-10-26T10:00:00Z' },
+              exerciseType: 'TRAIL_RUN',
+              metricsSummary: {
+                distanceMillimeters: 8200000,
+                averageHeartRateBeatsPerMinute: '151',
+              },
+            },
+          },
+          {
+            name: 'users/1/dataTypes/exercise/dataPoints/gym',
+            exercise: {
+              interval: { startTime: '2026-10-26T18:00:00Z', endTime: '2026-10-26T19:00:00Z' },
+              exerciseType: 'WEIGHTLIFTING',
+            },
+          },
+          {
+            name: 'users/1/dataTypes/exercise/dataPoints/box',
+            exercise: {
+              interval: { startTime: '2026-10-26T20:00:00Z', endTime: '2026-10-26T21:00:00Z' },
+              exerciseType: 'BOXING',
+            },
+          },
+          {
+            name: 'users/1/dataTypes/exercise/dataPoints/chores',
+            exercise: {
+              interval: { startTime: '2026-10-26T12:00:00Z', endTime: '2026-10-26T13:00:00Z' },
+              exerciseType: 'HOUSEHOLD_CHORES',
+            },
+          },
+          {
+            name: 'users/1/dataTypes/exercise/dataPoints/own',
+            dataSource: { application: { googleWebClientId: 'tracta-client' } },
+            exercise: {
+              interval: { startTime: '2026-10-26T14:00:00Z', endTime: '2026-10-26T15:00:00Z' },
+              exerciseType: 'RUNNING',
+            },
+          },
+        ],
+      },
+    }));
+    const workouts = await googleHealth.readWorkouts(
+      { ...ctx(fetch), clientId: 'tracta-client' },
+      range,
+    );
+    expect(decodeURIComponent(calls[0]!.url)).toContain(
+      '/dataTypes/exercise/dataPoints?filter=exercise.interval.civil_start_time >= "2026-10-26" AND exercise.interval.civil_start_time < "2026-10-27"',
+    );
+    expect(workouts.map((w) => [w.id, w.kind])).toEqual([
+      ['abc', 'run'],
+      ['gym', 'strength'],
+      ['box', 'functional'],
+    ]);
+    expect(workouts[0]).toMatchObject({ distanceM: 8200, avgHeartRate: 151 });
+    expect(workouts[1]).toMatchObject({ distanceM: null, avgHeartRate: null });
+  });
+
+  it('reads weigh-ins, leaving out the ones this app wrote', async () => {
+    const { fetch } = stub(() => ({
+      json: {
+        dataPoints: [
+          {
+            weight: {
+              sampleTime: { physicalTime: '2026-10-26T10:00:00Z' },
+              weightGrams: 78100,
+            },
+          },
+          {
+            dataSource: { application: { googleWebClientId: 'tracta-client' } },
+            weight: {
+              sampleTime: { physicalTime: '2026-10-26T11:00:00Z' },
+              weightGrams: 79000,
+            },
+          },
+        ],
+      },
+    }));
+    const readings = await googleHealth.readWeight(
+      { ...ctx(fetch), clientId: 'tracta-client' },
+      range,
+    );
+    expect(readings).toEqual([{ at: new Date('2026-10-26T10:00:00Z'), weightKg: 78.1 }]);
+  });
+
+  it('treats workouts and weight it may not read as no data', async () => {
+    const { fetch } = stub(() => ({ status: 403 }));
+    await expect(googleHealth.readWorkouts(ctx(fetch), range)).resolves.toEqual([]);
+    await expect(googleHealth.readWeight(ctx(fetch), range)).resolves.toEqual([]);
+  });
+
+  it('writes a workout following the published schema', async () => {
+    const { calls, fetch } = stub(() => ({ json: { name: 'operations/1', done: true } }));
+    const start = new Date('2026-10-26T09:00:00Z');
+    const end = new Date('2026-10-26T10:00:00Z');
+    await expect(
+      googleHealth.writeWorkout(ctx(fetch), { kind: 'run', start, end, distanceM: 8200 }),
+    ).resolves.toBe(true);
+    expect(calls[0]!.url).toMatch(/\/users\/me\/dataTypes\/exercise\/dataPoints$/);
+    const offset = `${-start.getTimezoneOffset() * 60}s`;
+    expect(calls[0]!.body).toEqual({
+      exercise: {
+        interval: {
+          startTime: start.toISOString(),
+          startUtcOffset: offset,
+          endTime: end.toISOString(),
+          endUtcOffset: offset,
+        },
+        exerciseType: 'RUNNING',
+        displayName: 'Tracta',
+        metricsSummary: { distanceMillimeters: 8200000 },
+      },
+    });
+  });
+
+  it('writes a weigh-in in grams and reports a failed operation', async () => {
+    const at = new Date('2026-10-26T09:00:00Z');
+    const ok = stub(() => ({ json: { done: true } }));
+    await expect(googleHealth.writeWeight(ctx(ok.fetch), at, 78.1)).resolves.toBe(true);
+    expect(ok.calls[0]!.body).toEqual({
+      weight: {
+        sampleTime: {
+          physicalTime: at.toISOString(),
+          utcOffset: `${-at.getTimezoneOffset() * 60}s`,
+        },
+        weightGrams: 78100,
+      },
+    });
+    const failed = stub(() => ({ json: { done: true, error: { code: 3 } } }));
+    await expect(googleHealth.writeWeight(ctx(failed.fetch), at, 78.1)).resolves.toBe(false);
+  });
 });
