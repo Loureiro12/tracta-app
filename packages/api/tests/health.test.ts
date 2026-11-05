@@ -201,4 +201,21 @@ describe('health', () => {
       await health.listDays(owner.client, { from: '2026-10-01', to: '2026-10-31' }),
     ).toHaveLength(1);
   });
+
+  it('accepts Google Health as a source', async () => {
+    const user = await createTestUser();
+    const connection = await health.connect(user.client, {
+      source: 'google_health',
+      readTypes: ['steps'],
+      writeTypes: [],
+    });
+    expect(connection.source).toBe('google_health');
+
+    await health.syncDays(user.client, {
+      source: 'google_health',
+      days: [{ day: '2026-10-26', steps: 5000 }],
+    });
+    const [day] = await health.listDays(user.client, { from: '2026-10-26', to: '2026-10-26' });
+    expect(day?.source).toBe('google_health');
+  });
 });

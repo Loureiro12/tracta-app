@@ -14,7 +14,7 @@ import type { Database, Json } from '../database.types';
 type DayRow = Database['public']['Tables']['health_days']['Row'];
 type ConnectionRow = Database['public']['Tables']['health_connections']['Row'];
 
-export const HEALTH_SOURCES = ['apple_health', 'health_connect'] as const;
+export const HEALTH_SOURCES = ['apple_health', 'health_connect', 'google_health'] as const;
 export type HealthSource = (typeof HEALTH_SOURCES)[number];
 
 export const SLEEP_STAGES = ['awake', 'rem', 'light', 'deep'] as const;
@@ -106,7 +106,7 @@ export const daysRangeInput = z
   .refine((r) => r.from <= r.to, { message: '`from` must not be after `to`' });
 
 function toSource(v: string): HealthSource {
-  return v === 'health_connect' ? 'health_connect' : 'apple_health';
+  return v === 'health_connect' || v === 'google_health' ? v : 'apple_health';
 }
 
 function toConnection(r: ConnectionRow): HealthConnection {

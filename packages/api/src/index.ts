@@ -25,6 +25,7 @@ export type {
 
 // Domain modules (types are reachable as namespace members, e.g. `routines.Routine`).
 export * as exercises from './domains/exercises';
+export * as googleHealth from './domains/google-health';
 export * as routines from './domains/routines';
 export * as programs from './domains/programs';
 export * as sessions from './domains/sessions';
