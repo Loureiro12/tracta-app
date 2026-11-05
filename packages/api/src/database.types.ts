@@ -10,6 +10,8 @@ export type Database = {
           created_at: string;
           distance_m: number | null;
           duration_seconds: number;
+          external_id: string | null;
+          external_source: string | null;
           gps: boolean;
           id: string;
           intervals: Json | null;
@@ -27,6 +29,8 @@ export type Database = {
           created_at?: string;
           distance_m?: number | null;
           duration_seconds: number;
+          external_id?: string | null;
+          external_source?: string | null;
           gps?: boolean;
           id?: string;
           intervals?: Json | null;
@@ -43,6 +47,8 @@ export type Database = {
           created_at?: string;
           distance_m?: number | null;
           duration_seconds?: number;
+          external_id?: string | null;
+          external_source?: string | null;
           gps?: boolean;
           id?: string;
           intervals?: Json | null;
@@ -203,6 +209,28 @@ export type Database = {
           user_id?: string;
           what?: string | null;
           workouts?: number;
+        };
+        Relationships: [];
+      };
+      dismissed_imports: {
+        Row: {
+          dismissed_at: string;
+          external_id: string;
+          external_source: string;
+          owner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          dismissed_at?: string;
+          external_id: string;
+          external_source: string;
+          owner_id: string;
+        };
+        Update: {
+          dismissed_at?: string;
+          external_id?: string;
+          external_source?: string;
+          owner_id?: string;
         };
         Relationships: [];
       };
@@ -928,6 +956,8 @@ export type Database = {
           client_id: string | null;
           created_at: string;
           ended_at: string;
+          external_id: string | null;
+          external_source: string | null;
           focus: string;
           id: string;
           notes: string;
@@ -942,6 +972,8 @@ export type Database = {
           client_id?: string | null;
           created_at?: string;
           ended_at: string;
+          external_id?: string | null;
+          external_source?: string | null;
           focus?: string;
           id?: string;
           notes?: string;
@@ -955,6 +987,8 @@ export type Database = {
           client_id?: string | null;
           created_at?: string;
           ended_at?: string;
+          external_id?: string | null;
+          external_source?: string | null;
           focus?: string;
           id?: string;
           notes?: string;
@@ -1126,6 +1160,7 @@ export type Database = {
           what: string;
         }[];
       };
+      import_health_workouts: { Args: { p_source: string; p_workouts: Json }; Returns: number };
       is_challenge_member: { Args: { p_challenge: string; p_user: string }; Returns: boolean };
       last_sets: {
         Args: { exercise_ids: string[] };

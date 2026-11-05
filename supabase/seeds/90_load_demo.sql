@@ -48,6 +48,8 @@ begin
     where email_confirmed_at is null and raw_user_meta_data ->> 'invited_by' = any (demo_ids::text[]);
   delete from public.workout_sessions where owner_id = any (demo_ids);
   delete from public.activities where owner_id = any (demo_ids);
+  -- deleting imported workouts above remembered them: a reset must be able to import them again
+  delete from public.dismissed_imports where owner_id = any (demo_ids);
   delete from public.body_measurements where owner_id = any (demo_ids);
   delete from public.routines where owner_id = any (demo_ids);
   delete from public.exercise_prefs where user_id = any (demo_ids);

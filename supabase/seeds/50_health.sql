@@ -13,7 +13,7 @@ declare
   me uuid := seed.demo_user();
 begin
   insert into public.health_connections (user_id, source, read_types, write_types, connected_at, last_synced_at)
-  values (me, 'apple_health', '{steps,distance,active,resting,heart,sleep,workouts}', '{workouts}',
+  values (me, 'apple_health', '{steps,distance,active,resting,heart,sleep,workouts,body}', '{workouts,body}',
           '2026-09-01 09:00-03', '2026-10-26 16:12-03');
 
   -- day, steps, distance m, active kcal, rest kcal, active min, intense min,
