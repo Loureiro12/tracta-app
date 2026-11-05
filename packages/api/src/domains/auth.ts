@@ -1,9 +1,10 @@
+import { isAuthRetryableFetchError } from '@supabase/supabase-js';
 import { z } from 'zod';
 
 import { ApiError, toApiError } from '../errors';
 
 import type { TractaClient } from '../client';
-import type { Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 export const signUpInput = z.object({
   name: z.string().trim().min(1).max(80),
@@ -97,13 +98,27 @@ export async function getCurrentUser(client: TractaClient): Promise<AuthUser | n
   return toAuthUser(data.session);
 }
 
+/**
+ * The persisted session on launch. An expired token that can't be refreshed for lack of network
+ * also yields no session, but the user is still signed in: `unreachable` tells the two apart.
+ */
+export async function restoreUser(
+  client: TractaClient,
+): Promise<{ user: AuthUser | null; unreachable: boolean }> {
+  const { data, error } = await client.auth.getSession();
+  return {
+    user: toAuthUser(data.session),
+    unreachable: Boolean(error && isAuthRetryableFetchError(error)),
+  };
+}
+
 /** Subscribes to sign-in/sign-out/token refresh. Returns the unsubscribe function. */
 export function onAuthChange(
   client: TractaClient,
-  listener: (user: AuthUser | null) => void,
+  listener: (user: AuthUser | null, event: AuthChangeEvent) => void,
 ): () => void {
-  const { data } = client.auth.onAuthStateChange((_event, session) =>
-    listener(toAuthUser(session)),
+  const { data } = client.auth.onAuthStateChange((event, session) =>
+    listener(toAuthUser(session), event),
   );
   return () => data.subscription.unsubscribe();
 }

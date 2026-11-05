@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { describe, expect, it } from 'vitest';
 
 import { activities } from '../src';
@@ -153,5 +155,20 @@ describe('activities', () => {
       code: 'not_found',
     });
     expect(await activities.getActivity(owner.client, run.id)).not.toBeNull();
+  });
+
+  it('saves a clientId once, however many times it is sent', async () => {
+    const user = await createTestUser();
+    const input = { ...RUN, clientId: randomUUID() };
+
+    const first = await activities.saveActivity(user.client, input);
+    const replay = await activities.saveActivity(user.client, input);
+
+    expect(replay.id).toBe(first.id);
+    const { count } = await user.client
+      .from('activities')
+      .select('*', { count: 'exact', head: true })
+      .eq('client_id', input.clientId);
+    expect(count).toBe(1);
   });
 });

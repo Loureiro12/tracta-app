@@ -13,6 +13,8 @@ export type TractaClientOptions = {
   storage?: SupportedStorage;
   /** Keep the session across restarts and refresh tokens automatically. Default: true with storage. */
   persistSession?: boolean;
+  /** Replaces the global fetch for every request (lets tests and E2E builds simulate no network). */
+  fetch?: typeof fetch;
 };
 
 export function createTractaClient({
@@ -20,9 +22,11 @@ export function createTractaClient({
   key,
   storage,
   persistSession,
+  fetch: customFetch,
 }: TractaClientOptions): TractaClient {
   const persist = persistSession ?? Boolean(storage);
   return createClient<Database>(url, key, {
+    ...(customFetch ? { global: { fetch: customFetch } } : {}),
     auth: {
       ...(storage ? { storage } : {}),
       persistSession: persist,

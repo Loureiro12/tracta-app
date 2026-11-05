@@ -6,6 +6,7 @@ export type Database = {
       activities: {
         Row: {
           avg_heart_rate: number | null;
+          client_id: string | null;
           created_at: string;
           distance_m: number | null;
           duration_seconds: number;
@@ -22,6 +23,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           avg_heart_rate?: number | null;
+          client_id?: string | null;
           created_at?: string;
           distance_m?: number | null;
           duration_seconds: number;
@@ -37,6 +39,7 @@ export type Database = {
         };
         Update: {
           avg_heart_rate?: number | null;
+          client_id?: string | null;
           created_at?: string;
           distance_m?: number | null;
           duration_seconds?: number;
@@ -922,6 +925,7 @@ export type Database = {
       };
       workout_sessions: {
         Row: {
+          client_id: string | null;
           created_at: string;
           ended_at: string;
           focus: string;
@@ -935,6 +939,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          client_id?: string | null;
           created_at?: string;
           ended_at: string;
           focus?: string;
@@ -947,6 +952,7 @@ export type Database = {
           title: string;
         };
         Update: {
+          client_id?: string | null;
           created_at?: string;
           ended_at?: string;
           focus?: string;

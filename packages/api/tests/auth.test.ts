@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, inject, it } from 'vitest';
 
 import { account, auth } from '../src';
 import { adminClient, anonClient, createTestUser, PASSWORD } from './helpers';
+import { createTractaClient } from '../src/client';
 
 describe('auth', () => {
   it('signs up, bootstraps the account and keeps the session', async () => {
@@ -105,4 +106,34 @@ describe('auth', () => {
       code: 'validation',
     });
   });
+
+  it('keeps an expired session apart from no session when the network is down', async () => {
+    const { email } = await createTestUser();
+    const stored = new Map<string, string>();
+    const storage = {
+      getItem: (k: string) => stored.get(k) ?? null,
+      setItem: (k: string, v: string) => void stored.set(k, v),
+      removeItem: (k: string) => void stored.delete(k),
+    };
+    const options = { url: inject('supabaseUrl'), key: inject('anonKey'), storage };
+    const online = createTractaClient(options);
+    await auth.signIn(online, { email, password: PASSWORD });
+    await online.auth.stopAutoRefresh();
+
+    // The token expired while the app was closed, and now there is no network to refresh it.
+    const [key, raw] = [...stored.entries()].find(([k]) => k.endsWith('-auth-token'))!;
+    stored.set(key, JSON.stringify({ ...JSON.parse(raw), expires_at: 1 }));
+    const offline = createTractaClient({
+      ...options,
+      fetch: () => Promise.reject(new TypeError('Network request failed')),
+    });
+    await offline.auth.stopAutoRefresh();
+
+    expect(await auth.restoreUser(offline)).toEqual({ user: null, unreachable: true });
+    expect(stored.has(key)).toBe(true);
+
+    const signedOut = await auth.restoreUser(anonClient());
+    expect(signedOut).toEqual({ user: null, unreachable: false });
+    // getSession keeps retrying the refresh for ~30 s before it reports the failure.
+  }, 60_000);
 });

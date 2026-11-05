@@ -67,6 +67,8 @@ const routeSchema = z.array(latLngSchema).min(2).max(20000);
 
 export const saveActivityInput = z
   .object({
+    /** Generated on the device: saving the same id again returns the activity already saved. */
+    clientId: idSchema.optional(),
     kind: z.enum(ACTIVITY_KINDS),
     startedAt: z.iso.datetime({ offset: true }),
     durationSeconds: z.number().int().min(1).max(172800),
@@ -123,25 +125,39 @@ export async function saveActivity(
 ): Promise<Activity> {
   await requireUser(client);
   const a = parse(saveActivityInput, input);
-  const row = unwrapOne(
+  const values = {
+    kind: a.kind,
+    started_at: a.startedAt,
+    duration_seconds: a.durationSeconds,
+    distance_m: a.distanceM ?? null,
+    gps: a.gps ?? false,
+    splits: a.splits ?? [],
+    intervals: a.intervals ?? null,
+    avg_heart_rate: a.avgHeartRate ?? null,
+    route: a.route ? encodePolyline(a.route) : null,
+    notes: a.notes ?? '',
+  };
+  if (!a.clientId) {
+    return toActivity(
+      unwrapOne(await client.from('activities').insert(values).select('*').single(), 'activity'),
+    );
+  }
+  // A replay inserts nothing and returns no row, so the saved one is read back.
+  const inserted = unwrap(
     await client
       .from('activities')
-      .insert({
-        kind: a.kind,
-        started_at: a.startedAt,
-        duration_seconds: a.durationSeconds,
-        distance_m: a.distanceM ?? null,
-        gps: a.gps ?? false,
-        splits: a.splits ?? [],
-        intervals: a.intervals ?? null,
-        avg_heart_rate: a.avgHeartRate ?? null,
-        route: a.route ? encodePolyline(a.route) : null,
-        notes: a.notes ?? '',
-      })
-      .select('*')
-      .single(),
-    'activity',
+      .upsert(
+        { ...values, client_id: a.clientId },
+        { onConflict: 'owner_id,client_id', ignoreDuplicates: true },
+      )
+      .select('*'),
   );
+  const row =
+    inserted?.[0] ??
+    unwrapOne(
+      await client.from('activities').select('*').eq('client_id', a.clientId).maybeSingle(),
+      'activity',
+    );
   return toActivity(row);
 }
 

@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { describe, expect, it } from 'vitest';
 
 import { sessions } from '../src';
@@ -158,5 +160,24 @@ describe('sessions: notes and delete', () => {
     const [bench] = await libraryIds('supino-reto-com-barra');
     expect(await sessions.lastSets(stranger.client, [bench!])).toEqual({});
     expect(await sessions.getSession(owner.client, id)).not.toBeNull();
+  });
+
+  it('saves a clientId once, however many times it is sent', async () => {
+    const user = await createTestUser();
+    const [bench] = await libraryIds('supino-reto-com-barra');
+    const input = {
+      clientId: randomUUID(),
+      title: 'Treino A',
+      startedAt: '2026-10-19T18:41:00-03:00',
+      endedAt: '2026-10-19T19:42:00-03:00',
+      sets: [{ exerciseId: bench!, exercisePosition: 0, setIndex: 0, kg: 60, reps: 8 }],
+    };
+
+    const first = await sessions.saveSession(user.client, input);
+    const replay = await sessions.saveSession(user.client, input);
+
+    expect(replay).toBe(first);
+    const saved = await sessions.getSession(user.client, first);
+    expect(saved?.sets).toBe(1);
   });
 });

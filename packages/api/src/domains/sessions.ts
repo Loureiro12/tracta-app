@@ -53,6 +53,8 @@ export const sessionSetInput = z.object({
 
 export const saveSessionInput = z
   .object({
+    /** Generated on the device: saving the same id again returns the session already saved. */
+    clientId: idSchema.optional(),
     routineId: idSchema.nullable().optional(),
     title: z.string().trim().min(1).max(60),
     focus: z.string().max(60).optional(),
