@@ -61,12 +61,12 @@ export function addedLines(path, { mode, base }) {
 
 /** Commits in base..HEAD with their messages and touched files (oldest first). */
 export function commitsInRange(base) {
-  const sep = '\u0000';
-  const log = git(['log', '--reverse', `--format=%H${sep}%B${sep}`, `${base}..HEAD`], {
+  // git writes the NUL itself (%x00): Node refuses arguments that contain one.
+  const log = git(['log', '--reverse', '--format=%H%x00%B%x00', `${base}..HEAD`], {
     allowFail: true,
   });
   const commits = [];
-  const parts = log.split(sep);
+  const parts = log.split('\u0000');
   for (let i = 0; i + 1 < parts.length; i += 2) {
     const hash = parts[i].trim();
     const message = parts[i + 1] ?? '';
