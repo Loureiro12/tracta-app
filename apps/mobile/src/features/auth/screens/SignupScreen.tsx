@@ -8,12 +8,11 @@ import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
 
-import { useSignUp } from '../api/useAuthActions';
+import { useSignUp, useSocialProviders, useSocialSignIn } from '../api/useAuthActions';
 import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthFooterLink } from '../components/AuthFooterLink';
 import { AuthTitle } from '../components/AuthTitle';
-import { OrDivider } from '../components/OrDivider';
 import { PasswordField } from '../components/PasswordField';
 import { PasswordRules } from '../components/PasswordRules';
 import { SocialButtons } from '../components/SocialButtons';
@@ -34,6 +33,8 @@ export function SignupScreen() {
   const { t } = useTranslation('auth');
   const showToast = useFeedbackStore((s) => s.showToast);
   const signUp = useSignUp();
+  const socialSignIn = useSocialSignIn();
+  const providers = useSocialProviders();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -80,9 +81,24 @@ export function SignupScreen() {
     );
   };
 
-  // Apple/Google need OAuth credentials configured in Supabase; until then the buttons explain it.
-  const social = (provider: SocialProvider) =>
-    showToast(t('social.unavailableToast', { provider }));
+  const social = (provider: SocialProvider) => {
+    if (socialSignIn.isPending) return;
+    socialSignIn.mutate(provider, {
+      onSuccess: (user) => {
+        if (!user) return;
+        showToast(t('social.connectedToast', { provider }));
+        // A first sign-in created the account: it goes through onboarding like a sign-up.
+        if (user.isNew) router.replace({ pathname: '/connect', params: { mode: 'onboarding' } });
+        else router.replace('/');
+      },
+      onError: (error) =>
+        showToast(
+          error instanceof ApiError && error.code === 'network'
+            ? t('errors.network')
+            : t('social.failedToast', { provider }),
+        ),
+    });
+  };
 
   return (
     <Screen testID={authIds.signupScreen} header={<AuthBackButton testID={authIds.signupBack} />}>
@@ -147,10 +163,12 @@ export function SignupScreen() {
           loading={busy}
           onPress={submit}
         />
-        <OrDivider />
         <SocialButtons
           appleTestID={authIds.signupApple}
           googleTestID={authIds.signupGoogle}
+          termsTestID={authIds.signupSocialTerms}
+          providers={providers}
+          busy={socialSignIn.isPending ? (socialSignIn.variables ?? null) : null}
           onPress={social}
         />
         <AuthFooterLink

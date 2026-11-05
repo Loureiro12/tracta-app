@@ -84,7 +84,8 @@
   },
   "social": {
     "connectedToast": "Signed in with {{provider}}",
-    "unavailableToast": "{{provider}} sign-in is coming soon"
+    "terms": "By continuing with Apple or Google you accept the Terms of use and the Privacy policy.",
+    "failedToast": "Couldn't sign in with {{provider}}. Please try again."
   },
   "connect": {
     "eyebrow": "Last step",

@@ -17,6 +17,7 @@ import {
 import { ApiError } from '@/shared/api';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
+import { useSession } from '@/shared/session';
 
 import { useChangePassword, useUpdateEmail, useUpdateProfile } from '../api/useAccountActions';
 import { AccountGate } from '../components/AccountGate';
@@ -72,6 +73,7 @@ function ProfileEditForm({ account }: { account: Account }) {
   const updateProfile = useUpdateProfile();
   const updateEmail = useUpdateEmail();
   const changePasswordMutation = useChangePassword();
+  const hasPassword = useSession().user?.hasPassword ?? true;
 
   const [name, setName] = useState(account.profile.name);
   const [email, setEmail] = useState(account.profile.email);
@@ -168,56 +170,65 @@ function ProfileEditForm({ account }: { account: Account }) {
       />
 
       <Divider my="xs" />
-      <Text variant="secondarySemibold">{t('edit.passwordSection')}</Text>
-      <TextField
-        testID={ids.editCurrentPassword}
-        label={t('edit.currentPassword')}
-        placeholder={t('edit.currentPassword')}
-        value={current}
-        onChangeText={setCurrent}
-        {...(errors.current ? { errorText: errors.current } : {})}
-        secureTextEntry
-        // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
-        textContentType="oneTimeCode"
-      />
-      <TextField
-        testID={ids.editNewPassword}
-        label={t('edit.newPassword')}
-        placeholder={t('edit.newPassword')}
-        value={next}
-        onChangeText={setNext}
-        {...(errors.next ? { errorText: errors.next } : {})}
-        secureTextEntry
-        // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
-        textContentType="oneTimeCode"
-      />
-      <VStack testID={ids.editRules} gap="sm">
-        {rules.map((rule) => (
-          <HStack key={rule.key} gap="sm">
-            <CheckCircle
-              testID={`${ids.editRules}.${rule.key}.check`}
-              checked={rule.ok}
-              size={18}
-            />
-            <Text
-              testID={`${ids.editRules}.${rule.key}`}
-              variant="secondary"
-              color={rule.ok ? 'text' : 'text2'}
-            >
-              {t(`edit.${rule.key}`)}
-            </Text>
-          </HStack>
-        ))}
-      </VStack>
-      <Button
-        testID={ids.editChangePassword}
-        loading={changePasswordMutation.isPending}
-        label={t('edit.changePassword')}
-        variant="surface"
-        size="lg"
-        fullWidth
-        onPress={changePassword}
-      />
+      {hasPassword ? (
+        <>
+          <Text variant="secondarySemibold">{t('edit.passwordSection')}</Text>
+          <TextField
+            testID={ids.editCurrentPassword}
+            label={t('edit.currentPassword')}
+            placeholder={t('edit.currentPassword')}
+            value={current}
+            onChangeText={setCurrent}
+            {...(errors.current ? { errorText: errors.current } : {})}
+            secureTextEntry
+            // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
+            textContentType="oneTimeCode"
+          />
+          <TextField
+            testID={ids.editNewPassword}
+            label={t('edit.newPassword')}
+            placeholder={t('edit.newPassword')}
+            value={next}
+            onChangeText={setNext}
+            {...(errors.next ? { errorText: errors.next } : {})}
+            secureTextEntry
+            // Keeps iOS from covering the field with the "Automatic Strong Password" suggestion.
+            textContentType="oneTimeCode"
+          />
+          <VStack testID={ids.editRules} gap="sm">
+            {rules.map((rule) => (
+              <HStack key={rule.key} gap="sm">
+                <CheckCircle
+                  testID={`${ids.editRules}.${rule.key}.check`}
+                  checked={rule.ok}
+                  size={18}
+                />
+                <Text
+                  testID={`${ids.editRules}.${rule.key}`}
+                  variant="secondary"
+                  color={rule.ok ? 'text' : 'text2'}
+                >
+                  {t(`edit.${rule.key}`)}
+                </Text>
+              </HStack>
+            ))}
+          </VStack>
+          <Button
+            testID={ids.editChangePassword}
+            loading={changePasswordMutation.isPending}
+            label={t('edit.changePassword')}
+            variant="surface"
+            size="lg"
+            fullWidth
+            onPress={changePassword}
+          />
+        </>
+      ) : (
+        // Apple / Google accounts have no password to change.
+        <Text variant="secondary" color="text2">
+          {t('edit.socialOnly')}
+        </Text>
+      )}
     </>
   );
 }

@@ -16,6 +16,8 @@ const config: ExpoConfig = {
   userInterfaceStyle: 'automatic',
   ios: {
     bundleIdentifier: APP_ID,
+    // Sign in with Apple (the entitlement; the App ID needs the capability too).
+    usesAppleSignIn: true,
     supportsTablet: false,
     // Only HTTPS/TLS from the OS: answers App Store Connect's export-compliance question up front.
     config: { usesNonExemptEncryption: false },

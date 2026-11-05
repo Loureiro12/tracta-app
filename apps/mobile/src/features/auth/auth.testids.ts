@@ -20,6 +20,7 @@ export const authIds = {
   loginSubmit: testId('auth', 'login', 'submit'),
   loginApple: testId('auth', 'login', 'apple'),
   loginGoogle: testId('auth', 'login', 'google'),
+  loginSocialTerms: testId('auth', 'login', 'social-terms'),
   loginSignup: testId('auth', 'login', 'signup'),
 
   signupScreen: testId('auth', 'signup', 'screen'),
@@ -35,6 +36,7 @@ export const authIds = {
   signupSubmit: testId('auth', 'signup', 'submit'),
   signupApple: testId('auth', 'signup', 'apple'),
   signupGoogle: testId('auth', 'signup', 'google'),
+  signupSocialTerms: testId('auth', 'signup', 'social-terms'),
   signupLogin: testId('auth', 'signup', 'login'),
 
   forgotScreen: testId('auth', 'forgot', 'screen'),

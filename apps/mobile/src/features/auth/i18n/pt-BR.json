@@ -83,8 +83,9 @@
     "backToLogin": "Voltar para entrar"
   },
   "social": {
-    "connectedToast": "Conectado com {{provider}}",
-    "unavailableToast": "Entrar com {{provider}} chega em breve"
+    "connectedToast": "Você entrou com {{provider}}",
+    "terms": "Ao continuar com Apple ou Google, você aceita os Termos de uso e a Política de privacidade.",
+    "failedToast": "Não foi possível entrar com {{provider}}. Tente de novo."
   },
   "connect": {
     "eyebrow": "Último passo",

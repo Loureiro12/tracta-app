@@ -114,7 +114,8 @@
     "savedToast": "Perfil atualizado",
     "emailSentToast": "Enviamos um link de confirmação para {{email}}",
     "passwordToast": "Senha alterada",
-    "errorEmailTaken": "Este e-mail já está em uso"
+    "errorEmailTaken": "Este e-mail já está em uso",
+    "socialOnly": "Você entra com Apple ou Google, então não há senha para alterar."
   },
   "photos": {
     "title": "Fotos de progresso",

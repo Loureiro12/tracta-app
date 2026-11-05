@@ -3,7 +3,8 @@ name: auth-social
 tags:
   - auth
 ---
-# Apple/Google sign-in need OAuth credentials in Supabase; until then the buttons say so.
+# E2E builds can't drive Apple's or Google's sheets: the buttons sign in to the demo account, which
+# already exists, so they lead home. A first sign-in (new account) goes to onboarding instead.
 - runFlow: ../../subflows/launch-signed-out.yaml
 - tapOn:
     id: "auth.welcome.signup"
@@ -11,39 +12,40 @@ tags:
     id: "auth.signup.screen"
 - scrollUntilVisible:
     element:
-      id: "auth.signup.apple"
+      id: "auth.signup.social-terms"
     centerElement: true
+- assertVisible:
+    id: "auth.signup.social-terms"
+    text: "By continuing with Apple or Google you accept the Terms of use and the Privacy policy."
+- assertVisible:
+    id: "auth.signup.google"
 - tapOn:
     id: "auth.signup.apple"
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 15000
 - assertVisible:
     id: "app.toast"
-    text: "Apple sign-in is coming soon"
-- tapOn:
-    id: "auth.signup.google"
-- assertVisible:
-    id: "app.toast"
-    text: "Google sign-in is coming soon"
-- tapOn:
-    id: "auth.signup.back"
+    text: "Signed in with Apple"
+# Signed out again, Google from the login screen
+- runFlow: ../../subflows/launch-signed-out.yaml
 - tapOn:
     id: "auth.welcome.login"
 - scrollUntilVisible:
     element:
-      id: "auth.login.apple"
-    centerElement: true
-- tapOn:
-    id: "auth.login.apple"
-- assertVisible:
-    id: "app.toast"
-    text: "Apple sign-in is coming soon"
-- scrollUntilVisible:
-    element:
       id: "auth.login.google"
     centerElement: true
+- assertVisible:
+    id: "auth.login.social-terms"
+- assertVisible:
+    id: "auth.login.apple"
 - tapOn:
     id: "auth.login.google"
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 15000
 - assertVisible:
     id: "app.toast"
-    text: "Google sign-in is coming soon"
-- assertVisible:
-    id: "auth.login.screen"
+    text: "Signed in with Google"

@@ -114,7 +114,8 @@
     "savedToast": "Profile updated",
     "emailSentToast": "We sent a confirmation link to {{email}}",
     "passwordToast": "Password changed",
-    "errorEmailTaken": "This email is already in use"
+    "errorEmailTaken": "This email is already in use",
+    "socialOnly": "You sign in with Apple or Google, so there is no password to change."
   },
   "photos": {
     "title": "Progress photos",
