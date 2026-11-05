@@ -20,11 +20,21 @@ export type SignUpInput = z.infer<typeof signUpInput>;
 export const signInInput = z.object({ email: z.email(), password: z.string().min(1) });
 export type SignInInput = z.infer<typeof signInInput>;
 
-export type AuthUser = { id: string; email: string };
+export type AuthUser = {
+  id: string;
+  email: string;
+  /** False for accounts that only sign in with Apple or Google: there is no password to change. */
+  hasPassword: boolean;
+};
 
 function toAuthUser(session: Session | null): AuthUser | null {
   if (!session?.user) return null;
-  return { id: session.user.id, email: session.user.email ?? '' };
+  const providers = (session.user.app_metadata.providers as string[] | undefined) ?? [];
+  return {
+    id: session.user.id,
+    email: session.user.email ?? '',
+    hasPassword: providers.length === 0 || providers.includes('email'),
+  };
 }
 
 export async function signUp(client: TractaClient, input: SignUpInput): Promise<AuthUser> {
@@ -56,6 +66,67 @@ export async function signIn(client: TractaClient, input: SignInInput): Promise<
   const user = toAuthUser(data.session);
   if (!user) throw new ApiError('not_authenticated', 'No session returned');
   return user;
+}
+
+export const SOCIAL_PROVIDERS = ['apple', 'google'] as const;
+export type SocialProvider = (typeof SOCIAL_PROVIDERS)[number];
+
+export const idTokenInput = z.object({
+  provider: z.enum(SOCIAL_PROVIDERS),
+  /** The ID token the provider's sign-in returned on the device. */
+  token: z.string().min(1),
+  /** The raw nonce whose SHA-256 went to the provider (it ends up inside the token). */
+  nonce: z.string().min(1).optional(),
+  /** Apple only sends the name on the first authorization, outside the token. */
+  name: z.string().trim().max(80).optional(),
+});
+export type IdTokenInput = z.input<typeof idTokenInput>;
+
+/** A first sign-in creates the account a few moments before signing it in. */
+const NEW_ACCOUNT_WINDOW_MS = 60_000;
+
+/**
+ * Signs in with Apple or Google, creating the account on the first time (an existing account with
+ * the same verified e-mail is the one signed in). `isNew` sends a new account to onboarding.
+ */
+export async function signInWithIdToken(
+  client: TractaClient,
+  input: IdTokenInput,
+): Promise<AuthUser & { isNew: boolean }> {
+  const parsed = idTokenInput.safeParse(input);
+  if (!parsed.success) throw new ApiError('validation', parsed.error.message, parsed.error);
+  const { provider, token, nonce, name } = parsed.data;
+  const { data, error } = await client.auth.signInWithIdToken({
+    provider,
+    token,
+    ...(nonce ? { nonce } : {}),
+  });
+  if (error) throw toApiError(error);
+  const user = toAuthUser(data.session);
+  if (!user || !data.user) throw new ApiError('not_authenticated', 'No session returned');
+  const created = Date.parse(data.user.created_at);
+  const isNew = Date.now() - created < NEW_ACCOUNT_WINDOW_MS;
+  // Without a name in the token the profile got the e-mail prefix (a random relay address when the
+  // user hides the e-mail): the name Apple sent replaces it on a new account.
+  if (isNew && name) {
+    const named = await client.from('profiles').update({ name }).eq('id', user.id);
+    if (named.error) throw toApiError(named.error);
+    await client.auth.updateUser({ data: { name, full_name: name } });
+  }
+  return { ...user, isNew };
+}
+
+export const APPLE_FUNCTION = 'apple-account';
+
+/**
+ * Hands Apple's one-time authorization code to the server, which keeps the refresh token so that
+ * deleting the account can revoke the app's access at Apple.
+ */
+export async function linkAppleAccount(client: TractaClient, code: string): Promise<void> {
+  const { error } = await client.functions.invoke(APPLE_FUNCTION, {
+    body: { action: 'link', code },
+  });
+  if (error) throw new ApiError('unknown', 'Could not link the Apple account', error);
 }
 
 export async function signOut(client: TractaClient): Promise<void> {

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ApiError, toApiError, unwrap, unwrapOne } from '../errors';
+import { APPLE_FUNCTION } from './auth';
 import { removeAllPhotoObjects } from './photos';
 
 import type { TractaClient } from '../client';
@@ -244,6 +245,11 @@ export async function updateGoals(
  */
 export async function deleteAccount(client: TractaClient): Promise<void> {
   await removeAllPhotoObjects(client);
+  // Accounts that signed in with Apple: revoke the app's access there first (App Store 5.1.1(v)).
+  // It must not stop the deletion: the user asked to be gone.
+  await client.functions
+    .invoke(APPLE_FUNCTION, { body: { action: 'revoke' } })
+    .catch(() => undefined);
   unwrap(await client.rpc('delete_account'));
   await client.auth.signOut({ scope: 'local' });
 }

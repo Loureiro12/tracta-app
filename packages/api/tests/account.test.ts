@@ -301,4 +301,22 @@ describe('account', () => {
       expect(Array.isArray(t[key])).toBe(true);
     expect(JSON.stringify(data)).not.toContain(other.id);
   });
+
+  it('deletes an account that signed in with Apple, its Apple token included', async () => {
+    const user = await createTestUser('Apple deletion');
+    const admin = adminClient();
+    await admin
+      .from('apple_tokens')
+      .insert({ user_id: user.id, refresh_token: 'r' })
+      .throwOnError();
+    // Apple isn't set up locally: revoking is skipped and the deletion goes on.
+    await account.deleteAccount(user.client);
+    const { data } = await admin.auth.admin.getUserById(user.id);
+    expect(data.user).toBeNull();
+    const { count } = await admin
+      .from('apple_tokens')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+    expect(count).toBe(0);
+  });
 });

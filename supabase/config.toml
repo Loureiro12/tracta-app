@@ -325,8 +325,9 @@ max_frequency = "5s"
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
 [auth.external.apple]
-enabled = false
-client_id = ""
+# Native sign-in on iOS: the bundle id is the only client id, no secret needed.
+enabled = true
+client_id = "com.tracta.mobile"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
 secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"
 # Overrides the default auth callback URL derived from auth.external_url.
@@ -338,6 +339,14 @@ url = ""
 skip_nonce_check = false
 # If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
 email_optional = false
+
+# Google sign-in from the app: ID tokens of the iOS client are accepted (the web client comes first,
+# as in the hosted project). The secret is only needed for the web flow.
+[auth.external.google]
+enabled = true
+client_id = "231634046047-f96dtvk12riojv8dksdbntr0v6r0vn3f.apps.googleusercontent.com,231634046047-qanpnqjrlpg00ugon5ecg61elfm47013.apps.googleusercontent.com"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+skip_nonce_check = false
 
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.

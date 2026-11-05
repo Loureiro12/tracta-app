@@ -136,4 +136,31 @@ describe('auth', () => {
     expect(signedOut).toEqual({ user: null, unreachable: false });
     // getSession keeps retrying the refresh for ~30 s before it reports the failure.
   }, 60_000);
+
+  it('knows that an e-mail account has a password', async () => {
+    const { client } = await createTestUser('Password owner');
+    expect(await auth.getCurrentUser(client)).toMatchObject({ hasPassword: true });
+  });
+
+  it('refuses an Apple or Google token it cannot verify', async () => {
+    const client = anonClient();
+    await expect(
+      auth.signInWithIdToken(client, { provider: 'apple', token: 'not-a-token', nonce: 'n' }),
+    ).rejects.toBeInstanceOf(Error);
+    await expect(
+      auth.signInWithIdToken(client, { provider: 'facebook' as 'apple', token: 't' }),
+    ).rejects.toMatchObject({ code: 'validation' });
+    await expect(
+      auth.signInWithIdToken(client, { provider: 'google', token: '' }),
+    ).rejects.toMatchObject({ code: 'validation' });
+    expect(await auth.getCurrentUser(client)).toBeNull();
+  });
+
+  it('accepts the Apple authorization code even where Apple is not set up', async () => {
+    const { client } = await createTestUser('Apple link');
+    await expect(auth.linkAppleAccount(client, 'one-time-code')).resolves.toBeUndefined();
+    await expect(auth.linkAppleAccount(anonClient(), 'code')).rejects.toMatchObject({
+      code: 'unknown',
+    });
+  });
 });

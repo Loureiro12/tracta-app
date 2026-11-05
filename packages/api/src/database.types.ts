@@ -61,6 +61,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      apple_tokens: {
+        Row: {
+          refresh_token: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          refresh_token: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          refresh_token?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       body_measurements: {
         Row: {
           arm_cm: number | null;

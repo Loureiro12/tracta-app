@@ -5,7 +5,13 @@ export type { ApiErrorCode } from './errors';
 export type { Database, Json } from './database.types';
 
 export * as auth from './domains/auth';
-export type { AuthUser, SignInInput, SignUpInput } from './domains/auth';
+export type {
+  AuthUser,
+  IdTokenInput,
+  SignInInput,
+  SignUpInput,
+  SocialProvider,
+} from './domains/auth';
 export * as account from './domains/account';
 export type {
   Account,
