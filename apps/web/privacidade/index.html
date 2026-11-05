@@ -93,7 +93,11 @@
                 <th scope="row">Conta</th>
                 <td>
                   Nome, e-mail, nome de usuário (@) e senha. A senha é guardada pelo serviço de
-                  autenticação de forma cifrada, e nós não temos acesso a ela.
+                  autenticação de forma cifrada, e nós não temos acesso a ela. Se você entra com a
+                  Apple ou o Google, recebemos deles só o nome e o e-mail (com a Apple, o e-mail
+                  pode ser um endereço de encaminhamento que oculta o seu), e não há senha no
+                  Tracta. Para quem entra com a Apple, guardamos um token de acesso da Apple, usado
+                  apenas para revogar esse acesso quando você exclui a conta.
                 </td>
               </tr>
               <tr>
@@ -312,8 +316,9 @@
             de senha e convites.
           </li>
           <li>
-            <strong>Apple e Google:</strong> quando você conecta os serviços de saúde deles ou usa
-            os mapas, conforme as seções 3 e 4, e como distribuidores do app nas lojas.
+            <strong>Apple e Google:</strong> quando você entra com a conta deles, conecta os
+            serviços de saúde deles ou usa os mapas, conforme as seções 2, 3 e 4, e como
+            distribuidores do app nas lojas.
           </li>
           <li><strong>Seus amigos:</strong> dentro dos limites da seção 6.</li>
           <li>
