@@ -1,4 +1,5 @@
 import { ApiError, googleHealth } from '@/shared/api';
+import { env } from '@/shared/config/env';
 
 import { fakeHealthSource } from './fake';
 import {
@@ -10,7 +11,7 @@ import {
 
 import type { GoogleHealthClient, HealthSource } from './types';
 
-const context = { getToken: getGoogleHealthToken };
+const context = { getToken: getGoogleHealthToken, clientId: env.googleHealthIosClientId };
 
 /** Signed in to Google, but the account has no Google Health profile to read from yet. */
 export class GoogleHealthNoProfile extends Error {
@@ -21,8 +22,8 @@ export class GoogleHealthNoProfile extends Error {
 }
 
 /**
- * Google Health through its cloud API (iOS has no on-device store for it). Read-only: nothing the
- * user records in Tracta is sent to Google.
+ * Google Health through its cloud API (iOS has no on-device store for it). Reads the user's data
+ * and writes back the workouts and weight logged in Tracta (no sets, loads or routes).
  */
 export const googleHealthSource: HealthSource & GoogleHealthClient = {
   kind: 'google_health',
@@ -44,7 +45,18 @@ export const googleHealthSource: HealthSource & GoogleHealthClient = {
   readDayActivity: (range) => googleHealth.readDayActivity(context, range),
   readSleepSessions: (range) => googleHealth.readSleepSessions(context, range),
   readHeartRate: (range) => googleHealth.readHeartRate(context, range),
-  saveWorkout: () => Promise.resolve(false),
+  readWorkouts: (range) => googleHealth.readWorkouts(context, range),
+  readBody: (range) => googleHealth.readWeight(context, range),
+  saveWorkout: (w) =>
+    googleHealth
+      .writeWorkout(context, {
+        kind: w.kind,
+        start: w.start,
+        end: w.end,
+        ...(w.distanceM ? { distanceM: w.distanceM } : {}),
+      })
+      .catch(() => false),
+  saveWeight: (at, weightKg) => googleHealth.writeWeight(context, at, weightKg).catch(() => false),
   isLinked: hasGoogleHealthToken,
   signOut: signOutOfGoogleHealth,
 };

@@ -20,6 +20,7 @@ import {
 
 import { RunMap } from '@/features/run';
 import { useFeedbackStore } from '@/shared/feedback';
+import { healthSourceName } from '@/shared/health';
 import { useTranslation } from '@/shared/i18n';
 
 import { useDeleteEntry, useEntryDetail, useUpdateNotes } from '../api/useHistory';
@@ -141,6 +142,8 @@ export function SessionDetailScreen({ id }: Props) {
   let body: ReactNode;
   let gps = false;
   let heart = false;
+  /** The Health source an imported workout came from; null when recorded in Tracta. */
+  let origin: string | null = null;
 
   if (entry.kind === 'activity') {
     const a = entry.activity;
@@ -149,7 +152,12 @@ export function SessionDetailScreen({ id }: Props) {
     heart = a.avgHeartRate !== null;
     date = new Date(a.startedAt);
     title = a.kind === 'run' ? t('detail.runTitle') : t(`day.activity.${a.kind}`);
-    sub = a.gps ? t('detail.runSubGps') : t('detail.runSubManual');
+    origin = a.externalSource;
+    sub = a.externalSource
+      ? t('detail.importedSub', { source: healthSourceName(a.externalSource) })
+      : a.gps
+        ? t('detail.runSubGps')
+        : t('detail.runSubManual');
     stats = [
       {
         key: 'distance',
@@ -180,6 +188,7 @@ export function SessionDetailScreen({ id }: Props) {
     const s = entry.session;
     const minutes = Math.round(s.durationSeconds / 60);
     const start = minutesOfDay(s.startedAt);
+    origin = s.externalSource;
     date = new Date(s.startedAt);
     title = s.focus || s.title;
     sub = t('detail.strengthSub', {
@@ -193,9 +202,13 @@ export function SessionDetailScreen({ id }: Props) {
         label: t('detail.stat.duration'),
         value: t('detail.minutes', { minutes }),
       },
-      { key: 'sets', label: t('detail.stat.sets'), value: String(s.sets) },
-      { key: 'reps', label: t('detail.stat.reps'), value: String(s.reps) },
-      { key: 'volume', label: t('detail.stat.volume'), value: `${thousands(s.volumeKg)} kg` },
+      { key: 'sets', label: t('detail.stat.sets'), value: origin ? '—' : String(s.sets) },
+      { key: 'reps', label: t('detail.stat.reps'), value: origin ? '—' : String(s.reps) },
+      {
+        key: 'volume',
+        label: t('detail.stat.volume'),
+        value: origin ? '—' : `${thousands(s.volumeKg)} kg`,
+      },
     ];
     const setsLine = (e: sessions.SessionExercise) => {
       const working = e.sets.filter((x) => !x.isWarmup);
@@ -209,7 +222,8 @@ export function SessionDetailScreen({ id }: Props) {
             )
             .join(' · ');
     };
-    body = (
+    // Other apps only report that the session happened: there are no sets to list.
+    body = origin ? null : (
       <Card testID={ids.sessionExercises} px="xl" py="xs" gap="none">
         {s.exercises.map((e) => {
           const rowId = itemId(ids.sessionExercises, e.slug);
@@ -279,15 +293,23 @@ export function SessionDetailScreen({ id }: Props) {
         <ListRow
           testID={`${ids.sessionSource}.origin`}
           label={t('detail.source.origin')}
-          value={gps ? t('detail.source.originGps') : t('detail.source.originTracta')}
+          value={
+            origin
+              ? t('detail.source.originImported', { source: healthSourceName(origin) })
+              : gps
+                ? t('detail.source.originGps')
+                : t('detail.source.originTracta')
+          }
           valueColor="text2"
         />
-        <ListRow
-          testID={`${ids.sessionSource}.health`}
-          label={t('detail.source.health')}
-          value={isActivity ? t('detail.source.healthRun') : t('detail.source.healthSummary')}
-          valueColor="text2"
-        />
+        {origin ? null : (
+          <ListRow
+            testID={`${ids.sessionSource}.health`}
+            label={t('detail.source.health')}
+            value={isActivity ? t('detail.source.healthRun') : t('detail.source.healthSummary')}
+            valueColor="text2"
+          />
+        )}
         <ListRow
           testID={`${ids.sessionSource}.heart`}
           label={isActivity ? t('detail.source.heart') : t('detail.source.hrCalories')}

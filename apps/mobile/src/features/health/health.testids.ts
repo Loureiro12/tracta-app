@@ -32,6 +32,7 @@ export const healthIds = {
 
   bodyHero: testId('health', 'body', 'hero'),
   bodyWeight: testId('health', 'body', 'weight'),
+  bodySource: testId('health', 'body', 'source'),
   bodyChart: testId('health', 'body', 'chart'),
   /** Measurement rows; items are `${bodyMeasures}.<waist|hip|arm>`. */
   bodyMeasures: testId('health', 'body', 'measures'),

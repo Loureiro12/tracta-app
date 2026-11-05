@@ -1,0 +1,122 @@
+appId: com.tracta.mobile
+name: health-import
+tags:
+  - health
+  - history
+---
+- runFlow: ../../subflows/launch.yaml
+# The fake store starts holding a ride, a gym session and a weigh-in from another app; the row syncs.
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.health-import"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.health-import"
+- tapOn:
+    id: "settings.nav.back"
+# They reach History like any other workout
+- tapOn:
+    id: "app.tab.history"
+- assertVisible:
+    id: "history.screen"
+- tapOn:
+    id: "history.calendar.days.26"
+- extendedWaitUntil:
+    visible:
+      id: "history.day.sessions.activity-26"
+    timeout: 15000
+- assertVisible:
+    id: "history.day.sessions.strength-26"
+- scrollUntilVisible:
+    element:
+      id: "history.day.sessions.strength-26"
+    centerElement: true
+- tapOn:
+    id: "history.day.sessions.strength-26"
+- assertVisible:
+    id: "history.session.screen"
+- assertVisible:
+    id: "history.session.title"
+    text: "Musculação"
+- assertVisible:
+    id: "history.session.stats.sets.value"
+    text: "—"
+- scrollUntilVisible:
+    element:
+      id: "history.session.source.origin"
+    centerElement: true
+- assertVisible:
+    id: "history.session.source.origin.value"
+    text: "Imported from Apple Health"
+- tapOn:
+    id: "history.session.back"
+- scrollUntilVisible:
+    element:
+      id: "history.day.sessions.activity-26"
+    centerElement: true
+- tapOn:
+    id: "history.day.sessions.activity-26"
+- assertVisible:
+    id: "history.session.title"
+    text: "Ride"
+- assertVisible:
+    id: "history.session.sub"
+    text: "Imported from Apple Health"
+- assertVisible:
+    id: "history.session.stats.distance.value"
+    text: "18,40 km"
+# Deleted here, it stays deleted: the next sync doesn't bring it back
+- scrollUntilVisible:
+    element:
+      id: "history.session.delete"
+    centerElement: true
+- tapOn:
+    id: "history.session.delete"
+- tapOn:
+    id: "history.session.delete"
+- extendedWaitUntil:
+    visible:
+      id: "history.screen"
+    timeout: 10000
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.health-import"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.health-import"
+- tapOn:
+    id: "settings.nav.back"
+- tapOn:
+    id: "app.tab.history"
+- tapOn:
+    id: "history.calendar.days.26"
+- extendedWaitUntil:
+    visible:
+      id: "history.day.sessions.strength-26"
+    timeout: 15000
+- assertNotVisible:
+    id: "history.day.sessions.activity-26"
+# The weigh-in and the waist reach Body, marked with where they came from
+- tapOn:
+    id: "app.tab.health"
+- tapOn:
+    id: "health.segment.body"
+- extendedWaitUntil:
+    visible:
+      id: "health.body.weight"
+      text: "77.4 kg"
+    timeout: 15000
+- assertVisible:
+    id: "health.body.source"
+    text: "From Apple Health · today"
+- scrollUntilVisible:
+    element:
+      id: "health.body.measures.waist"
+    centerElement: true
+- assertVisible:
+    id: "health.body.measures.waist.description"
+    text: "Apple Health · today"

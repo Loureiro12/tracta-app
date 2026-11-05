@@ -189,6 +189,10 @@
       "workouts": {
         "name": "Workouts",
         "why": "activities from other apps"
+      },
+      "body": {
+        "name": "Weight and measurements",
+        "why": "weigh-ins from your scale and other apps"
       }
     },
     "write": {
@@ -199,6 +203,10 @@
       "distance": {
         "name": "Distance",
         "why": "route of recorded runs"
+      },
+      "body": {
+        "name": "Weight",
+        "why": "the weigh-ins you log in Tracta"
       }
     },
     "allow_one": "Allow {{count}} data type",

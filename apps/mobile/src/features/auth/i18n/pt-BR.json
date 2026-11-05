@@ -189,6 +189,10 @@
       "workouts": {
         "name": "Treinos",
         "why": "atividades de outros apps"
+      },
+      "body": {
+        "name": "Peso e medidas",
+        "why": "pesagens da balança e de outros apps"
       }
     },
     "write": {
@@ -199,6 +203,10 @@
       "distance": {
         "name": "Distância",
         "why": "percurso das corridas registradas"
+      },
+      "body": {
+        "name": "Peso",
+        "why": "as pesagens que você lança no Tracta"
       }
     },
     "allow_one": "Permitir {{count}} tipo de dado",

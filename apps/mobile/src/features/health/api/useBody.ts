@@ -1,5 +1,6 @@
-import { body, supabase, useMutation, useQuery, useQueryClient } from '@/shared/api';
+import { body, health, supabase, useMutation, useQuery, useQueryClient } from '@/shared/api';
 import { now, toDateKey } from '@/shared/clock';
+import { getHealthSource } from '@/shared/health';
 
 import type { body as api } from '@tracta/api';
 
@@ -34,11 +35,24 @@ export function useLatestBody() {
   return useQuery({ queryKey: bodyKeys.latest, queryFn: () => body.latestBody(supabase) });
 }
 
-/** Saves today's manual entry and refreshes the Body segment. */
+/** Best effort: the weigh-in is already saved, so failures are ignored. */
+async function writeWeightToHealth(weightKg: number): Promise<void> {
+  const connection = await health.getConnection(supabase);
+  if (!connection?.writeTypes.includes('body')) return;
+  const source = await getHealthSource(connection.source);
+  await source?.saveWeight(now(), weightKg);
+}
+
+/** Saves today's manual entry, refreshes the Body segment and sends the weight to the Health source. */
 export function useLogBody() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: api.LogBodyInput) => body.logBody(supabase, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: bodyKeys.all }),
+    onSuccess: (_saved, input) => {
+      if (input.weightKg !== undefined) {
+        void writeWeightToHealth(input.weightKg).catch(() => undefined);
+      }
+      return queryClient.invalidateQueries({ queryKey: bodyKeys.all });
+    },
   });
 }

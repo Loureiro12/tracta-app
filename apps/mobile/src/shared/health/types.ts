@@ -1,11 +1,13 @@
+import type { activities } from '@tracta/api';
+
 /** Which on-device store a HealthSource talks to (matches the backend's `health_connections.source`). */
 export type HealthSourceKind = 'apple_health' | 'health_connect' | 'google_health';
 
 /** Data types the app reads. Same keys as the permission screen (features/auth). */
 export type HealthReadType =
-  'steps' | 'distance' | 'active' | 'resting' | 'heart' | 'sleep' | 'workouts';
+  'steps' | 'distance' | 'active' | 'resting' | 'heart' | 'sleep' | 'workouts' | 'body';
 /** Data types the app writes back. */
-export type HealthWriteType = 'workouts' | 'distance';
+export type HealthWriteType = 'workouts' | 'distance' | 'body';
 
 export type HealthPermissions = {
   read: readonly HealthReadType[];
@@ -46,7 +48,21 @@ export type HeartRateData = {
   resting: readonly { day: string; bpm: number }[];
 };
 
-export type WorkoutKind = 'run' | 'walk' | 'strength' | 'other';
+export type WorkoutKind = activities.ActivityKind | 'strength';
+
+/** A workout recorded by another app, read from the store. */
+export type HealthWorkout = {
+  /** The store's own id, stable between syncs. */
+  id: string;
+  kind: WorkoutKind;
+  start: Date;
+  end: Date;
+  distanceM: number | null;
+  avgHeartRate: number | null;
+};
+
+/** One reading of a body measure (a scale or another app wrote it). */
+export type BodyReading = { at: Date; weightKg?: number; waistCm?: number };
 
 /** A finished workout or run to write back into the store. */
 export type WorkoutToSave = {
@@ -79,6 +95,11 @@ export interface HealthSource {
   readDayActivity(range: HealthRange): Promise<DayActivity[]>;
   readSleepSessions(range: HealthRange): Promise<SleepSession[]>;
   readHeartRate(range: HealthRange): Promise<HeartRateData>;
+  /** Workouts that started in the range, without the ones Tracta wrote itself. */
+  readWorkouts(range: HealthRange): Promise<HealthWorkout[]>;
+  readBody(range: HealthRange): Promise<BodyReading[]>;
   /** Writes a workout; resolves false when the store refused (no permission, unavailable). */
   saveWorkout(workout: WorkoutToSave): Promise<boolean>;
+  /** Writes a weigh-in; resolves false when the store refused. */
+  saveWeight(at: Date, weightKg: number): Promise<boolean>;
 }

@@ -175,7 +175,7 @@
     "empty": "Nenhuma atividade sincronizada hoje ainda."
   },
   "body": {
-    "sourceScale": "Balança via Apple Health · {{date}}",
+    "sourceScale": "Do {{source}} · {{date}}",
     "sourceManual": "Registro manual · {{date}}",
     "unit": " kg",
     "delta": "{{sign}}{{value}} kg em 30 dias",
@@ -189,17 +189,19 @@
       "arm": "Braço",
       "cm": "{{value}} cm",
       "manualToday": "manual · hoje",
-      "manualOld": "manual · {{date}}"
+      "manualOld": "manual · {{date}}",
+      "imported": "{{source}} · {{date}}"
     },
     "register": "Registrar peso e medidas",
-    "footnote": "Pesagens da balança vêm do Apple Health; registros manuais ficam marcados como \"manual\".",
+    "footnote": "Pesagens do seu app de saúde chegam sozinhas; registros manuais ficam marcados como \"manual\".",
     "today": "hoje",
     "empty": "Nenhuma pesagem nos últimos 30 dias.",
     "state": {
       "errorTitle": "Não foi possível carregar seus dados de corpo.",
       "retry": "Tentar de novo",
       "loading": "Carregando…"
-    }
+    },
+    "sourceGeneric": "seu app de saúde"
   },
   "metric": {
     "period": {

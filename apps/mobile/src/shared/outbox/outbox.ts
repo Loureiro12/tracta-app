@@ -7,7 +7,6 @@ import { isOnline } from '@/shared/network';
 import { useOutboxStore } from './outbox.store';
 
 import type { OutboxEntry, OutboxPayload } from './outbox.types';
-import type { WorkoutKind } from '@/shared/health';
 
 /**
  * One key per item: a long GPS route can take hundreds of KB and Android can't read a single
@@ -28,7 +27,6 @@ const PERMANENT: ReadonlySet<string> = new Set([
 /** Not about this item: stop here and try the whole queue again later. */
 const TRANSIENT: ReadonlySet<string> = new Set(['network', 'not_authenticated', 'rate_limited']);
 
-const HEALTH_KIND: Partial<Record<string, WorkoutKind>> = { run: 'run', walk: 'walk' };
 const SESSION_QUERIES = [['history'], ['sessions'], ['routines'], ['exercises']];
 const ACTIVITY_QUERIES = [['history']];
 
@@ -58,18 +56,27 @@ export function loadOutbox(): Promise<void> {
   return loaded;
 }
 
-/** Best effort: the activity is already saved, so failures are ignored. */
-async function writeActivityToHealth(entry: OutboxEntry): Promise<void> {
-  if (entry.kind !== 'activity') return;
-  const input = entry.payload;
+/** Best effort: the workout is already saved, so failures are ignored. */
+async function writeToHealth(entry: OutboxEntry): Promise<void> {
   const connection = await health.getConnection(supabase);
   if (!connection?.writeTypes.includes('workouts')) return;
   const source = await getHealthSource(connection.source);
   if (!source) return;
+  if (entry.kind === 'session') {
+    const { startedAt, endedAt, title } = entry.payload;
+    await source.saveWorkout({
+      kind: 'strength',
+      start: new Date(startedAt),
+      end: new Date(endedAt),
+      title,
+    });
+    return;
+  }
+  const input = entry.payload;
   const start = new Date(input.startedAt);
   const distance = connection.writeTypes.includes('distance') ? input.distanceM : undefined;
   await source.saveWorkout({
-    kind: HEALTH_KIND[input.kind] ?? 'other',
+    kind: input.kind,
     start,
     end: new Date(start.getTime() + input.durationSeconds * 1000),
     ...(distance ? { distanceM: distance } : {}),
@@ -120,7 +127,7 @@ async function drain(userId: string, retryFailed: boolean): Promise<void> {
         queryClient.invalidateQueries({ queryKey }),
       ),
     );
-    void writeActivityToHealth(entry).catch(() => undefined);
+    void writeToHealth(entry).catch(() => undefined);
   }
 }
 

@@ -64,8 +64,13 @@ export function DayCard({
     switch (item.kind) {
       case 'strength':
         return {
-          title: t('day.strengthTitle', { routine: item.routineName, focus: item.focus }),
-          line: t('day.strengthLine', { minutes: item.minutes, sets: item.sets }),
+          // Imported from another app: no focus and no sets to report.
+          title: item.focus
+            ? t('day.strengthTitle', { routine: item.routineName, focus: item.focus })
+            : item.routineName,
+          line: item.sets
+            ? t('day.strengthLine', { minutes: item.minutes, sets: item.sets })
+            : t('day.minutesLine', { minutes: item.minutes }),
         };
       case 'run':
         return { title: t('day.runTitle'), line: item.summary };

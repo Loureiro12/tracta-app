@@ -1,7 +1,7 @@
 import { toDateKey } from '@/shared/clock';
 
 import type { HealthSource, SleepSession, SleepStage } from './types';
-import type { health } from '@tracta/api';
+import type { body, health } from '@tracta/api';
 
 const MINUTE = 60_000;
 
@@ -146,4 +146,53 @@ export async function collectHealthDays(
   }
 
   return [...byDay.values()].sort((a, b) => (a.day < b.day ? -1 : 1));
+}
+
+const MAX_WORKOUT_SECONDS = 172800;
+/** Shorter than this is a mistap on a watch, not a workout. */
+const MIN_WORKOUT_SECONDS = 60;
+const MAX_WORKOUTS = 500;
+
+/** The last `days` days of workouts from other apps, as `health.importWorkouts` takes them. */
+export async function collectWorkouts(
+  source: HealthSource,
+  end: Date,
+  days: number,
+): Promise<health.ImportedWorkoutInput[]> {
+  const workouts = await source.readWorkouts(lastDaysRange(end, days));
+  return workouts
+    .filter((w) => {
+      const seconds = (w.end.getTime() - w.start.getTime()) / 1000;
+      return seconds >= MIN_WORKOUT_SECONDS && seconds <= MAX_WORKOUT_SECONDS;
+    })
+    .slice(-MAX_WORKOUTS)
+    .map((w) => ({
+      id: w.id.slice(0, 200),
+      kind: w.kind,
+      startedAt: w.start.toISOString(),
+      endedAt: w.end.toISOString(),
+      distanceM: w.distanceM != null && w.distanceM <= 1_000_000 ? Math.round(w.distanceM) : null,
+      avgHeartRate:
+        w.avgHeartRate != null && w.avgHeartRate >= 30 && w.avgHeartRate <= 250
+          ? Math.round(w.avgHeartRate)
+          : null,
+    }));
+}
+
+/** The last `days` days of body readings, one per day: the latest value of each measure wins. */
+export async function collectBody(
+  source: HealthSource,
+  end: Date,
+  days: number,
+): Promise<body.ImportBodyInput> {
+  const readings = await source.readBody(lastDaysRange(end, days));
+  const byDay = new Map<string, { measuredOn: string; weightKg?: number; waistCm?: number }>();
+  for (const r of [...readings].sort((a, b) => a.at.getTime() - b.at.getTime())) {
+    const measuredOn = toDateKey(r.at);
+    const entry = byDay.get(measuredOn) ?? { measuredOn };
+    if (r.weightKg != null && r.weightKg >= 20 && r.weightKg <= 400) entry.weightKg = r.weightKg;
+    if (r.waistCm != null && r.waistCm >= 30 && r.waistCm <= 250) entry.waistCm = r.waistCm;
+    byDay.set(measuredOn, entry);
+  }
+  return [...byDay.values()].filter((e) => e.weightKg != null || e.waistCm != null);
 }

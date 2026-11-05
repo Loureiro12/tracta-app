@@ -4,6 +4,7 @@ import type {
   DayActivity,
   HealthRange,
   HealthSource,
+  HealthWorkout,
   HeartRateData,
   HeartRateSample,
   SleepSession,
@@ -192,6 +193,41 @@ function heartRate(d: FakeDay): HeartRateSample[] {
   return out;
 }
 
+/** Off by default: the seeded numbers the other flows assert must not change on every sync. */
+let importEnabled = false;
+
+/** E2E only: makes the fake store hold workouts and a weigh-in from another app. */
+export function setFakeHealthImport(enabled: boolean) {
+  importEnabled = enabled;
+}
+
+function at(hours: number, minutes = 0): Date {
+  const d = now();
+  d.setHours(hours, minutes, 0, 0);
+  return d;
+}
+
+function fakeWorkouts(): HealthWorkout[] {
+  return [
+    {
+      id: 'fake-bike',
+      kind: 'bike',
+      start: at(6),
+      end: at(7),
+      distanceM: 18400,
+      avgHeartRate: 128,
+    },
+    {
+      id: 'fake-strength',
+      kind: 'strength',
+      start: at(8),
+      end: at(9),
+      distanceM: null,
+      avgHeartRate: null,
+    },
+  ];
+}
+
 export const fakeHealthSource: HealthSource = {
   kind: 'apple_health',
   isFake: true,
@@ -206,5 +242,14 @@ export const fakeHealthSource: HealthSource = {
       resting: days.map((d) => ({ day: d.activity.day, bpm: d.restingHr })),
     };
   },
+  readWorkouts: async () => (importEnabled ? fakeWorkouts() : []),
+  readBody: async () =>
+    importEnabled
+      ? [
+          { at: at(7, 30), weightKg: 77.4 },
+          { at: at(7, 30), waistCm: 85.5 },
+        ]
+      : [],
   saveWorkout: async () => true,
+  saveWeight: async () => true,
 };

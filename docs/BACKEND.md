@@ -54,11 +54,24 @@ Conta de demonstração (local/CI): `lucas@tracta.app` / `Tracta2026`. Amigos: a
 - **Tipos gerados sempre em dia:** a CI regenera e falha se houver diferença.
 - **Datas "de hoje"** vêm de `@/shared/clock` no app; o E2E congela em 2026-10-26 para casar com o seed.
 
+## Treinos e peso entre o Tracta e os apps de saúde
+
+Vale para as três fontes (Apple Health, Health Connect e Google Health):
+
+- **Importar treinos:** a sincronização chama `import_health_workouts`, que grava em `workout_sessions` (musculação, sem séries) ou `activities`, com `external_source` e `external_id`. Por estarem nas mesmas tabelas, contam em histórico, resumos, desafios e conquistas. Os recordes de pace dependem de splits, que as fontes não entregam.
+- **Duplicados:** o que o próprio Tracta gravou é filtrado pela origem (bundle, pacote ou cliente OAuth). Um treino que divide pelo menos metade do tempo do mais curto com outro já salvo é tratado como o mesmo treino e não entra.
+- **Apagados:** apagar um treino importado grava a chave em `dismissed_imports`, e a próxima sincronização não o traz de volta.
+- **Peso:** uma leitura por dia em `body_measurements` com `source = 'health'`; a cintura vem só do Apple Health. Registro manual do mesmo dia continua valendo. `deleteHealthData` apaga essas leituras, mas não os treinos importados, que fazem parte do histórico.
+- **Enviar:** o outbox grava treinos e corridas na fonte conectada e `useLogBody` grava o peso. Tudo é melhor esforço: o dado já está salvo no Tracta, e uma falha não é repetida. Séries, cargas, rota e cintura não são enviadas.
+- **Permissões:** os tipos `body` (leitura e gravação) são novos, então quem conectou antes precisa conectar de novo.
+- **E2E:** o fake só traz importações depois de `settings.demo.health-import`, para não mudar os números do seed nos outros flows.
+
 ## Google Health no iOS
 
 O iPhone não tem armazenamento local do Google Health, então o app lê a Google Health API direto do aparelho, sem servidor próprio. No Android o Google Health chega pelo Health Connect, e o card continua "Em validação".
 
-- **Leitura:** `@tracta/api` (`googleHealth`) chama a API e entrega os dados no mesmo formato do Apple Health; `health_days` e as telas não mudam. Só leitura: os escopos são `activity_and_fitness`, `health_metrics_and_measurements` e `sleep`, todos `.readonly`.
+- **Leitura:** `@tracta/api` (`googleHealth`) chama a API e entrega os dados no mesmo formato do Apple Health; `health_days` e as telas não mudam. Escopos `.readonly`: `activity_and_fitness`, `health_metrics_and_measurements` e `sleep`.
+- **Gravação:** treinos e peso lançados no Tracta vão para o Google com os escopos `.writeonly` de `activity_and_fitness` e `health_metrics_and_measurements`. Quem conectou antes precisa conectar de novo para conceder esses escopos.
 - **Login:** `shared/health/google-auth.ts` usa OAuth com PKCE no navegador do sistema. O refresh token fica no Keychain, por conta Tracta; o Google não emite secret para clientes iOS.
 - **Fonte única:** `health_connections` tem uma linha por usuário, então conectar o Google Health substitui o Apple Health como fonte, e vice-versa.
 - **Sincronização:** 30 dias na primeira vez e 7 nas seguintes, ao abrir o app.
@@ -66,7 +79,7 @@ O iPhone não tem armazenamento local do Google Health, então o app lê a Googl
 **Configuração:**
 
 1. No Google Cloud, crie um projeto (um para testes e outro para produção), ative a Google Health API e crie um cliente OAuth **iOS** com o bundle `com.tracta.mobile`.
-2. Em Data Access, adicione os três escopos acima. Em Audience, cadastre os usuários de teste.
+2. Em Data Access, adicione os cinco escopos acima. Em Audience, cadastre os usuários de teste.
 3. Defina `EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID` no `.env` e no EAS e gere um novo build: o valor também registra o scheme de retorno. Sem ele, o iOS mantém o card "Em validação".
 4. Cada usuário precisa ter entrado antes no app Google Health, com um perfil criado.
 

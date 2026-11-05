@@ -29,6 +29,7 @@
     "toastMessage": "Treino salvo",
     "clear": "Limpar estados",
     "simulateOffline": "Simular sem internet",
-    "simulateOnline": "Voltar a ficar on-line"
+    "simulateOnline": "Voltar a ficar on-line",
+    "healthImport": "Simular importação da saúde"
   }
 }

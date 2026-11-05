@@ -29,6 +29,7 @@
     "toastMessage": "Workout saved",
     "clear": "Clear states",
     "simulateOffline": "Simulate no internet",
-    "simulateOnline": "Back online"
+    "simulateOnline": "Back online",
+    "healthImport": "Simulate Health import"
   }
 }

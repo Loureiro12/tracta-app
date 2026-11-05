@@ -120,7 +120,7 @@ tags:
     id: "auth.health.read"
 - assertVisible:
     id: "auth.health.allow.label"
-    text: "Allow 8 data types"
+    text: "Allow 10 data types"
 - tapOn:
     id: "auth.health.toggle-all"
 - assertVisible:
@@ -128,12 +128,12 @@ tags:
     text: "Turn all on"
 - assertVisible:
     id: "auth.health.allow.label"
-    text: "Allow 1 data type"
+    text: "Allow 2 data types"
 - tapOn:
     id: "auth.health.read.steps"
 - assertVisible:
     id: "auth.health.allow.label"
-    text: "Allow 2 data types"
+    text: "Allow 3 data types"
 - scrollUntilVisible:
     element:
       id: "auth.health.write"
@@ -142,7 +142,7 @@ tags:
     id: "auth.health.write.distance"
 - assertVisible:
     id: "auth.health.allow.label"
-    text: "Allow 3 data types"
+    text: "Allow 4 data types"
 - tapOn:
     id: "auth.health.allow"
 # Back on connections: importing, then connected

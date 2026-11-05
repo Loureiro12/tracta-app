@@ -48,7 +48,8 @@
       "functional": "Functional training",
       "stretch": "Stretching",
       "yoga": "Yoga"
-    }
+    },
+    "minutesLine": "{{minutes}} min"
   },
   "stats": {
     "workouts": "Workouts",
@@ -145,14 +146,16 @@
       "hrCalories": "HR and calories",
       "unavailable": "Unavailable",
       "heart": "Heart rate",
-      "heartBand": "Mi Band 8 via Apple Health"
+      "heartBand": "Mi Band 8 via Apple Health",
+      "originImported": "Imported from {{source}}"
     },
     "delete": "Delete session",
     "deleteConfirm": "Tap again to delete",
     "deletedToast": "Session deleted",
     "missing": "Session not found",
     "runSubManual": "Logged without GPS",
-    "deleteError": "Couldn't delete the session. Try again."
+    "deleteError": "Couldn't delete the session. Try again.",
+    "importedSub": "Imported from {{source}}"
   },
   "recap": {
     "brand": "Tracta · {{month}}",

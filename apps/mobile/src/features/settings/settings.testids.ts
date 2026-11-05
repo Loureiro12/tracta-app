@@ -17,4 +17,5 @@ export const settingsIds = {
   demoToast: testId('settings', 'demo', 'toast'),
   demoClear: testId('settings', 'demo', 'clear'),
   demoNetwork: testId('settings', 'demo', 'network'),
+  demoHealthImport: testId('settings', 'demo', 'health-import'),
 } as const;

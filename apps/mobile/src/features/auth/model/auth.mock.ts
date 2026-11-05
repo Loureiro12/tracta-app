@@ -7,9 +7,10 @@ export const READ_TYPES = [
   'heart',
   'sleep',
   'workouts',
+  'body',
 ] as const;
 /** Data types the app can write back. Labels live in i18n `health.write.*`. */
-export const WRITE_TYPES = ['workouts', 'distance'] as const;
+export const WRITE_TYPES = ['workouts', 'distance', 'body'] as const;
 
 export type ReadType = (typeof READ_TYPES)[number];
 export type WriteType = (typeof WRITE_TYPES)[number];
@@ -24,8 +25,10 @@ export const DEFAULT_PERMISSIONS: Record<PermissionKey, boolean> = {
   'read.heart': true,
   'read.sleep': true,
   'read.workouts': true,
+  'read.body': true,
   'write.workouts': true,
   'write.distance': false,
+  'write.body': true,
 };
 
 /** Data groups listed once Health is connected. Copy in i18n `connect.health.found.*`. */

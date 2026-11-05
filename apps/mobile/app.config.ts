@@ -40,8 +40,10 @@ const config: ExpoConfig = {
       'android.permission.health.READ_RESTING_HEART_RATE',
       'android.permission.health.READ_SLEEP',
       'android.permission.health.READ_EXERCISE',
+      'android.permission.health.READ_WEIGHT',
       'android.permission.health.WRITE_EXERCISE',
       'android.permission.health.WRITE_DISTANCE',
+      'android.permission.health.WRITE_WEIGHT',
     ],
     // Without a key the run map falls back to the drawn route (see features/run).
     config: { googleMaps: { apiKey: process.env.GOOGLE_MAPS_API_KEY ?? '' } },
@@ -85,9 +87,9 @@ const config: ExpoConfig = {
       '@kingstinct/react-native-healthkit',
       {
         NSHealthShareUsageDescription:
-          'Tracta reads steps, distance, energy, heart rate, sleep and workouts to show your day.',
+          'Tracta reads steps, distance, energy, heart rate, sleep, workouts, weight and waist to show your day and your history.',
         NSHealthUpdateUsageDescription:
-          'Tracta saves the workouts and runs you record so they appear in Apple Health.',
+          'Tracta saves the workouts, runs and weigh-ins you record so they appear in Apple Health.',
         background: false,
       },
     ],

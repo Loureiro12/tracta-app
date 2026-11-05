@@ -1,13 +1,17 @@
 import { toDateKey } from '@/shared/clock';
+import { env } from '@/shared/config/env';
 
 import type {
+  BodyReading,
   DayActivity,
   HealthPermissions,
   HealthRange,
   HealthSource,
+  HealthWorkout,
   HeartRateData,
   SleepSession,
   SleepStage,
+  WorkoutKind,
   WorkoutToSave,
 } from './types';
 import type * as HealthConnectModule from 'react-native-health-connect';
@@ -20,7 +24,33 @@ type RecordType = HealthConnectModule.RecordType;
 const SDK_AVAILABLE = 3;
 const STEPS_PER_MOVING_MINUTE = 100;
 // ExerciseType values.
-const EXERCISE = { run: 56, walk: 79, strength: 70, other: 0 } as const;
+const EXERCISE: Record<WorkoutKind, number> = {
+  run: 56,
+  walk: 79,
+  bike: 8,
+  swim: 74,
+  soccer: 64,
+  basket: 5,
+  tennis: 76,
+  functional: 0,
+  stretch: 71,
+  yoga: 83,
+  strength: 70,
+};
+/** Types that read as another kind than the one Tracta writes (the rest count as 'functional'). */
+const EXERCISE_KIND: Record<number, WorkoutKind> = {
+  ...(Object.fromEntries(Object.entries(EXERCISE).map(([kind, raw]) => [raw, kind])) as Record<
+    number,
+    WorkoutKind
+  >),
+  57: 'run', // treadmill
+  37: 'walk', // hiking
+  9: 'bike', // stationary
+  73: 'swim', // open water
+  81: 'strength', // weightlifting
+  13: 'strength', // calisthenics
+};
+const WITH_DISTANCE: ReadonlySet<WorkoutKind> = new Set(['run', 'walk', 'bike', 'swim']);
 // SleepStageType values.
 const STAGE: Record<number, SleepStage | null> = {
   0: 'light', // unknown
@@ -59,10 +89,12 @@ const READ: Record<HealthPermissions['read'][number], RecordType[]> = {
   heart: ['HeartRate'],
   sleep: ['SleepSession'],
   workouts: ['ExerciseSession'],
+  body: ['Weight'],
 };
 const WRITE: Record<HealthPermissions['write'][number], RecordType[]> = {
   workouts: ['ExerciseSession'],
   distance: ['Distance'],
+  body: ['Weight'],
 };
 
 const between = (r: HealthRange) => ({
@@ -173,6 +205,56 @@ export const healthConnectSource: HealthSource = {
       ),
       resting: resting.map((r) => ({ day: toDateKey(new Date(r.time)), bpm: r.beatsPerMinute })),
     };
+  },
+
+  async readWorkouts(range): Promise<HealthWorkout[]> {
+    const m = await hc();
+    const records = await readAll(m, 'ExerciseSession', range);
+    const workouts: HealthWorkout[] = [];
+    for (const r of records) {
+      const id = r.metadata?.id;
+      if (!id || r.metadata?.dataOrigin === env.appId) continue;
+      const kind = EXERCISE_KIND[r.exerciseType] ?? 'functional';
+      const start = new Date(r.startTime);
+      const end = new Date(r.endTime);
+      const distance = WITH_DISTANCE.has(kind)
+        ? await m.aggregateRecord({
+            recordType: 'Distance',
+            timeRangeFilter: between({ from: start, to: end }),
+          })
+        : null;
+      workouts.push({
+        id,
+        kind,
+        start,
+        end,
+        distanceM: distance?.DISTANCE.inMeters || null,
+        avgHeartRate: null,
+      });
+    }
+    return workouts;
+  },
+
+  async readBody(range): Promise<BodyReading[]> {
+    const m = await hc();
+    const records = await readAll(m, 'Weight', range);
+    return records.map((r) => ({ at: new Date(r.time), weightKg: r.weight.inKilograms }));
+  },
+
+  async saveWeight(at, weightKg) {
+    try {
+      const m = await hc();
+      await m.insertRecords([
+        {
+          recordType: 'Weight',
+          time: at.toISOString(),
+          weight: { unit: 'kilograms', value: weightKg },
+        },
+      ]);
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   async saveWorkout(w: WorkoutToSave) {

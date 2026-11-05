@@ -41,3 +41,14 @@ export function getGoogleHealthSource(): HealthSource & GoogleHealthClient {
 export function isGoogleHealthAvailable(): boolean {
   return env.isE2E || (Platform.OS === 'ios' && Boolean(env.googleHealthIosClientId));
 }
+
+const SOURCE_NAMES: Record<string, string> = {
+  apple_health: 'Apple Health',
+  health_connect: 'Health Connect',
+  google_health: 'Google Health',
+};
+
+/** The product's name, which isn't translated. */
+export function healthSourceName(kind: string): string {
+  return SOURCE_NAMES[kind] ?? kind;
+}

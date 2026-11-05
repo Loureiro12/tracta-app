@@ -7,7 +7,7 @@ import type { activities as api } from '@tracta/api';
 /**
  * Keeps the finished activity on the device and sends it when possible (right away if online).
  * `sent` is false when it will upload later; the outbox refreshes History and writes it to
- * Apple Health / Health Connect once it arrives.
+ * the connected Health source once it arrives.
  */
 export function useSaveActivity() {
   const { user } = useSession();

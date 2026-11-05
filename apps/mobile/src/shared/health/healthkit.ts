@@ -1,13 +1,17 @@
 import { toDateKey } from '@/shared/clock';
+import { env } from '@/shared/config/env';
 
 import type {
+  BodyReading,
   DayActivity,
   HealthPermissions,
   HealthRange,
   HealthSource,
+  HealthWorkout,
   HeartRateData,
   SleepSession,
   SleepStage,
+  WorkoutKind,
   WorkoutToSave,
 } from './types';
 import type * as HealthKitModule from '@kingstinct/react-native-healthkit';
@@ -23,12 +27,38 @@ const HEART = 'HKQuantityTypeIdentifierHeartRate';
 const RESTING = 'HKQuantityTypeIdentifierRestingHeartRate';
 const SLEEP = 'HKCategoryTypeIdentifierSleepAnalysis';
 const WORKOUT = 'HKWorkoutTypeIdentifier';
+const BODY_MASS = 'HKQuantityTypeIdentifierBodyMass';
+const WAIST = 'HKQuantityTypeIdentifierWaistCircumference';
 
 /** Average walking cadence used to estimate "moving" minutes from steps (HealthKit has no such total). */
 const STEPS_PER_MOVING_MINUTE = 100;
 
 // HKWorkoutActivityType raw values.
-const ACTIVITY = { run: 37, walk: 52, strength: 50, other: 3000 } as const;
+const ACTIVITY: Record<WorkoutKind, number> = {
+  run: 37,
+  walk: 52,
+  bike: 13,
+  swim: 46,
+  soccer: 41,
+  basket: 6,
+  tennis: 48,
+  functional: 20,
+  stretch: 62,
+  yoga: 57,
+  strength: 50,
+};
+/** Types that read as another kind than the one Tracta writes (the rest count as 'functional'). */
+const ACTIVITY_KIND: Record<number, WorkoutKind> = {
+  ...(Object.fromEntries(Object.entries(ACTIVITY).map(([kind, raw]) => [raw, kind])) as Record<
+    number,
+    WorkoutKind
+  >),
+  24: 'walk', // hiking
+  74: 'bike', // hand cycling
+  80: 'stretch', // cooldown
+};
+/** Recorded as workouts, but not training: mind and body, fishing, hunting, recovery, rest, transition. */
+const NOT_A_WORKOUT: ReadonlySet<number> = new Set([29, 19, 26, 33, 2998, 83]);
 // HKCategoryValueSleepAnalysis raw values.
 const SLEEP_VALUE: Record<number, SleepStage | null> = {
   0: null, // in bed
@@ -64,8 +94,13 @@ const READ = {
   heart: [HEART],
   sleep: [SLEEP],
   workouts: [WORKOUT],
+  body: [BODY_MASS, WAIST],
 } as const;
-const WRITE = { workouts: [WORKOUT, ACTIVE], distance: [DISTANCE] } as const;
+const WRITE = {
+  workouts: [WORKOUT, ACTIVE],
+  distance: [DISTANCE],
+  body: [BODY_MASS],
+} as const;
 
 const dateFilter = (r: HealthRange) => ({ filter: { date: { startDate: r.from, endDate: r.to } } });
 
@@ -201,6 +236,54 @@ export const healthKitSource: HealthSource = {
       samples: samples.map((s) => ({ at: new Date(s.startDate), bpm: s.quantity })),
       resting: resting.map((s) => ({ day: toDateKey(new Date(s.startDate)), bpm: s.quantity })),
     };
+  },
+
+  async readWorkouts(range): Promise<HealthWorkout[]> {
+    const m = await hk();
+    const workouts = await m.queryWorkoutSamples({
+      limit: 0,
+      ascending: true,
+      ...dateFilter(range),
+    });
+    return workouts.flatMap((w) => {
+      const type = Number(w.workoutActivityType);
+      if (w.sourceRevision.source.bundleIdentifier === env.appId || NOT_A_WORKOUT.has(type)) {
+        return [];
+      }
+      return [
+        {
+          id: w.uuid,
+          kind: ACTIVITY_KIND[type] ?? 'functional',
+          start: new Date(w.startDate),
+          end: new Date(w.endDate),
+          distanceM: w.totalDistance?.quantity || null,
+          avgHeartRate: null,
+        },
+      ];
+    });
+  },
+
+  async readBody(range): Promise<BodyReading[]> {
+    const m = await hk();
+    const options = { limit: 0, ascending: true, ...dateFilter(range) };
+    const [weight, waist] = await Promise.all([
+      m.queryQuantitySamples(BODY_MASS, { ...options, unit: 'kg' }),
+      m.queryQuantitySamples(WAIST, { ...options, unit: 'cm' }),
+    ]);
+    return [
+      ...weight.map((s) => ({ at: new Date(s.startDate), weightKg: s.quantity })),
+      ...waist.map((s) => ({ at: new Date(s.startDate), waistCm: s.quantity })),
+    ];
+  },
+
+  async saveWeight(at, weightKg) {
+    try {
+      const m = await hk();
+      await m.saveQuantitySample(BODY_MASS, 'kg', weightKg, at, at);
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   async saveWorkout(w: WorkoutToSave) {

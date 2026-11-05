@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import {
+  body,
   health,
   history,
   sessions,
@@ -12,7 +13,13 @@ import {
   useQueryClient,
 } from '@/shared/api';
 import { now, toDateKey } from '@/shared/clock';
-import { collectHealthDays, getGoogleHealthSource, getHealthSource } from '@/shared/health';
+import {
+  collectBody,
+  collectHealthDays,
+  collectWorkouts,
+  getGoogleHealthSource,
+  getHealthSource,
+} from '@/shared/health';
 import { useSession } from '@/shared/session';
 
 import type { HealthPermissions } from '@/shared/health';
@@ -85,11 +92,12 @@ export function useHealthDay(day: string) {
 }
 
 function invalidateAfterSync(queryClient: ReturnType<typeof useQueryClient>) {
-  // Steps also feed the friends' feed and the challenges.
-  return Promise.all([
-    queryClient.invalidateQueries({ queryKey: healthKeys.all }),
-    queryClient.invalidateQueries({ queryKey: ['social'] }),
-  ]);
+  // Steps also feed the friends' feed and the challenges; imports reach History and Body.
+  return Promise.all(
+    [healthKeys.all, ['social'], ['history'], ['sessions'], ['body']].map((queryKey) =>
+      queryClient.invalidateQueries({ queryKey }),
+    ),
+  );
 }
 
 /** Reads the last 30 days from the device and upserts them. Resolves the sync instant. */
@@ -98,8 +106,18 @@ async function runSync(): Promise<string | null> {
   const source = await getHealthSource(connection?.source);
   if (!source) return null;
   const incremental = source.kind === 'google_health' && connection?.lastSyncedAt;
-  const days = await collectHealthDays(source, now(), incremental ? GOOGLE_RESYNC_DAYS : SYNC_DAYS);
-  return health.syncDays(supabase, { source: source.kind, days });
+  const count = incremental ? GOOGLE_RESYNC_DAYS : SYNC_DAYS;
+  const days = await collectHealthDays(source, now(), count);
+  const syncedAt = await health.syncDays(supabase, { source: source.kind, days });
+  // Reading them may need a permission the user never gave: the daily numbers still count.
+  if (connection?.readTypes.includes('workouts')) {
+    const workouts = await collectWorkouts(source, now(), count).catch(() => []);
+    await health.importWorkouts(supabase, { source: source.kind, workouts });
+  }
+  if (connection?.readTypes.includes('body')) {
+    await body.importBody(supabase, await collectBody(source, now(), count).catch(() => []));
+  }
+  return syncedAt;
 }
 
 export function useHealthSync() {
@@ -115,7 +133,17 @@ export function useHealthSync() {
   });
 }
 
-const GOOGLE_READ_TYPES = ['steps', 'distance', 'active', 'resting', 'heart', 'sleep'] as const;
+const GOOGLE_READ_TYPES = [
+  'steps',
+  'distance',
+  'active',
+  'resting',
+  'heart',
+  'sleep',
+  'workouts',
+  'body',
+] as const;
+const GOOGLE_WRITE_TYPES = ['workouts', 'distance', 'body'] as const;
 
 export class HealthPermissionDenied extends Error {
   constructor() {
@@ -161,13 +189,15 @@ export function useConnectGoogleHealth() {
   return useMutation({
     mutationFn: async (): Promise<api.HealthConnection> => {
       const source = getGoogleHealthSource();
-      if (!(await source.requestPermissions({ read: GOOGLE_READ_TYPES, write: [] }))) {
+      if (
+        !(await source.requestPermissions({ read: GOOGLE_READ_TYPES, write: GOOGLE_WRITE_TYPES }))
+      ) {
         throw new HealthPermissionDenied();
       }
       const connection = await health.connect(supabase, {
         source: source.kind,
         readTypes: [...GOOGLE_READ_TYPES],
-        writeTypes: [],
+        writeTypes: [...GOOGLE_WRITE_TYPES],
       });
       queryClient.setQueryData(healthKeys.connection(user?.id), connection);
       await runSync();

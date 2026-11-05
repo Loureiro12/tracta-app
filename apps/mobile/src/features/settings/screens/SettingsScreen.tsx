@@ -14,8 +14,10 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { useHealthSync } from '@/features/health';
 import { env } from '@/shared/config/env';
 import { useFeedbackStore } from '@/shared/feedback';
+import { setFakeHealthImport } from '@/shared/health';
 import { useTranslation } from '@/shared/i18n';
 import { setSimulatedOffline, useSimulatedOffline } from '@/shared/network';
 
@@ -48,6 +50,7 @@ export function SettingsScreen() {
   const setLocalePreference = useSettingsStore((s) => s.setLocalePreference);
   const setBanner = useFeedbackStore((s) => s.setBanner);
   const showToast = useFeedbackStore((s) => s.showToast);
+  const healthSync = useHealthSync();
 
   return (
     <Screen
@@ -145,6 +148,17 @@ export function SettingsScreen() {
               label={t(simulatedOffline ? 'demo.simulateOnline' : 'demo.simulateOffline')}
               chevron
               onPress={() => void setSimulatedOffline(!simulatedOffline)}
+            />
+          ) : null}
+          {env.isE2E ? (
+            <ListRow
+              testID={settingsIds.demoHealthImport}
+              label={t('demo.healthImport')}
+              chevron
+              onPress={() => {
+                setFakeHealthImport(true);
+                healthSync.mutate();
+              }}
             />
           ) : null}
         </ListGroup>

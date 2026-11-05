@@ -175,7 +175,7 @@
     "empty": "No activity synced for today yet."
   },
   "body": {
-    "sourceScale": "Scale via Apple Health · {{date}}",
+    "sourceScale": "From {{source}} · {{date}}",
     "sourceManual": "Manual entry · {{date}}",
     "unit": " kg",
     "delta": "{{sign}}{{value}} kg in 30 days",
@@ -189,17 +189,19 @@
       "arm": "Arm",
       "cm": "{{value}} cm",
       "manualToday": "manual · today",
-      "manualOld": "manual · {{date}}"
+      "manualOld": "manual · {{date}}",
+      "imported": "{{source}} · {{date}}"
     },
     "register": "Log weight and measurements",
-    "footnote": "Scale weigh-ins come from Apple Health; manual entries are marked as \"manual\".",
+    "footnote": "Weigh-ins from your Health app arrive by themselves; manual entries are marked as \"manual\".",
     "today": "today",
     "empty": "No weigh-ins in the last 30 days yet.",
     "state": {
       "errorTitle": "Couldn't load your body data.",
       "retry": "Try again",
       "loading": "Loading…"
-    }
+    },
+    "sourceGeneric": "your Health app"
   },
   "metric": {
     "period": {

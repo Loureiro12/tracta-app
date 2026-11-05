@@ -5,12 +5,14 @@ import { useRouter } from 'expo-router';
 import { Box, Button, Card, ListGroup, ListRow, Text, VStack } from '@tracta/design-system';
 
 import { today } from '@/shared/clock';
+import { healthSourceName } from '@/shared/health';
 import { formatDate, useTranslation } from '@/shared/i18n';
 
 import { HAxis } from './BarChart';
 import { CardHeader } from './CardHeader';
 import { WeightChart } from './WeightChart';
 import { bodyWindow, useBodyRange, useLatestBody } from '../api/useBody';
+import { useHealthConnection } from '../api/useHealth';
 import { healthIds as ids } from '../health.testids';
 import { weightPointsOf } from '../lib/body';
 import { dec01, dec1 } from '../lib/format';
@@ -30,6 +32,8 @@ export function BodySegment() {
   const router = useRouter();
   const range = useBodyRange();
   const latest = useLatestBody();
+  const { data: connection } = useHealthConnection();
+  const source = connection ? healthSourceName(connection.source) : t('body.sourceGeneric');
   const todayKey = today();
   const { from, to } = bodyWindow();
   const points = useMemo(() => weightPointsOf(range.data ?? [], from), [range.data, from]);
@@ -74,11 +78,11 @@ export function BodySegment() {
   return (
     <VStack gap="md">
       <Box testID={ids.bodyHero} gap="xs" py="sm" px="xxs">
-        <Text variant="secondary" color="text2">
+        <Text testID={ids.bodySource} variant="secondary" color="text2">
           {weight
             ? weight.source === 'manual'
               ? t('body.sourceManual', { date: dateLabel(weight.measuredOn) })
-              : t('body.sourceScale', { date: dateLabel(weight.measuredOn) })
+              : t('body.sourceScale', { source, date: dateLabel(weight.measuredOn) })
             : t('body.empty')}
         </Text>
         <Text testID={ids.bodyWeight} variant="heroLg">
@@ -112,9 +116,11 @@ export function BodySegment() {
               description={
                 !m
                   ? '—'
-                  : m.measuredOn === to
-                    ? t('body.measure.manualToday')
-                    : t('body.measure.manualOld', { date: shortDay(m.measuredOn) })
+                  : m.source === 'health'
+                    ? t('body.measure.imported', { source, date: dateLabel(m.measuredOn) })
+                    : m.measuredOn === to
+                      ? t('body.measure.manualToday')
+                      : t('body.measure.manualOld', { date: shortDay(m.measuredOn) })
               }
               value={m ? t('body.measure.cm', { value: dec01(m.value) }) : '—'}
               last={i === MEASURES.length - 1}
