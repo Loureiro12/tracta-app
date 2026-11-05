@@ -27,6 +27,8 @@
     "syncCta": "Try again",
     "toast": "Show toast",
     "toastMessage": "Workout saved",
-    "clear": "Clear states"
+    "clear": "Clear states",
+    "simulateOffline": "Simulate no internet",
+    "simulateOnline": "Back online"
   }
 }

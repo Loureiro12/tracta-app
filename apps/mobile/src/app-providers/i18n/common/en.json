@@ -26,5 +26,16 @@
     "workouts": "Workouts",
     "history": "History",
     "profile": "Profile"
+  },
+  "sync": {
+    "offlineTitle": "No internet",
+    "offlineIdle": "Workouts are saved on the device",
+    "offlineWaiting_one": "Workouts are saved on the device · {{count}} waiting to upload",
+    "offlineWaiting_other": "Workouts are saved on the device · {{count}} waiting to upload",
+    "failedTitle": "Sync failed",
+    "failedDescription_one": "{{count}} item not uploaded",
+    "failedDescription_other": "{{count}} items not uploaded",
+    "retry": "Try again",
+    "needsInternet": "This needs internet"
   }
 }

@@ -11,12 +11,15 @@ export const routinesKeys = {
   list: (userId: string | undefined) => ['routines', userId, 'list'] as const,
 };
 
+export const fetchRoutines = async (): Promise<Routine[]> =>
+  (await routines.listRoutines(supabase)).map(toRoutine);
+
 /** The user's routines (A/B/C…) with exercises, last sets and last-done dates. */
 export function useRoutines() {
   const { user } = useSession();
   return useQuery({
     queryKey: routinesKeys.list(user?.id),
-    queryFn: async (): Promise<Routine[]> => (await routines.listRoutines(supabase)).map(toRoutine),
+    queryFn: fetchRoutines,
     enabled: Boolean(user),
   });
 }

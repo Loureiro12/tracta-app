@@ -101,6 +101,8 @@ export function useHealthSync() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['health', 'sync'],
+    // Runs by itself when the app opens: failing with no internet isn't worth telling the user.
+    meta: { background: true },
     mutationFn: runSync,
     onSuccess: () => invalidateAfterSync(queryClient),
   });

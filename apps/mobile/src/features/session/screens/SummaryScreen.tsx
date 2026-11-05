@@ -86,8 +86,8 @@ export function SummaryScreen() {
   const save = () => {
     if (!session || saveSession.isPending) return;
     saveSession.mutate(toSavePayload(session, now(), t('session:header.freeName')), {
-      onSuccess: () => {
-        showToast(t('session:summary.saved'));
+      onSuccess: ({ sent }) => {
+        showToast(t(sent ? 'session:summary.saved' : 'session:summary.savedOffline'));
         leaveToHome();
       },
       onError: () => showToast(t('session:summary.saveError')),

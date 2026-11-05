@@ -1,0 +1,66 @@
+appId: com.tracta.mobile
+name: run-offline
+tags:
+  - run
+---
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.network"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.network"
+- assertVisible:
+    id: "app.banner.title"
+    text: "No internet"
+# An activity recorded with no internet waits on the device
+- openLink: "tracta://run/gps?type=walk&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- tapOn:
+    id: "run.gps.deny"
+- assertVisible:
+    id: "run.screen"
+- tapOn:
+    id: "run.live.pause"
+- tapOn:
+    id: "run.live.end"
+- assertVisible:
+    id: "run.summary.screen"
+- tapOn:
+    id: "run.summary.save"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Activity saved on the device"
+    timeout: 8000
+- assertVisible:
+    id: "home.screen"
+- assertVisible:
+    id: "app.banner.description"
+    text: "Workouts are saved on the device · 1 waiting to upload"
+# Internet back: the queue empties by itself and the activity reaches History
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.network"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.network"
+- extendedWaitUntil:
+    notVisible:
+      id: "app.banner"
+    timeout: 15000
+- tapOn:
+    id: "settings.nav.back"
+- tapOn:
+    id: "app.tab.history"
+- tapOn:
+    id: "history.calendar.days.26"
+- scrollUntilVisible:
+    element:
+      id: "history.day.sessions.activity-26.title"
+      text: "Walk"
+    centerElement: true

@@ -11,6 +11,10 @@ tags:
     id: "auth.login.signup"
 - assertVisible:
     id: "auth.signup.screen"
+- scrollUntilVisible:
+    element:
+      id: "auth.signup.login"
+    centerElement: true
 - tapOn:
     id: "auth.signup.login"
 - assertVisible:

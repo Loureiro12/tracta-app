@@ -1,17 +1,17 @@
-import { sessions, supabase, useMutation, useQueryClient } from '@/shared/api';
+import { useMutation } from '@/shared/api';
+import { saveThroughOutbox } from '@/shared/outbox';
+import { useSession } from '@/shared/session';
 
 import type { sessions as api } from '@tracta/api';
 
-/** Saves the finished session, then refreshes History, routines (last sets) and exercise history. */
+/**
+ * Keeps the finished session on the device and sends it when possible (right away if online).
+ * `sent` is false when it will upload later; the outbox refreshes the queries once it arrives.
+ */
 export function useSaveSession() {
-  const queryClient = useQueryClient();
+  const { user } = useSession();
   return useMutation({
-    mutationFn: (input: api.SaveSessionInput) => sessions.saveSession(supabase, input),
-    onSuccess: () =>
-      Promise.all(
-        [['history'], ['sessions'], ['routines'], ['exercises']].map((queryKey) =>
-          queryClient.invalidateQueries({ queryKey }),
-        ),
-      ),
+    mutationFn: (payload: api.SaveSessionInput) =>
+      saveThroughOutbox(user?.id ?? '', { kind: 'session', payload }),
   });
 }

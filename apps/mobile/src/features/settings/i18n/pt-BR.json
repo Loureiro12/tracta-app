@@ -27,6 +27,8 @@
     "syncCta": "Tentar de novo",
     "toast": "Mostrar toast",
     "toastMessage": "Treino salvo",
-    "clear": "Limpar estados"
+    "clear": "Limpar estados",
+    "simulateOffline": "Simular sem internet",
+    "simulateOnline": "Voltar a ficar on-line"
   }
 }

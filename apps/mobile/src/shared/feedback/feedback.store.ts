@@ -10,6 +10,8 @@ export type BannerState = {
   title: string;
   description: string;
   ctaLabel?: string;
+  /** What the CTA does; by default it only dismisses the banner. */
+  onPressCta?: () => void;
 } | null;
 export type MiniPlayerState = { title: string; subtitle: string; href: string } | null;
 

@@ -78,9 +78,10 @@ export function RunSummaryScreen() {
     if (saving !== 0 || !summary) return;
     setSaving(1);
     saveActivity.mutate(toActivityInput(summary, run?.intervals ?? null, notes, now()), {
-      onSuccess: () => {
+      onSuccess: ({ sent }) => {
         setSaving(2);
-        timers.current.push(setTimeout(() => finish(t('summary.toastSaved')), 900));
+        const message = t(sent ? 'summary.toastSaved' : 'summary.toastSavedOffline');
+        timers.current.push(setTimeout(() => finish(message), 900));
       },
       onError: () => {
         setSaving(0);

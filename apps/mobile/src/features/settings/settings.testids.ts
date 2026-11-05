@@ -16,4 +16,5 @@ export const settingsIds = {
   demoSync: testId('settings', 'demo', 'sync'),
   demoToast: testId('settings', 'demo', 'toast'),
   demoClear: testId('settings', 'demo', 'clear'),
+  demoNetwork: testId('settings', 'demo', 'network'),
 } as const;

@@ -54,6 +54,20 @@ Conta de demonstração (local/CI): `lucas@tracta.app` / `Tracta2026`. Amigos: a
 - **Tipos gerados sempre em dia:** a CI regenera e falha se houver diferença.
 - **Datas "de hoje"** vêm de `@/shared/clock` no app; o E2E congela em 2026-10-26 para casar com o seed.
 
+## Off-line first
+
+O treino funciona sem internet. O resto do app mostra os últimos dados, e o que não é treino avisa que precisa de conexão.
+
+- **Fila de envio (`@/shared/outbox`):** treinos e atividades finalizados são gravados no aparelho, uma chave do AsyncStorage por item, e enviados do mais antigo para o mais novo. Só some da fila o que o servidor confirmou. `useSaveSession`/`useSaveActivity` passam por ela: `sent: false` significa "salvo no aparelho, será enviado depois".
+- **Sem duplicar:** cada item tem um `clientId` gerado no aparelho. `workout_sessions` e `activities` têm `unique (owner_id, client_id)`, então reenviar devolve o registro que já existe.
+- **Quando envia:** ao abrir o app, ao voltar a rede, ao voltar para o primeiro plano e a cada 60 s enquanto houver fila (`SyncManager`). Depois de 5 falhas, ou de uma falha definitiva (`validation`, `forbidden`, `not_found`, `conflict`), o item aparece na faixa "Falha de sync" e só tenta de novo no botão ou nos gatilhos de abertura, rede e primeiro plano. Nenhum item é descartado sozinho.
+- **Leitura sem rede:** `startQueryPersistence` guarda em disco, por usuário e por até 30 dias, a lista de queries de `query-persistence.ts`. Só entra na lista o que sobrevive a JSON (nada de `Date`) e não expira (nada de URL assinada). `prefetchTrainingData` carrega rotinas e exercícios antes de serem necessários.
+- **Sessão sem rede:** token vencido sem conexão não desloga. `auth.restoreUser` separa "sem sessão" de "servidor inacessível", e o `SessionProvider` usa o último usuário conhecido. Só `SIGNED_OUT` encerra a sessão.
+- **Conectividade (`@/shared/network`):** NetInfo alimenta um store e o `onlineManager` do React Query. Mutations usam `networkMode: 'always'`, para falhar em vez de ficar pausadas com o botão girando.
+- **E2E:** o simulador não perde a rede, então builds E2E têm a linha "Simulate no internet" em Ajustes. Com ela ligada, toda chamada ao Supabase falha como falharia no aparelho, e o estado sobrevive a reiniciar o app.
+
+**Implantação:** aplique a migration `offline_saves` no projeto hospedado **antes** de publicar uma versão do app com a fila.
+
 ## Fotos de progresso (Storage) e exportação
 
 - **Bucket privado `progress-photos`** (criado na migration; até 5 MB, jpeg/png/webp/heic). Objetos em `<user_id>/<dia>-<sufixo>.<ext>`; as policies de `storage.objects` só deixam o dono ler, listar, enviar e apagar sob o próprio prefixo. A tabela `progress_photos` guarda dia, peso (última pesagem até o dia, se houver) e `storage_path`; o app mostra as fotos por URL assinada de 1 h (`photos.listPhotos`).

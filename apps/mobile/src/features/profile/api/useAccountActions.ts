@@ -1,4 +1,5 @@
 import { account, auth, supabase, useMutation, useQueryClient } from '@/shared/api';
+import { discardOutbox } from '@/shared/outbox';
 import { accountQueryKey, useSession } from '@/shared/session';
 
 import { useProfileStore } from '../model/profile.store';
@@ -113,9 +114,13 @@ export function useDeleteHistory() {
 /** Permanently deletes the account; the session gate then lands on the welcome screen. */
 export function useDeleteAccount() {
   const reset = useProfileStore((s) => s.reset);
+  const { user } = useSession();
   return useMutation({
     mutationFn: () => account.deleteAccount(supabase),
-    onSuccess: reset,
+    onSuccess: () => {
+      if (user) void discardOutbox(user.id);
+      reset();
+    },
   });
 }
 

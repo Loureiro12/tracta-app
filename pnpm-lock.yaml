@@ -55,9 +55,18 @@ importers:
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))
+      '@react-native-community/netinfo':
+        specifier: 12.0.1
+        version: 12.0.1(react-native@0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+      '@tanstack/query-async-storage-persister':
+        specifier: ^5.106.0
+        version: 5.106.0
       '@tanstack/react-query':
-        specifier: ^5.105.0
-        version: 5.105.0(@types/react@19.3.0)(react@19.3.0)
+        specifier: ^5.106.0
+        version: 5.106.0(@types/react@19.3.0)(react@19.3.0)
+      '@tanstack/react-query-persist-client':
+        specifier: ^5.106.0
+        version: 5.106.0(@tanstack/react-query@5.106.0(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@tracta/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -1304,6 +1313,12 @@ packages:
     peerDependencies:
       react-native: ^0.0.0-0 || >=0.65 <1.0
 
+  '@react-native-community/netinfo@12.0.1':
+    resolution: {integrity: sha512-P/3caXIvfYSJG8AWJVefukg+ZGRPs+M4Lp3pNJtgcTYoJxCjWrKQGNnCkj/Cz//zWa/avGed0i/wzm0T8vV2IQ==}
+    peerDependencies:
+      react: '*'
+      react-native: '>=0.59'
+
   '@react-native-healthkit/core@16.2.0':
     resolution: {integrity: sha512-DsWpfSDZsEywXVk/fscClWbd+dnH4vrryQtE9ZTLTpiBJcBG7Azr2c0hxhPspcvduQz3YTsXsLHuV0Yj9j5Grw==}
     peerDependencies:
@@ -1552,11 +1567,27 @@ packages:
       '@opentelemetry/api':
         optional: true
 
-  '@tanstack/query-core@5.105.0':
-    resolution: {integrity: sha512-7p56vRmT/z4UJ6sctGIdl5WRUQyUv53IUpUwEKi2g97zMbO7zh8ZsCLffGAvCPBR4xD72e3VXsDyLwXHhoNTMQ==}
+  '@tanstack/query-async-storage-persister@5.106.0':
+    resolution: {integrity: sha512-A9UeWFCEwdpccx67TdSBijb2PpJyQiJjJboreJZXMEigmNgMxO/tMHmH+u0cYlFFFnFdU4gU3LJSUS1XPSy73g==}
 
-  '@tanstack/react-query@5.105.0':
-    resolution: {integrity: sha512-y+hMuDERvgg6ay1da0V1a6ZC0ZONt7dELxSFkqRZuwm7p1TTZs0MoXrPlBRflIpRoYjvzQVYxycnLImpFLhWrw==}
+  '@tanstack/query-core@5.106.0':
+    resolution: {integrity: sha512-3GuqVrhCG0bBfmLt4AU0SIm8UuZ1rzeRjDiQBnYuzW3lkri1RdawWN73jZYvB4kC8WyDUoDgBx3kyO3TbNH/6Q==}
+
+  '@tanstack/query-persist-client-core@5.106.0':
+    resolution: {integrity: sha512-6ffZybiyjHK8RDBgXXSi1Krjw1xpvNQ4uQAtxb6FVXC8Ls3ycnQHu/64RusUMkvmGQrJS8XVr8KmRZl1FM7Erw==}
+
+  '@tanstack/react-query-persist-client@5.106.0':
+    resolution: {integrity: sha512-YCRMsFqUuE4eQRZkG5iaVdGBj98iBpd08YKzct2mKSCOEO6jKTzVszDchCLtTWCGYhNL5iWTvan+fyKMRK1XZQ==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.106.0
+      '@types/react': ^18 || ^19
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
+  '@tanstack/react-query@5.106.0':
+    resolution: {integrity: sha512-OuP/ST9dEMBwHhisE5A/bBSWMhMmB/xKPfeZ2U0Wy8W/txb9QiGd7iXhxJPQ7jGbfcKlV13sJUHip9Nki54yyg==}
     peerDependencies:
       '@types/react': ^18 || ^19
       react: ^18 || ^19
@@ -6085,6 +6116,11 @@ snapshots:
       merge-options: 3.0.4
       react-native: 0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
 
+  '@react-native-community/netinfo@12.0.1(react-native@0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+      react-native: 0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
+
   '@react-native-healthkit/core@16.2.0(react-native-nitro-modules@0.37.1(react-native@0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.1(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
       react: 19.3.0
@@ -6342,11 +6378,28 @@ snapshots:
       '@supabase/realtime-js': 2.118.0
       '@supabase/storage-js': 2.118.0
 
-  '@tanstack/query-core@5.105.0': {}
-
-  '@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0)':
+  '@tanstack/query-async-storage-persister@5.106.0':
     dependencies:
-      '@tanstack/query-core': 5.105.0
+      '@tanstack/query-core': 5.106.0
+      '@tanstack/query-persist-client-core': 5.106.0
+
+  '@tanstack/query-core@5.106.0': {}
+
+  '@tanstack/query-persist-client-core@5.106.0':
+    dependencies:
+      '@tanstack/query-core': 5.106.0
+
+  '@tanstack/react-query-persist-client@5.106.0(@tanstack/react-query@5.106.0(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)':
+    dependencies:
+      '@tanstack/query-persist-client-core': 5.106.0
+      '@tanstack/react-query': 5.106.0(@types/react@19.3.0)(react@19.3.0)
+      react: 19.3.0
+    optionalDependencies:
+      '@types/react': 19.3.0
+
+  '@tanstack/react-query@5.106.0(@types/react@19.3.0)(react@19.3.0)':
+    dependencies:
+      '@tanstack/query-core': 5.106.0
       react: 19.3.0
     optionalDependencies:
       '@types/react': 19.3.0

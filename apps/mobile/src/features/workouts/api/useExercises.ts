@@ -18,13 +18,15 @@ export const exercisesKeys = {
     ['exercises', userId, 'history', id] as const,
 };
 
+export const fetchExerciseLibrary = async (): Promise<LibraryExercise[]> =>
+  sortLibrary((await exercises.listExercises(supabase)).map(toLibraryExercise));
+
 /** Built-in + custom exercises with favorites/notes; favorites first. */
 export function useExerciseLibrary() {
   const { user } = useSession();
   return useQuery({
     queryKey: exercisesKeys.library(user?.id),
-    queryFn: async (): Promise<LibraryExercise[]> =>
-      sortLibrary((await exercises.listExercises(supabase)).map(toLibraryExercise)),
+    queryFn: fetchExerciseLibrary,
     enabled: Boolean(user),
   });
 }

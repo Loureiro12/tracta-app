@@ -122,7 +122,8 @@
     "savedCta": "Activity saved",
     "toastSaved": "Activity saved",
     "toastDiscarded": "Activity discarded",
-    "toastSaveError": "Couldn't save the activity. Try again."
+    "toastSaveError": "Couldn't save the activity. Try again.",
+    "toastSavedOffline": "Activity saved on the device"
   },
   "tracking": {
     "title": "Recording your activity",

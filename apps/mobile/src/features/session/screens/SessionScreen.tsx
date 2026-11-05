@@ -127,13 +127,20 @@ export function SessionScreen({ routine, free = false }: Props) {
   );
 
   if (!session) {
-    const failed = routineQuery.isError || (routineQuery.isSuccess && !loadedRoutine);
+    // Never loaded on this device and no internet to load it now: the query would wait forever.
+    const unavailable = routineQuery.isPaused && !loadedRoutine;
+    const failed =
+      routineQuery.isError || (routineQuery.isSuccess && !loadedRoutine) || unavailable;
     return (
       <Screen testID={sessionIds.screen} scroll={false}>
         {failed ? (
           <Card testID={`${sessionIds.screen}.error`} padding="xl" gap="sm">
             <Text variant="bodySemibold">
-              {routineQuery.isError ? t('state.errorTitle') : t('state.noRoutine')}
+              {unavailable
+                ? t('state.offline')
+                : routineQuery.isError
+                  ? t('state.errorTitle')
+                  : t('state.noRoutine')}
             </Text>
             <Button
               testID={`${sessionIds.screen}.error.retry`}

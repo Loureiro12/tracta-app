@@ -12,6 +12,7 @@ export { workoutsIds } from './workouts.testids';
 export { workoutsTranslations } from './i18n';
 export { useWorkoutsStore } from './model/workouts.store';
 // Server state (React Query over @tracta/api): routines, library, programs and race.
+export { prefetchTrainingData } from './api/prefetchTrainingData';
 export {
   routinesKeys,
   useRoutines,

@@ -1,0 +1,102 @@
+appId: com.tracta.mobile
+name: session-offline
+tags:
+  - session
+  - app
+---
+- runFlow: ../../subflows/launch.yaml
+# Cut the internet (simulated: every Supabase request fails as it would on the device)
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.network"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.network"
+- assertVisible:
+    id: "app.banner.title"
+    text: "No internet"
+- assertVisible:
+    id: "app.banner.description"
+    text: "Workouts are saved on the device"
+# A full workout works from what was cached while online
+- openLink: "tracta://session?routine=A&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "session.screen"
+- assertVisible:
+    id: "session.exercise.name"
+    text: "Supino reto com barra"
+- tapOn:
+    id: "session.nav.main"
+- assertVisible:
+    id: "session.rest.screen"
+- tapOn:
+    id: "session.rest.skip"
+- assertVisible:
+    id: "session.screen"
+- scrollUntilVisible:
+    element:
+      id: "session.actions.finish"
+    centerElement: true
+- tapOn:
+    id: "session.actions.finish"
+- assertVisible:
+    id: "session.summary.screen"
+- tapOn:
+    id: "session.summary.save"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Workout saved on the device"
+    timeout: 8000
+- assertVisible:
+    id: "home.screen"
+- assertVisible:
+    id: "app.banner.description"
+    text: "Workouts are saved on the device · 1 waiting to upload"
+# Closing the app loses neither the signed-in account, the cached data nor the queue
+- stopApp
+- launchApp:
+    clearState: false
+    clearKeychain: false
+- extendedWaitUntil:
+    visible:
+      id: "home.screen"
+    timeout: 20000
+- assertVisible:
+    id: "app.banner.description"
+    text: "Workouts are saved on the device · 1 waiting to upload"
+- tapOn:
+    id: "app.tab.workouts"
+- assertVisible:
+    id: "workouts.screen"
+- scrollUntilVisible:
+    element:
+      id: "workouts.routines.A"
+    centerElement: true
+# Internet back: the queue empties by itself and the workout reaches History
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.network"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.network"
+- extendedWaitUntil:
+    notVisible:
+      id: "app.banner"
+    timeout: 15000
+- tapOn:
+    id: "settings.nav.back"
+- tapOn:
+    id: "app.tab.history"
+- tapOn:
+    id: "history.calendar.days.26"
+- scrollUntilVisible:
+    element:
+      id: "history.day.sessions.strength-26.title"
+      text: "Treino A · Peito & Tríceps"
+    centerElement: true

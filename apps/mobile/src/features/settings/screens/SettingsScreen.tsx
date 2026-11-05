@@ -14,8 +14,10 @@ import {
   VStack,
 } from '@tracta/design-system';
 
+import { env } from '@/shared/config/env';
 import { useFeedbackStore } from '@/shared/feedback';
 import { useTranslation } from '@/shared/i18n';
+import { setSimulatedOffline, useSimulatedOffline } from '@/shared/network';
 
 import { useSettingsStore } from '../model/settings.store';
 import { settingsIds } from '../settings.testids';
@@ -37,6 +39,7 @@ const languageOptions: { value: LocalePreference; testID: string }[] = [
 
 /** App preferences (theme, language) plus demo switches for the design's edge states. */
 export function SettingsScreen() {
+  const simulatedOffline = useSimulatedOffline();
   const router = useRouter();
   const { t } = useTranslation('settings');
   const themePreference = useSettingsStore((s) => s.themePreference);
@@ -136,6 +139,14 @@ export function SettingsScreen() {
             labelColor="danger"
             onPress={() => setBanner(null)}
           />
+          {env.isE2E ? (
+            <ListRow
+              testID={settingsIds.demoNetwork}
+              label={t(simulatedOffline ? 'demo.simulateOnline' : 'demo.simulateOffline')}
+              chevron
+              onPress={() => void setSimulatedOffline(!simulatedOffline)}
+            />
+          ) : null}
         </ListGroup>
       </VStack>
     </Screen>

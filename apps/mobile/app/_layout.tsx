@@ -1,8 +1,13 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { Box } from '@tracta/design-system';
+
+import { AppBanner } from '@/app-providers/AppBanner';
 import { AppChrome } from '@/app-providers/AppChrome';
 import { AppProviders } from '@/app-providers/AppProviders';
+import { SyncManager } from '@/app-providers/SyncManager';
 import { SessionGate } from '@/shared/session';
 
 /**
@@ -24,35 +29,41 @@ export default function RootLayout() {
   return (
     <AppProviders>
       <StatusBar style="auto" />
-      <Stack
-        screenLayout={({ route, children }) =>
-          route.name.startsWith('(sheets)') ? (
-            <>
-              {children}
-              <AppChrome host="sheet" />
-            </>
-          ) : (
-            <>{children}</>
-          )
-        }
-        screenOptions={({ route }) => {
-          if (route.name.startsWith('(sheets)')) {
-            return {
-              headerShown: false,
-              presentation: 'transparentModal',
-              animation: 'slide_from_bottom',
-              contentStyle: { backgroundColor: 'transparent' },
-            };
-          }
-          if (route.name.startsWith('(auth)')) {
-            return { headerShown: false, animation: 'fade' };
-          }
-          return { headerShown: false, animation: 'slide_from_right' };
-        }}
-      >
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+      <Box flex={1}>
+        <AppBanner />
+        <SafeAreaProvider>
+          <Stack
+            screenLayout={({ route, children }) =>
+              route.name.startsWith('(sheets)') ? (
+                <>
+                  {children}
+                  <AppChrome host="sheet" />
+                </>
+              ) : (
+                <>{children}</>
+              )
+            }
+            screenOptions={({ route }) => {
+              if (route.name.startsWith('(sheets)')) {
+                return {
+                  headerShown: false,
+                  presentation: 'transparentModal',
+                  animation: 'slide_from_bottom',
+                  contentStyle: { backgroundColor: 'transparent' },
+                };
+              }
+              if (route.name.startsWith('(auth)')) {
+                return { headerShown: false, animation: 'fade' };
+              }
+              return { headerShown: false, animation: 'slide_from_right' };
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </SafeAreaProvider>
+      </Box>
       <SessionGate />
+      <SyncManager />
       <AppChrome />
     </AppProviders>
   );

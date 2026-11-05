@@ -1,6 +1,7 @@
 // Server access for features: the typed client, the shared React Query cache and the api package.
 export { supabase } from './client';
 export { queryClient } from './query-client';
+export { clearPersistedQueries, startQueryPersistence } from './query-persistence';
 export {
   ApiError,
   account,

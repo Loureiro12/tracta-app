@@ -26,5 +26,16 @@
     "workouts": "Treinos",
     "history": "Histórico",
     "profile": "Perfil"
+  },
+  "sync": {
+    "offlineTitle": "Sem internet",
+    "offlineIdle": "Treinos ficam salvos no aparelho",
+    "offlineWaiting_one": "Treinos salvos no aparelho · {{count}} aguardando envio",
+    "offlineWaiting_other": "Treinos salvos no aparelho · {{count}} aguardando envio",
+    "failedTitle": "Falha de sync",
+    "failedDescription_one": "{{count}} item não enviado",
+    "failedDescription_other": "{{count}} itens não enviados",
+    "retry": "Tentar de novo",
+    "needsInternet": "Isso precisa de internet"
   }
 }

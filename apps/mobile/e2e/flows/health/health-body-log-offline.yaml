@@ -1,0 +1,50 @@
+appId: com.tracta.mobile
+name: health-body-log-offline
+tags:
+  - health
+---
+- runFlow: ../../subflows/launch.yaml
+# Loaded while online: it stays readable with no internet
+- tapOn:
+    id: "app.tab.health"
+- tapOn:
+    id: "health.segment.body"
+- assertVisible:
+    id: "health.body.weight"
+    text: "78.1 kg"
+- openLink: "tracta://settings?locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "settings.demo.network"
+    centerElement: true
+- tapOn:
+    id: "settings.demo.network"
+- assertVisible:
+    id: "app.banner.title"
+    text: "No internet"
+- tapOn:
+    id: "settings.nav.back"
+# What isn't a workout needs the server: it says so instead of spinning or failing silently
+- assertVisible:
+    id: "health.body.weight"
+    text: "78.1 kg"
+- scrollUntilVisible:
+    element:
+      id: "health.body.register"
+    centerElement: true
+- tapOn:
+    id: "health.body.register"
+- assertVisible:
+    id: "health.body-log.sheet"
+- tapOn:
+    id: "health.body-log.arm.plus"
+- tapOn:
+    id: "health.body-log.save"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "This needs internet"
+    timeout: 8000
+- assertVisible:
+    id: "health.body-log.sheet"
