@@ -112,6 +112,15 @@ O treino funciona sem internet. O resto do app mostra os últimos dados, e o que
 - **Link de convite:** o app mostra `tracta.app/convite/<handle>`; a rota `tracta://social/add/<handle>` abre o perfil e envia o pedido. Em produção a página web `https://tracta.app/convite/<handle>` deve redirecionar para esse deep link (universal links ainda não configurados).
 - **Local:** `supabase start` serve as funções de `supabase/functions` (serviço edge-runtime). Se o stack subiu com `-x edge-runtime`, rode `supabase functions serve` em outro terminal; sem ele o envio por e-mail no app e `tests/invites.test.ts` falham. Os e-mails chegam no Mailpit (http://127.0.0.1:55324, API `/api/v1/search`). Mudanças em `config.toml`/`templates/` só valem após `supabase stop && supabase start`.
 
+## Entrar com Apple e Google
+
+- **Fluxo:** o app pega o ID token no aparelho (Apple pelo painel nativo do iOS com `expo-apple-authentication`; Google pelo OAuth com PKCE do `expo-auth-session`, com o cliente iOS e só `openid email profile`) e chama `auth.signInWithIdToken`. O provedor recebe o SHA-256 de um nonce e o Supabase o nonce cru. A primeira entrada cria a conta (`isNew` leva ao onboarding); uma conta com o mesmo e-mail verificado é a mesma conta.
+- **Nome:** a Apple só manda o nome na primeira autorização e fora do token; o app o grava no perfil. Sem ele o perfil fica com o prefixo do e-mail.
+- **Sem senha:** `AuthUser.hasPassword` é falso para quem só usa Apple/Google; a tela de perfil esconde a troca de senha.
+- **Plataformas:** Apple só no iOS (no Android exigiria o fluxo web e uma chave trocada a cada 6 meses). Google só no iOS até existir o cliente Android.
+- **Excluir conta (App Store 5.1.1(v)):** ao entrar com a Apple, o app manda o `authorizationCode` para a edge function `apple-account` (`action: 'link'`), que troca por um refresh token e guarda em `apple_tokens` (sem acesso de cliente). `account.deleteAccount` chama `action: 'revoke'` antes de apagar. Sem os secrets da Apple a função responde `skipped` e nada é guardado, como no stack local.
+- **E2E:** os painéis da Apple e do Google não são controláveis; em builds E2E os botões entram na conta demo.
+
 ## Conquistas, recap e resumo semanal
 
 Calculados na hora (sem tabela) por funções `security invoker` sobre `history_entries`, `session_sets` e `activities` do próprio usuário (`…_achievements.sql`, domínio `achievements` no `@tracta/api`). "Hoje"/início da semana vêm sempre do app. **Dia ativo** = dia local (São Paulo) com ao menos uma sessão ou atividade (corrida, caminhada…); semanas vão de segunda a domingo.
@@ -144,10 +153,11 @@ Os seeds definem loaders `seed.demo_<NN>_<o-que>()`; `seed.load_demo()` executa 
 ## Produção
 
 1. Crie o projeto no Supabase e rode `supabase link --project-ref <ref>` e `supabase db push` (só migrations; seeds não vão).
-2. Configure no painel: Site URL `tracta://`, redirect `tracta://**`, SMTP próprio, limites de taxa padrão e provedores Apple/Google quando houver credenciais.
+2. Configure no painel: Site URL `tracta://`, redirect `tracta://**`, SMTP próprio e limites de taxa padrão. Provedores: Apple com Client IDs `com.tracta.mobile` (sem secret); Google com os Client IDs Web e iOS, o Web primeiro, e o Client secret do cliente Web.
 3. Builds de release recebem `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` (o app recusa iniciar sem eles fora de dev/E2E).
 4. Edge functions: `supabase functions deploy invite-friend`. `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` já são injetados; defina `INVITE_REDIRECT_URL` (`supabase secrets set`) se o botão do e-mail não for `tracta://signup`. O template de convite (`supabase/templates/invite.html`, assunto em `config.toml`) precisa ser copiado para Auth › Email Templates › Invite user, e o SMTP próprio é obrigatório (o SMTP padrão do Supabase só entrega para membros do time).
-5. O job de E2E iOS da CI usa um projeto de staging com migrations + seed: defina os secrets `E2E_SUPABASE_URL`, `E2E_SUPABASE_ANON_KEY` e a variável `E2E_IOS_ENABLED=true`.
+5. **Publicar:** `APPLE_P8=<caminho do .p8> pnpm deploy:backend` confere se o CLI está ligado ao projeto tracta, mostra as migrations pendentes, pede confirmação e então aplica as migrations, publica todas as Edge Functions e grava os secrets da Apple (Team ID `G58V8BP6VH`, Key ID `LH4DLC9UC6`). Sem `APPLE_P8`, pula os secrets.
+6. O job de E2E iOS da CI usa um projeto de staging com migrations + seed: defina os secrets `E2E_SUPABASE_URL`, `E2E_SUPABASE_ANON_KEY` e a variável `E2E_IOS_ENABLED=true`.
 
 ## Fora do backend (por ora)
 

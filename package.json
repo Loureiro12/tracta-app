@@ -30,6 +30,7 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset && pnpm --filter @tracta/api gen:types",
     "db:test": "supabase test db",
+    "deploy:backend": "bash tooling/scripts/deploy-backend.sh",
     "test:api": "pnpm --filter @tracta/api test",
     "test:backend": "supabase test db && pnpm --filter @tracta/api test",
     "gen:types": "pnpm --filter @tracta/api gen:types"
