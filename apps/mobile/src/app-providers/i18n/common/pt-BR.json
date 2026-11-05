@@ -37,5 +37,61 @@
     "failedDescription_other": "{{count}} itens não enviados",
     "retry": "Tentar de novo",
     "needsInternet": "Isso precisa de internet"
+  },
+  "widgets": {
+    "signedOut": "Entre no Tracta",
+    "when": {
+      "today": "hoje",
+      "tomorrow": "amanhã"
+    },
+    "run": "Corrida",
+    "workout": "Treino {{label}}",
+    "week": {
+      "title": "Esta semana",
+      "progress": "{{done}} de {{goal}}",
+      "progressKm": "{{done}} de {{goal}} · {{km}} km",
+      "ring_one": "treino",
+      "ring_other": "treinos",
+      "next": "Próximo: {{items}}"
+    },
+    "today": {
+      "heading": "Hoje",
+      "meta": "{{count}} exercícios · ~{{minutes}} min",
+      "runMeta": "Dia de corrida",
+      "free": "Dia livre",
+      "steps": "{{steps}} passos",
+      "doneTitle": "Treino feito",
+      "doneMeta": "{{count}} de {{goal}} na semana",
+      "inlineAt": "{{what}} às {{time}}",
+      "inlineDone": "Treino feito hoje"
+    },
+    "streak": {
+      "label_one": "dia seguido",
+      "label_other": "dias seguidos"
+    },
+    "race": {
+      "distance": "{{km}} km",
+      "title": "Prova de {{label}}",
+      "countdown_one": "falta {{count}} dia",
+      "countdown_other": "faltam {{count}} dias",
+      "today": "é hoje",
+      "pace": "ritmo-alvo {{pace}}",
+      "none": "Sem prova marcada",
+      "noneHint": "defina em Treinos"
+    },
+    "summary": {
+      "title": "Como estou hoje",
+      "updated": "atualizado {{time}}",
+      "sleep": "Sono",
+      "sleepValue": "{{hours}}h {{minutes}}",
+      "steps": "Passos",
+      "raceTitle": "Prova de {{label}} · {{date}}",
+      "days_one": "{{count}} dia",
+      "days_other": "{{count}} dias",
+      "target": "Alvo",
+      "goal": "Meta",
+      "start": "Começar {{name}}",
+      "startFree": "Começar treino"
+    }
   }
 }

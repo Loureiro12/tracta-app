@@ -62,6 +62,17 @@ Estado global por feature com `zustand` em `model/<feature>.store.ts`, exportado
 
 Mecânica em `shared/i18n` (não conhece features); copy em `features/<f>/i18n`; composição em `app-providers/i18n/resources.ts`. Ver [I18N.md](I18N.md).
 
+### Widgets (iOS)
+
+Widgets da tela inicial e da tela bloqueada, feitos com `expo-widgets` (SwiftUI via `@expo/ui`). Ainda não há versão Android.
+
+- **Layouts:** `apps/mobile/widgets/*.tsx`, um arquivo por widget. Rodam num runtime isolado: sem hooks, i18n, imports de código do app nem constantes fora da função. Por isso recebem todo texto já traduzido.
+- **Dados:** `src/shared/widgets` monta uma linha do tempo de 7 dias (`buildWidgetTimeline`), e `src/app-providers/WidgetSync.tsx` a publica quando semana, plano, prova, sequência ou saúde mudam, e ao voltar para o app. Assim a virada do dia aparece mesmo com o app fechado. Sem sessão, todos os widgets mostram só o convite para entrar.
+- **Sem `null` nas props:** o armazenamento do App Group não guarda `null`; use um indicador (`hasRace`) e um objeto vazio.
+- **Fontes e nomes na galeria:** `plugins/withWidgetResources.js` copia o Archivo e as traduções dos nomes para a extensão. Ele fica antes do `expo-widgets` em `plugins`, porque os plugins listados antes rodam depois.
+- **Privacidade:** sono e passos usam `privacySensitive` e somem com o aparelho bloqueado; os widgets da tela bloqueada só mostram números de treino.
+- **Testes:** o Maestro não alcança widgets. A verificação é feita no simulador, adicionando-os pela galeria.
+
 ## Alias
 
 `@/` aponta para `apps/mobile/src`. Configurado em `tsconfig.json` (Expo resolve `paths` automaticamente).

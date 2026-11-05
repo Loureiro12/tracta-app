@@ -59,6 +59,8 @@ export {
   formatClock,
   formatKg,
   intervalPhases,
+  raceDays,
+  weekPlan,
 } from './model/workouts.helpers';
 export type {
   Routine,

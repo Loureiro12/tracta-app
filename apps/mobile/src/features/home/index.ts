@@ -5,5 +5,8 @@ export { useHomeStore } from './model/home.store';
 export { homeIds } from './home.testids';
 export { homeTranslations } from './i18n';
 export { useWeeklySummary } from './api/useWeeklySummary';
+export { useRecentEntries } from './api/useHomeActivity';
+export { useHomeGoals } from './api/useHomeAccount';
+export { useHomeHealth } from './api/useHomeHealth';
 export { previousWeekStart } from './lib/week';
 export { useWeekRange } from './hooks/useWeekRange';

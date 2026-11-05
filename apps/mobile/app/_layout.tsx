@@ -8,6 +8,7 @@ import { AppChrome } from '@/app-providers/AppChrome';
 import { AppProviders } from '@/app-providers/AppProviders';
 import { AppStatusBar } from '@/app-providers/AppStatusBar';
 import { SyncManager } from '@/app-providers/SyncManager';
+import { WidgetSync } from '@/app-providers/WidgetSync';
 import { SessionGate } from '@/shared/session';
 
 /**
@@ -64,6 +65,7 @@ export default function RootLayout() {
       </Box>
       <SessionGate />
       <SyncManager />
+      <WidgetSync />
       <AppChrome />
     </AppProviders>
   );

@@ -58,9 +58,9 @@ const config: ExpoConfig = {
         fonts: [
           './assets/fonts/Archivo100-Regular.ttf',
           './assets/fonts/Archivo100-Medium.ttf',
+          './assets/fonts/Archivo100-Regular.ttf',
           './assets/fonts/Archivo100-SemiBold.ttf',
           './assets/fonts/Archivo100-Bold.ttf',
-          './assets/fonts/Archivo100-ExtraBold.ttf',
           './assets/fonts/Archivo80-Bold.ttf',
           './assets/fonts/Archivo75-Bold.ttf',
           './assets/fonts/Archivo75-ExtraBold.ttf',
@@ -115,6 +115,89 @@ const config: ExpoConfig = {
     'expo-sharing',
     // Local notifications only (rest timer ending); no push.
     'expo-notifications',
+    // Before expo-widgets: plugins listed earlier run after it, once its target exists.
+    [
+      './plugins/withWidgetResources',
+      {
+        // Widget gallery names and descriptions are written in English in the widgets below.
+        strings: {
+          'pt-BR': {
+            "Today's workout": 'Treino de hoje',
+            'The workout on your plan, or your rest day.': 'O treino do plano, ou o dia livre.',
+            'This week': 'Semana',
+            'Your week of workouts and your goal progress.':
+              'Os treinos da semana e o progresso da meta.',
+            'Daily summary': 'Resumo do dia',
+            'Sleep, steps and your race, with shortcuts to train.':
+              'Sono, passos e a prova, com atalhos para treinar.',
+            Streak: 'Sequência',
+            'Days in a row with a workout.': 'Dias seguidos com treino.',
+            Race: 'Prova',
+            'Countdown and target pace for your race.': 'Contagem e ritmo-alvo da sua prova.',
+          },
+        },
+        fonts: [
+          './assets/fonts/Archivo100-SemiBold.ttf',
+          './assets/fonts/Archivo100-Bold.ttf',
+          './assets/fonts/Archivo100-ExtraBold.ttf',
+          './assets/fonts/Archivo80-Bold.ttf',
+          './assets/fonts/Archivo75-ExtraBold.ttf',
+          './assets/fonts/Archivo70-ExtraBold.ttf',
+        ],
+      },
+    ],
+    [
+      'expo-widgets',
+      {
+        widgets: [
+          {
+            name: 'TractaToday',
+            displayName: "Today's workout",
+            description: 'The workout on your plan, or your rest day.',
+            ios: {
+              supportedFamilies: ['systemSmall', 'accessoryInline'],
+              initialLayout: './widgets/TractaToday.tsx',
+            },
+          },
+          {
+            name: 'TractaWeek',
+            displayName: 'This week',
+            description: 'Your week of workouts and your goal progress.',
+            ios: {
+              supportedFamilies: ['systemMedium', 'accessoryCircular'],
+              initialLayout: './widgets/TractaWeek.tsx',
+            },
+          },
+          {
+            name: 'TractaSummary',
+            displayName: 'Daily summary',
+            description: 'Sleep, steps and your race, with shortcuts to train.',
+            ios: {
+              supportedFamilies: ['systemLarge'],
+              initialLayout: './widgets/TractaSummary.tsx',
+            },
+          },
+          {
+            name: 'TractaStreak',
+            displayName: 'Streak',
+            description: 'Days in a row with a workout.',
+            ios: {
+              supportedFamilies: ['accessoryCircular'],
+              initialLayout: './widgets/TractaStreak.tsx',
+            },
+          },
+          {
+            name: 'TractaRace',
+            displayName: 'Race',
+            description: 'Countdown and target pace for your race.',
+            ios: {
+              supportedFamilies: ['accessoryRectangular'],
+              initialLayout: './widgets/TractaRace.tsx',
+            },
+          },
+        ],
+      },
+    ],
   ],
   experiments: { typedRoutes: true },
   owner: 'loureiro_12',

@@ -37,5 +37,61 @@
     "failedDescription_other": "{{count}} items not uploaded",
     "retry": "Try again",
     "needsInternet": "This needs internet"
+  },
+  "widgets": {
+    "signedOut": "Sign in to Tracta",
+    "when": {
+      "today": "today",
+      "tomorrow": "tomorrow"
+    },
+    "run": "Run",
+    "workout": "Workout {{label}}",
+    "week": {
+      "title": "This week",
+      "progress": "{{done}} of {{goal}}",
+      "progressKm": "{{done}} of {{goal}} · {{km}} km",
+      "ring_one": "workout",
+      "ring_other": "workouts",
+      "next": "Next: {{items}}"
+    },
+    "today": {
+      "heading": "Today",
+      "meta": "{{count}} exercises · ~{{minutes}} min",
+      "runMeta": "Run day",
+      "free": "Rest day",
+      "steps": "{{steps}} steps",
+      "doneTitle": "Workout done",
+      "doneMeta": "{{count}} of {{goal}} this week",
+      "inlineAt": "{{what}} at {{time}}",
+      "inlineDone": "Workout done today"
+    },
+    "streak": {
+      "label_one": "day in a row",
+      "label_other": "days in a row"
+    },
+    "race": {
+      "distance": "{{km}} km",
+      "title": "{{label}} race",
+      "countdown_one": "{{count}} day to go",
+      "countdown_other": "{{count}} days to go",
+      "today": "race day",
+      "pace": "target pace {{pace}}",
+      "none": "No race set",
+      "noneHint": "set one in Workouts"
+    },
+    "summary": {
+      "title": "How I'm doing today",
+      "updated": "updated {{time}}",
+      "sleep": "Sleep",
+      "sleepValue": "{{hours}}h {{minutes}}",
+      "steps": "Steps",
+      "raceTitle": "{{label}} race · {{date}}",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "target": "Target",
+      "goal": "Goal time",
+      "start": "Start {{name}}",
+      "startFree": "Start a workout"
+    }
   }
 }
