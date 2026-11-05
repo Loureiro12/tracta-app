@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Box } from '@tracta/design-system';
@@ -7,6 +6,7 @@ import { Box } from '@tracta/design-system';
 import { AppBanner } from '@/app-providers/AppBanner';
 import { AppChrome } from '@/app-providers/AppChrome';
 import { AppProviders } from '@/app-providers/AppProviders';
+import { AppStatusBar } from '@/app-providers/AppStatusBar';
 import { SyncManager } from '@/app-providers/SyncManager';
 import { SessionGate } from '@/shared/session';
 
@@ -28,7 +28,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <AppProviders>
-      <StatusBar style="auto" />
+      <AppStatusBar />
       <Box flex={1}>
         <AppBanner />
         <SafeAreaProvider>
