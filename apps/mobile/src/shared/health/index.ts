@@ -1,5 +1,7 @@
 // Device health data (Apple Health / Health Connect) behind one interface; E2E uses a fake.
-export { getHealthSource } from './source';
+export { getGoogleHealthSource, getHealthSource, isGoogleHealthAvailable } from './source';
+export { GoogleHealthReconnectNeeded } from './google-auth';
+export { GoogleHealthNoProfile } from './google-health';
 export { collectHealthDays, lastDaysRange } from './aggregate';
 export { fakeHealthSource } from './fake';
 export type {

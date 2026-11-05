@@ -54,6 +54,24 @@ Conta de demonstração (local/CI): `lucas@tracta.app` / `Tracta2026`. Amigos: a
 - **Tipos gerados sempre em dia:** a CI regenera e falha se houver diferença.
 - **Datas "de hoje"** vêm de `@/shared/clock` no app; o E2E congela em 2026-10-26 para casar com o seed.
 
+## Google Health no iOS
+
+O iPhone não tem armazenamento local do Google Health, então o app lê a Google Health API direto do aparelho, sem servidor próprio. No Android o Google Health chega pelo Health Connect, e o card continua "Em validação".
+
+- **Leitura:** `@tracta/api` (`googleHealth`) chama a API e entrega os dados no mesmo formato do Apple Health; `health_days` e as telas não mudam. Só leitura: os escopos são `activity_and_fitness`, `health_metrics_and_measurements` e `sleep`, todos `.readonly`.
+- **Login:** `shared/health/google-auth.ts` usa OAuth com PKCE no navegador do sistema. O refresh token fica no Keychain, por conta Tracta; o Google não emite secret para clientes iOS.
+- **Fonte única:** `health_connections` tem uma linha por usuário, então conectar o Google Health substitui o Apple Health como fonte, e vice-versa.
+- **Sincronização:** 30 dias na primeira vez e 7 nas seguintes, ao abrir o app.
+
+**Configuração:**
+
+1. No Google Cloud, crie um projeto (um para testes e outro para produção), ative a Google Health API e crie um cliente OAuth **iOS** com o bundle `com.tracta.mobile`.
+2. Em Data Access, adicione os três escopos acima. Em Audience, cadastre os usuários de teste.
+3. Defina `EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID` no `.env` e no EAS e gere um novo build: o valor também registra o scheme de retorno. Sem ele, o iOS mantém o card "Em validação".
+4. Cada usuário precisa ter entrado antes no app Google Health, com um perfil criado.
+
+**Limites do Google:** em modo "Testing" o limite é de 100 usuários cadastrados, e o refresh token expira em 7 dias (o card pede "Conectar de novo"). Para abrir ao público é preciso passar pela verificação OAuth, que inclui uma revisão de segurança por terceiros.
+
 ## Off-line first
 
 O treino funciona sem internet. O resto do app mostra os últimos dados, e o que não é treino avisa que precisa de conexão.
@@ -120,4 +138,4 @@ Os seeds definem loaders `seed.demo_<NN>_<o-que>()`; `seed.load_demo()` executa 
 
 ## Fora do backend (por ora)
 
-Sono, passos, distância, energia e frequência cardíaca são **lidos** do Apple Health/Health Connect no aparelho (`apps/mobile/src/shared/health`: um `HealthSource` por plataforma e um fake determinístico no E2E) e **sincronizados como agregados diários**: `health_days` (um dia local por linha; o sono pertence ao dia em que a pessoa acordou) via `upsert_health_days()`, que exige uma linha em `health_connections` e carimba `last_synced_at`. Um trigger espelha `health_days.steps` em `daily_summaries.steps` (feed dos amigos e desafios) sem mexer no `updated_at` do resumo. Amostras brutas (minuto a minuto) nunca saem do aparelho; desconectar apaga só a conexão, e Privacidade › "Apagar dados de saúde sincronizados" apaga `health_days`. O GPS fica no aparelho enquanto a atividade acontece e só o percurso final é salvo (ver acima). Compras e assinaturas estão **ocultas no app por enquanto**: não há paywall, gerenciamento de plano nem selo PRO, e programas, provas e intervalados ficam liberados para todos. O backend mantém a tabela `subscriptions` e o `isPro` em `account.getAccount`, prontos para quando a integração com a loja voltar.
+Sono, passos, distância, energia e frequência cardíaca são **lidos** do Apple Health/Health Connect no aparelho (ou da Google Health API, ver acima) (`apps/mobile/src/shared/health`: um `HealthSource` por plataforma e um fake determinístico no E2E) e **sincronizados como agregados diários**: `health_days` (um dia local por linha; o sono pertence ao dia em que a pessoa acordou) via `upsert_health_days()`, que exige uma linha em `health_connections` e carimba `last_synced_at`. Um trigger espelha `health_days.steps` em `daily_summaries.steps` (feed dos amigos e desafios) sem mexer no `updated_at` do resumo. Amostras brutas (minuto a minuto) nunca saem do aparelho; desconectar apaga só a conexão, e Privacidade › "Apagar dados de saúde sincronizados" apaga `health_days`. O GPS fica no aparelho enquanto a atividade acontece e só o percurso final é salvo (ver acima). Compras e assinaturas estão **ocultas no app por enquanto**: não há paywall, gerenciamento de plano nem selo PRO, e programas, provas e intervalados ficam liberados para todos. O backend mantém a tabela `subscriptions` e o `isPro` em `account.getAccount`, prontos para quando a integração com a loja voltar.

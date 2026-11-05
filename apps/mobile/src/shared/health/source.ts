@@ -3,10 +3,11 @@ import { Platform } from 'react-native';
 import { env } from '@/shared/config/env';
 
 import { fakeHealthSource } from './fake';
+import { fakeGoogleHealthSource, googleHealthSource } from './google-health';
 import { healthConnectSource } from './health-connect';
 import { healthKitSource } from './healthkit';
 
-import type { HealthSource } from './types';
+import type { GoogleHealthClient, HealthSource, HealthSourceKind } from './types';
 
 let resolved: Promise<HealthSource | null> | null = null;
 
@@ -14,8 +15,10 @@ let resolved: Promise<HealthSource | null> | null = null;
  * The device's Health store: the deterministic fake in E2E builds, Apple Health on iOS and
  * Health Connect on Android. In development, a simulator/emulator without the native store falls
  * back to the fake so the screens still show data. Null = no Health store on this device.
+ * `kind` is the connection's source: Google Health isn't tied to the device, so it's asked by name.
  */
-export function getHealthSource(): Promise<HealthSource | null> {
+export function getHealthSource(kind?: HealthSourceKind): Promise<HealthSource | null> {
+  if (kind === 'google_health') return Promise.resolve(getGoogleHealthSource());
   resolved ??= (async () => {
     if (env.isE2E) return fakeHealthSource;
     const native =
@@ -28,4 +31,13 @@ export function getHealthSource(): Promise<HealthSource | null> {
     return env.isDev ? fakeHealthSource : null;
   })();
   return resolved;
+}
+
+export function getGoogleHealthSource(): HealthSource & GoogleHealthClient {
+  return env.isE2E ? fakeGoogleHealthSource : googleHealthSource;
+}
+
+/** On Android, Google Health reaches the app through Health Connect, with no sign-in of its own. */
+export function isGoogleHealthAvailable(): boolean {
+  return env.isE2E || (Platform.OS === 'ios' && Boolean(env.googleHealthIosClientId));
 }

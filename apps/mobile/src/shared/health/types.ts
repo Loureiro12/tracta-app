@@ -1,5 +1,5 @@
 /** Which on-device store a HealthSource talks to (matches the backend's `health_connections.source`). */
-export type HealthSourceKind = 'apple_health' | 'health_connect';
+export type HealthSourceKind = 'apple_health' | 'health_connect' | 'google_health';
 
 /** Data types the app reads. Same keys as the permission screen (features/auth). */
 export type HealthReadType =
@@ -56,6 +56,13 @@ export type WorkoutToSave = {
   distanceM?: number;
   energyKcal?: number;
   title?: string;
+};
+
+/** Extra operations of a source that needs its own sign-in (Google Health). */
+export type GoogleHealthClient = {
+  /** False when the user must sign in to Google again (consent expired or revoked). */
+  isLinked(): Promise<boolean>;
+  signOut(): Promise<void>;
 };
 
 /**

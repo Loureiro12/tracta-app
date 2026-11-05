@@ -1,0 +1,67 @@
+appId: com.tracta.mobile
+name: auth-google-health
+tags:
+  - auth
+  - health
+---
+# Google's own pages can't be driven here: E2E builds use a fake source behind the same screens.
+- runFlow: ../../subflows/launch.yaml
+- openLink: "tracta://connect?mode=settings&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- assertVisible:
+    id: "auth.connect.screen"
+- assertVisible:
+    id: "auth.connect.health.status"
+    text: "Connected"
+- scrollUntilVisible:
+    element:
+      id: "auth.connect.google.connect"
+    centerElement: true
+- assertVisible:
+    id: "auth.connect.google.status"
+    text: "Not connected"
+- tapOn:
+    id: "auth.connect.google.connect"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Google Health connected"
+    timeout: 10000
+# It replaces Apple Health as the source
+- scrollUntilVisible:
+    element:
+      id: "auth.connect.google.disconnect"
+    centerElement: true
+- assertVisible:
+    id: "auth.connect.google.status"
+    text: "Connected"
+- assertVisible:
+    id: "auth.connect.health.status"
+    text: "Not connected"
+- tapOn:
+    id: "auth.connect.back"
+- tapOn:
+    id: "app.tab.profile"
+- scrollUntilVisible:
+    element:
+      id: "profile.sources.card"
+    centerElement: true
+- assertVisible:
+    text: "Reads: steps, distance, energy, heart rate, sleep. Writes nothing."
+# Disconnecting stops the sync
+- openLink: "tracta://connect?mode=settings&locale=en"
+- runFlow: ../../subflows/accept-deep-link-prompt.yaml
+- scrollUntilVisible:
+    element:
+      id: "auth.connect.google.disconnect"
+    centerElement: true
+- tapOn:
+    id: "auth.connect.google.disconnect"
+- extendedWaitUntil:
+    visible:
+      id: "app.toast"
+      text: "Google Health disconnected"
+    timeout: 10000
+- assertVisible:
+    id: "auth.connect.google.status"
+    text: "Not connected"

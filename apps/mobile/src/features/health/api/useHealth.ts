@@ -12,7 +12,7 @@ import {
   useQueryClient,
 } from '@/shared/api';
 import { now, toDateKey } from '@/shared/clock';
-import { collectHealthDays, getHealthSource } from '@/shared/health';
+import { collectHealthDays, getGoogleHealthSource, getHealthSource } from '@/shared/health';
 import { useSession } from '@/shared/session';
 
 import type { HealthPermissions } from '@/shared/health';
@@ -22,12 +22,15 @@ import type { health as api } from '@tracta/api';
 export const HEALTH_WINDOW_DAYS = 60;
 /** Days read from the device on every sync. */
 export const SYNC_DAYS = 30;
+/** Google Health counts API calls: after the first sync, only the days that may have changed. */
+const GOOGLE_RESYNC_DAYS = 7;
 /** Foregrounding the app syncs again only after this long. */
 const RESYNC_AFTER_MS = 5 * 60_000;
 
 export const healthKeys = {
   all: ['health'] as const,
   connection: (userId: string | undefined) => ['health', 'connection', userId] as const,
+  googleLinked: (userId: string | undefined) => ['health', 'google-linked', userId] as const,
   days: (userId: string | undefined, from: string, to: string) =>
     ['health', 'days', userId, from, to] as const,
 };
@@ -91,9 +94,11 @@ function invalidateAfterSync(queryClient: ReturnType<typeof useQueryClient>) {
 
 /** Reads the last 30 days from the device and upserts them. Resolves the sync instant. */
 async function runSync(): Promise<string | null> {
-  const source = await getHealthSource();
+  const connection = await health.getConnection(supabase);
+  const source = await getHealthSource(connection?.source);
   if (!source) return null;
-  const days = await collectHealthDays(source, now(), SYNC_DAYS);
+  const incremental = source.kind === 'google_health' && connection?.lastSyncedAt;
+  const days = await collectHealthDays(source, now(), incremental ? GOOGLE_RESYNC_DAYS : SYNC_DAYS);
   return health.syncDays(supabase, { source: source.kind, days });
 }
 
@@ -105,8 +110,12 @@ export function useHealthSync() {
     meta: { background: true },
     mutationFn: runSync,
     onSuccess: () => invalidateAfterSync(queryClient),
+    // A sync that lost Google's consent must show up as "Reconnect".
+    onError: () => queryClient.invalidateQueries({ queryKey: ['health', 'google-linked'] }),
   });
 }
+
+const GOOGLE_READ_TYPES = ['steps', 'distance', 'active', 'resting', 'heart', 'sleep'] as const;
 
 export class HealthPermissionDenied extends Error {
   constructor() {
@@ -138,6 +147,59 @@ export function useConnectHealth() {
       return connection;
     },
     onSettled: () => invalidateAfterSync(queryClient),
+  });
+}
+
+/**
+ * Signs in to Google, records Google Health as the source (it replaces any other one) and runs the
+ * first sync. Rejects with HealthPermissionDenied if the user backs out, and GoogleHealthNoProfile
+ * if the account has nothing to read yet.
+ */
+export function useConnectGoogleHealth() {
+  const queryClient = useQueryClient();
+  const { user } = useSession();
+  return useMutation({
+    mutationFn: async (): Promise<api.HealthConnection> => {
+      const source = getGoogleHealthSource();
+      if (!(await source.requestPermissions({ read: GOOGLE_READ_TYPES, write: [] }))) {
+        throw new HealthPermissionDenied();
+      }
+      const connection = await health.connect(supabase, {
+        source: source.kind,
+        readTypes: [...GOOGLE_READ_TYPES],
+        writeTypes: [],
+      });
+      queryClient.setQueryData(healthKeys.connection(user?.id), connection);
+      await runSync();
+      return connection;
+    },
+    onSettled: () => invalidateAfterSync(queryClient),
+  });
+}
+
+/** Whether Google's consent is stored here; false asks the user to connect again. */
+export function useGoogleHealthLinked(enabled: boolean) {
+  const { user } = useSession();
+  return useQuery({
+    queryKey: healthKeys.googleLinked(user?.id),
+    queryFn: () => getGoogleHealthSource().isLinked(),
+    enabled: enabled && Boolean(user),
+  });
+}
+
+/** Stops syncing Google Health and revokes the access Google gave the app. Keeps the synced days. */
+export function useDisconnectGoogleHealth() {
+  const queryClient = useQueryClient();
+  const { user } = useSession();
+  return useMutation({
+    mutationFn: async () => {
+      await health.disconnect(supabase, {});
+      await getGoogleHealthSource().signOut();
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(healthKeys.connection(user?.id), null);
+      return invalidateAfterSync(queryClient);
+    },
   });
 }
 

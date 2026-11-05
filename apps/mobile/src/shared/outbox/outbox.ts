@@ -64,7 +64,7 @@ async function writeActivityToHealth(entry: OutboxEntry): Promise<void> {
   const input = entry.payload;
   const connection = await health.getConnection(supabase);
   if (!connection?.writeTypes.includes('workouts')) return;
-  const source = await getHealthSource();
+  const source = await getHealthSource(connection.source);
   if (!source) return;
   const start = new Date(input.startedAt);
   const distance = connection.writeTypes.includes('distance') ? input.distanceM : undefined;

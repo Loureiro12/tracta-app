@@ -22,6 +22,12 @@ export function useHealthGoals(): HealthGoals {
  * Everything the Health screens read: synced days (as a day lookup), goals, the connection and
  * the time of the last sync ("16:12"), plus the history entries of the same window.
  */
+const SOURCE_NAMES = {
+  apple_health: 'Apple Health',
+  health_connect: 'Health Connect',
+  google_health: 'Google Health',
+} as const;
+
 export function useHealthData() {
   const days = useHealthDays();
   const entries = useHealthEntries();
@@ -37,7 +43,7 @@ export function useHealthData() {
     entries: entries.data ?? [],
     connection: connection ?? null,
     syncTime: connection?.lastSyncedAt ? timeOf(connection.lastSyncedAt) : null,
-    sourceName: connection?.source === 'health_connect' ? 'Health Connect' : 'Apple Health',
+    sourceName: SOURCE_NAMES[connection?.source ?? 'apple_health'],
     isLoading: days.isLoading,
     isError: days.isError,
     refetch: days.refetch,

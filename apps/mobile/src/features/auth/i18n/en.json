@@ -122,9 +122,19 @@
     },
     "google": {
       "title": "Google Health",
-      "status": "In validation",
-      "description": "Still testing which workouts show up there. We only enable it after confirming with real tests.",
-      "notify": "Let me know when it's available"
+      "statusValidating": "In validation",
+      "statusOff": "Not connected",
+      "statusOn": "Connected",
+      "statusReconnect": "Reconnect",
+      "description": "Reads steps, distance, energy, heart rate and sleep from your Google account to show your day. Sends nothing to Google. It replaces Apple Health as your source.",
+      "descriptionValidating": "Still testing which workouts show up there. We only enable it after confirming with real tests.",
+      "connect": "Connect Google Health",
+      "reconnect": "Connect again",
+      "disconnect": "Disconnect",
+      "connectedToast": "Google Health connected",
+      "disconnectedToast": "Google Health disconnected",
+      "noProfileToast": "Set up the Google Health app first",
+      "failedToast": "Couldn't connect. Try again."
     },
     "gps": {
       "title": "Location (GPS)",

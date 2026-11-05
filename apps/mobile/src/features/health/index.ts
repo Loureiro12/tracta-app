@@ -10,7 +10,10 @@ export type { HealthSegment, MetricKey } from './model/health.types';
 export {
   HealthPermissionDenied,
   useAutoHealthSync,
+  useConnectGoogleHealth,
   useConnectHealth,
+  useDisconnectGoogleHealth,
+  useGoogleHealthLinked,
   useDeleteHealthData,
   useDisconnectHealth,
   useHealthConnection,

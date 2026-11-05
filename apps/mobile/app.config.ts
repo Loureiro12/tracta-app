@@ -2,11 +2,15 @@ import type { ExpoConfig } from 'expo/config';
 
 const APP_ID = 'com.tracta.mobile';
 
+/** Google sends the OAuth response to the reversed client id, so the app must own that scheme. */
+const googleClientId = process.env.EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID;
+const googleScheme = googleClientId?.split('.').reverse().join('.');
+
 const config: ExpoConfig = {
   name: 'Tracta',
   slug: 'tracta',
   version: '0.1.0',
-  scheme: 'tracta',
+  scheme: googleScheme ? ['tracta', googleScheme] : 'tracta',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',

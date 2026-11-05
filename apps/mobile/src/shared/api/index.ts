@@ -10,6 +10,7 @@ export {
   auth,
   body,
   exercises,
+  googleHealth,
   health,
   history,
   invites,

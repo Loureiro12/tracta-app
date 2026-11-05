@@ -53,7 +53,9 @@
     "healthConnect": "Health Connect",
     "healthConnectStatus": "Conectado",
     "healthConnectDescription": "Lê: passos, distância, energia, frequência cardíaca, sono. Grava: resumo dos treinos.",
-    "lastSync": "Última sincronização {{time}}"
+    "lastSync": "Última sincronização {{time}}",
+    "googleConnected": "Conectado",
+    "googleConnectedDescription": "Lê: passos, distância, energia, frequência cardíaca, sono. Não grava nada."
   },
   "actions": {
     "achievements": "Conquistas",

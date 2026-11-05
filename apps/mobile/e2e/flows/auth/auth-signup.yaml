@@ -173,8 +173,6 @@ tags:
       id: "auth.connect.notifications"
     centerElement: true
 - tapOn:
-    id: "auth.connect.google.notify"
-- tapOn:
     id: "auth.connect.gps"
 - tapOn:
     id: "auth.connect.notifications"

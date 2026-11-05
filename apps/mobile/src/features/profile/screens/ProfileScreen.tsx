@@ -158,15 +158,21 @@ function ProfileBody({ account }: { account: Account }) {
             <Text variant="cardTitleSm">{t('sources.googleHealth')}</Text>
             <Text
               variant="captionSemibold"
-              color={source === 'health_connect' ? 'success' : 'warnText'}
+              color={
+                source === 'health_connect' || source === 'google_health' ? 'success' : 'warnText'
+              }
             >
               {source === 'health_connect'
                 ? t('sources.healthConnectStatus')
-                : t('sources.googleStatus')}
+                : source === 'google_health'
+                  ? t('sources.googleConnected')
+                  : t('sources.googleStatus')}
             </Text>
           </HStack>
           <Text variant="secondary" color="text2">
-            {t('sources.googleDescription')}
+            {source === 'google_health'
+              ? t('sources.googleConnectedDescription')
+              : t('sources.googleDescription')}
           </Text>
         </VStack>
         <Divider />

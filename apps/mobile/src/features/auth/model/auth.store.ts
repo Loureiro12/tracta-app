@@ -9,14 +9,12 @@ type AuthState = {
   email: string;
   /** A Health connection (permission prompt + first import) is running. */
   healthBusy: boolean;
-  googleNotify: boolean;
   gps: boolean;
   notifications: boolean;
   permissions: Record<PermissionKey, boolean>;
   setEmail: (email: string) => void;
   togglePermission: (key: PermissionKey) => void;
   setAllRead: (on: boolean) => void;
-  setGoogleNotify: (on: boolean) => void;
   setGps: (on: boolean) => void;
   setNotifications: (on: boolean) => void;
   setHealthBusy: (busy: boolean) => void;
@@ -29,7 +27,6 @@ type AuthState = {
 export const useAuthStore = create<AuthState>((set) => ({
   email: '',
   healthBusy: false,
-  googleNotify: false,
   gps: false,
   notifications: false,
   permissions: DEFAULT_PERMISSIONS,
@@ -42,7 +39,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       for (const type of READ_TYPES) permissions[`read.${type}`] = on;
       return { permissions };
     }),
-  setGoogleNotify: (googleNotify) => set({ googleNotify }),
   setGps: (gps) => set({ gps }),
   setNotifications: (notifications) => set({ notifications }),
   setHealthBusy: (healthBusy) => set({ healthBusy }),

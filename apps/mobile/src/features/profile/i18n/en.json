@@ -53,7 +53,9 @@
     "healthConnect": "Health Connect",
     "healthConnectStatus": "Connected",
     "healthConnectDescription": "Reads: steps, distance, energy, heart rate, sleep. Writes: workout summaries.",
-    "lastSync": "Last sync {{time}}"
+    "lastSync": "Last sync {{time}}",
+    "googleConnected": "Connected",
+    "googleConnectedDescription": "Reads: steps, distance, energy, heart rate, sleep. Writes nothing."
   },
   "actions": {
     "achievements": "Achievements",

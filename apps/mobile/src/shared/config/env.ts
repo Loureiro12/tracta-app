@@ -47,4 +47,6 @@ export const env = {
   /** Freezes "today" (YYYY-MM-DD) so demo data and E2E assertions line up. */
   fixedToday: process.env.EXPO_PUBLIC_FIXED_TODAY ?? (isE2E ? '2026-10-26' : undefined),
   supabase: supabaseConfig(),
+  /** OAuth client of the Google Health connection; without it, iOS doesn't offer the connection. */
+  googleHealthIosClientId: process.env.EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID,
 } as const;

@@ -23,6 +23,7 @@ import { useTranslation } from '@/shared/i18n';
 import { authIds } from '../auth.testids';
 import { AuthBackButton } from '../components/AuthBackButton';
 import { AuthTitle } from '../components/AuthTitle';
+import { GoogleHealthCard } from '../components/GoogleHealthCard';
 import { ToggleRow } from '../components/ToggleRow';
 import { FOUND_SOURCES } from '../model/auth.mock';
 import { useAuthStore } from '../model/auth.store';
@@ -40,11 +41,11 @@ export function ConnectionsScreen({ mode }: Props) {
   const showToast = useFeedbackStore((s) => s.showToast);
   const healthBusy = useAuthStore((s) => s.healthBusy);
   const { data: connection } = useHealthConnection();
-  const health = healthBusy ? 'busy' : connection ? 'on' : 'off';
-  const googleNotify = useAuthStore((s) => s.googleNotify);
+  // Apple Health / Health Connect only: Google Health has its own card.
+  const deviceConnected = connection && connection.source !== 'google_health';
+  const health = healthBusy ? 'busy' : deviceConnected ? 'on' : 'off';
   const gps = useAuthStore((s) => s.gps);
   const notifications = useAuthStore((s) => s.notifications);
-  const setGoogleNotify = useAuthStore((s) => s.setGoogleNotify);
   const setGps = useAuthStore((s) => s.setGps);
   const setNotifications = useAuthStore((s) => s.setNotifications);
 
@@ -53,7 +54,7 @@ export function ConnectionsScreen({ mode }: Props) {
   const openHealth = () => router.push('/connect/health');
   const ctaLabel = settings
     ? t('connect.cta.done')
-    : health === 'on'
+    : connection
       ? t('connect.cta.start')
       : t('connect.cta.continue');
 
@@ -152,24 +153,7 @@ export function ConnectionsScreen({ mode }: Props) {
           ) : null}
         </Card>
 
-        <Card>
-          <HStack justify="space-between" gap="sm">
-            <Text variant="subtitle">{t('connect.google.title')}</Text>
-            <Chip label={t('connect.google.status')} tone="warn" size="sm" />
-          </HStack>
-          <Text variant="small" color="text2">
-            {t('connect.google.description')}
-          </Text>
-          <Divider />
-          <ToggleRow
-            testID={authIds.connectGoogleNotify}
-            label={t('connect.google.notify')}
-            value={googleNotify}
-            onValueChange={setGoogleNotify}
-            compact
-            last
-          />
-        </Card>
+        <GoogleHealthCard />
 
         <Card padding="xs" px="xl" gap="none">
           <ToggleRow
