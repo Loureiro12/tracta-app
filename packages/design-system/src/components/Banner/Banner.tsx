@@ -17,14 +17,25 @@ export type BannerProps = Testable & {
   description: string;
   ctaLabel?: string;
   onPressCta?: () => void;
+  /** Status bar height, when the strip sits at the very top of the window. */
+  safeTop?: number;
 };
 
 /** 44px status strip under the status bar: offline (neutral) or sync failure (warn). */
-export function Banner({ variant, title, description, ctaLabel, onPressCta, testID }: BannerProps) {
+export function Banner({
+  variant,
+  title,
+  description,
+  ctaLabel,
+  onPressCta,
+  safeTop = 0,
+  testID,
+}: BannerProps) {
   const theme = useTheme();
   const style = useMemo<ViewStyle>(
     () => ({
-      height: 44,
+      height: 44 + safeTop,
+      paddingTop: safeTop,
       flexDirection: 'row',
       alignItems: 'center',
       gap: 10,
@@ -32,7 +43,7 @@ export function Banner({ variant, title, description, ctaLabel, onPressCta, test
       paddingRight: 10,
       backgroundColor: variant === 'sync' ? theme.colors.warnBg : theme.colors.track,
     }),
-    [theme, variant],
+    [theme, variant, safeTop],
   );
   return (
     <Box testID={testID} style={style}>
