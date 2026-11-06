@@ -49,6 +49,8 @@ export const env = {
   supabase: supabaseConfig(),
   /** OAuth client of the Google Health connection; without it, iOS doesn't offer the connection. */
   googleHealthIosClientId: process.env.EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID,
+  /** Google's web OAuth client: on Android, Google issues the sign-in ID token for it. */
+  googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   /** Bundle id / package: how the Health stores identify what this app wrote. */
   appId:
     Platform.OS === 'android'

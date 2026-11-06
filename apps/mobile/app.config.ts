@@ -81,8 +81,9 @@ const config: ExpoConfig = {
         // Release builds at launch with "Symbol not found: ...EventEmitter...eventRuntime".
         // Building the Expo modules from source avoids the mismatch. Re-evaluate on SDK upgrades.
         ios: { usePrecompiledModules: false },
-        // Health Connect needs Android 8+ and SDK 36 headers.
-        android: { compileSdkVersion: 36, targetSdkVersion: 36, minSdkVersion: 26 },
+        // Health Connect needs Android 8+; Expo UI and Compose compile against SDK 37. The target
+        // stays 36 so the app's runtime behaviour doesn't change with it.
+        android: { compileSdkVersion: 37, targetSdkVersion: 36, minSdkVersion: 26 },
       },
     ],
     [

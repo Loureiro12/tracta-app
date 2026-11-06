@@ -32,7 +32,7 @@ async function newNonce(): Promise<{ raw: string; hashed: string }> {
 
 /**
  * Providers this device can offer. Apple only on iOS (Android would need the web flow and a key
- * rotated every 6 months); Google only where an OAuth client is set up (iOS for now).
+ * rotated every 6 months); Google where its OAuth client is set up.
  */
 export async function availableProviders(): Promise<SocialProvider[]> {
   if (env.isE2E) return ['Apple', 'Google'];
@@ -41,6 +41,7 @@ export async function availableProviders(): Promise<SocialProvider[]> {
     providers.push('Apple');
   }
   if (Platform.OS === 'ios' && env.googleHealthIosClientId) providers.push('Google');
+  if (Platform.OS === 'android' && env.googleWebClientId) providers.push('Google');
   return providers;
 }
 
@@ -75,7 +76,35 @@ async function withApple(): Promise<SocialResult> {
   return user;
 }
 
+/**
+ * Android: Google's own sign-in sheet. Google doesn't allow the browser flow there; the token is
+ * issued for the web client, and only to this package signed with a key registered in Google Cloud.
+ */
+async function withGoogleOnAndroid(): Promise<SocialResult> {
+  const webClientId = env.googleWebClientId;
+  if (!webClientId) throw new Error('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is not set');
+  const { GoogleSignin, isErrorWithCode, statusCodes } =
+    await import('@react-native-google-signin/google-signin');
+  GoogleSignin.configure({ webClientId, scopes: ['email', 'profile'] });
+  try {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Forgets the last account so the user always picks which one to use.
+    await GoogleSignin.signOut().catch(() => undefined);
+    const response = await GoogleSignin.signIn();
+    if (response.type === 'cancelled') return null;
+    if (!response.data.idToken) throw new Error('Google returned no ID token');
+    return await auth.signInWithIdToken(supabase, {
+      provider: 'google',
+      token: response.data.idToken,
+    });
+  } catch (error) {
+    if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) return null;
+    throw error;
+  }
+}
+
 async function withGoogle(): Promise<SocialResult> {
+  if (Platform.OS === 'android') return withGoogleOnAndroid();
   const clientId = env.googleHealthIosClientId;
   if (!clientId) throw new Error('EXPO_PUBLIC_GOOGLE_HEALTH_IOS_CLIENT_ID is not set');
   // The app owns the reversed client id as a URL scheme (app.config.ts).
