@@ -2,6 +2,8 @@ import { Platform } from 'react-native';
 
 import * as Location from 'expo-location';
 
+import { alerts } from '@/shared/notifications';
+
 import { useLocationStore } from './location.store';
 import { LOCATION_TASK, toGeoPoint } from './location.task';
 
@@ -47,6 +49,9 @@ export const deviceSource: LocationSource = {
       if (store.tracking) return true;
       if (!(await Location.hasServicesEnabledAsync().catch(() => false))) return false;
       if (!(await ensureForeground())) return false;
+      // Android 13+ hides the "recording your run" notification of the foreground service until
+      // the app may post notifications; recording works either way, so a refusal doesn't stop it.
+      if (Platform.OS === 'android') await alerts.ensurePermission().catch(() => false);
       store.setTracking(true);
       try {
         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
