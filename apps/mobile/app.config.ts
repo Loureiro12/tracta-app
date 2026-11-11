@@ -104,7 +104,9 @@ const config: ExpoConfig = {
         locationAlwaysAndWhenInUsePermission:
           'Tracta keeps measuring your run while the screen is locked.',
         isIosBackgroundLocationEnabled: true,
-        isAndroidBackgroundLocationEnabled: true,
+        // Android records a locked-screen run through the foreground service (notification), which
+        // only needs the foreground grant: no ACCESS_BACKGROUND_LOCATION to declare on Google Play.
+        isAndroidBackgroundLocationEnabled: false,
         isAndroidForegroundServiceEnabled: true,
       },
     ],
